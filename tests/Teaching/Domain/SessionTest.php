@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Tests\Teaching\Domain;
 
 use App\Teaching\Domain\Exception\ActivityNotFound;
+use App\Teaching\Domain\Exception\DocumentNotFound;
 use App\Teaching\Domain\Model\Session\ActivityId;
+use App\Teaching\Domain\Model\Session\DocumentId;
 use App\Teaching\Domain\Model\Session\Session;
 use App\Teaching\Domain\Model\Session\SessionId;
 use App\Tests\Support\FixedClock;
@@ -83,6 +85,53 @@ final class SessionTest extends TestCase
 
         $this->expectException(ActivityNotFound::class);
         $session->markActivityDone(ActivityId::fromString('ghost'));
+    }
+
+    public function testNoteIsTrimmedAndBlankCollapsesToNull(): void
+    {
+        $session = $this->materialize();
+        self::assertNull($session->note);
+
+        $session->setNote('  Revoir les fractions avec Léa  ');
+        self::assertSame('Revoir les fractions avec Léa', $session->note);
+
+        $session->setNote('   ');
+        self::assertNull($session->note);
+    }
+
+    public function testAttachingAndRemovingDocuments(): void
+    {
+        $session = $this->materialize();
+
+        $session->attachDocument(DocumentId::fromString('d-1'), 'fiche.pdf', 2048, 'application/pdf');
+        $session->attachDocument(DocumentId::fromString('d-2'), 'photo.jpg', 4096, 'image/jpeg');
+        self::assertSame(2, $session->documentCount());
+
+        $session->removeDocument(DocumentId::fromString('d-1'));
+        self::assertSame(1, $session->documentCount());
+        self::assertSame('photo.jpg', $session->documents[0]->name);
+    }
+
+    public function testRemovingAnUnknownDocumentThrows(): void
+    {
+        $session = $this->materialize();
+
+        $this->expectException(DocumentNotFound::class);
+        $session->removeDocument(DocumentId::fromString('ghost'));
+    }
+
+    public function testStateRoundTripPreservesNoteAndDocuments(): void
+    {
+        $session = $this->materialize();
+        $session->setNote('Séance dense, à alléger');
+        $session->attachDocument(DocumentId::fromString('d-1'), 'fiche.pdf', 2048, 'application/pdf');
+
+        $restored = Session::fromState($session->toState());
+
+        self::assertSame('Séance dense, à alléger', $restored->note);
+        self::assertSame(1, $restored->documentCount());
+        self::assertSame('fiche.pdf', $restored->documents[0]->name);
+        self::assertSame(2048, $restored->documents[0]->size);
     }
 
     private function materialize(): Session

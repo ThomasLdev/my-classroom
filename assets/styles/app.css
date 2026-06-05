@@ -15,5 +15,6 @@
 @import "./components/dayview.css" layer(components);
 @import "./components/detail.css" layer(components);
 @import "./components/act.css" layer(components);
+@import "./components/session-detail.css" layer(components);
 @import "./components/sheet.css" layer(components);
 @import "./transitions.css" layer(components);

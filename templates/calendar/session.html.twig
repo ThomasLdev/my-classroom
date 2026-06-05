@@ -28,7 +28,49 @@
             </div>
         </header>
 
-        <twig:SessionActivities slotId="{{ detail.slotId }}" date="{{ detail.date }}" />
+        <twig:SessionBoard slotId="{{ detail.slotId }}" date="{{ detail.date }}" />
+
+        <section class="section" data-controller="dropzone"
+                 data-action="dragover->dropzone#over dragleave->dropzone#leave drop->dropzone#drop">
+            {{ form_start(uploadForm) }}
+                {{ form_widget(uploadForm.document) }}
+            {{ form_end(uploadForm) }}
+
+            <div class="section__head">
+                <h2 class="section__title">Documents</h2>
+                {% if detail.documents|length > 0 %}<span class="section__count tnum">{{ detail.documents|length }}</span>{% endif %}
+                <span class="section__grow"></span>
+                <button type="button" class="btn btn--soft btn--sm" data-action="dropzone#browse">
+                    <twig:ux:icon name="lucide:upload" class="btn__icon" /> Joindre
+                </button>
+            </div>
+
+            {% if detail.documents|length > 0 %}
+                <div class="doc-grid">
+                    {% for doc in detail.documents %}
+                        {% set ext = doc.name|split('.')|last|lower %}
+                        {% set icon = ext in ['png','jpg','jpeg','gif','webp','heic','svg'] ? 'lucide:image'
+                            : (ext in ['pdf','doc','docx','odt','txt','md'] ? 'lucide:file-text' : 'lucide:paperclip') %}
+                        <div class="doc">
+                            <span class="doc__ic"><twig:ux:icon name="{{ icon }}" /></span>
+                            <a class="doc__body" href="{{ path('app_session_document_download', { date: detail.date, slotId: detail.slotId, documentId: doc.id }) }}" data-turbo="false">
+                                <span class="doc__name" title="{{ doc.name }}">{{ doc.displayName }}</span>
+                                <span class="doc__meta">{{ doc.sizeLabel }}</span>
+                            </a>
+                            {{ form_start(deleteForms[doc.id]) }}
+                                <button type="submit" class="doc__del" aria-label="Retirer le document">
+                                    <twig:ux:icon name="lucide:x" />
+                                </button>
+                            {{ form_end(deleteForms[doc.id]) }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="dropzone" data-dropzone-target="zone" data-action="click->dropzone#browse">
+                Glissez un fichier ici, ou touchez pour parcourir
+            </div>
+        </section>
     </div>
     </turbo-frame>
 {% endblock %}

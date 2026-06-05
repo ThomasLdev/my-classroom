@@ -19,6 +19,16 @@
     animation-timing-function: var(--ease);
   }
 
+  /* Only the pill glides between columns (the morph is the default group animation,
+     just retimed). The dark day number isn't named, so it stays in the weekstrip group
+     and simply activates in place on the destination day via its cross-fade. */
+  ::view-transition-group(weekstrip-pill) {
+    animation-duration: .28s;
+    animation-timing-function: var(--ease);
+    z-index: 1; /* under the strip content so it never masks labels while sliding */
+  }
+  ::view-transition-group(weekstrip) { z-index: 2; }
+
   /* Clip the slide to the column so the card disappears at its edge, not across the screen. */
   ::view-transition-group(day-content) { overflow: clip; }
 

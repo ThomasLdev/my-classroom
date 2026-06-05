@@ -9,6 +9,7 @@ use App\Shared\Domain\Identifier\SlotId;
 use App\Shared\Domain\Occurrence;
 use App\Shared\Domain\TimeRange;
 use App\Teaching\Domain\Model\Session\ActivityId;
+use App\Teaching\Domain\Model\Session\DocumentId;
 use App\Teaching\Domain\Model\Session\Session;
 use App\Teaching\Domain\Model\Session\SessionId;
 use App\Teaching\Domain\Repository\SessionRepository;
@@ -57,6 +58,8 @@ final class DoctrineSessionRepositoryTest extends KernelTestCase
         $session->addActivity(ActivityId::fromString((string) Uuid::v7()), 'À finir');
         $done = $session->addActivity(ActivityId::fromString((string) Uuid::v7()), 'Déjà fait');
         $done->markDone();
+        $session->setNote('Classe agitée, revoir le plan');
+        $session->attachDocument(DocumentId::fromString((string) Uuid::v7()), 'fiche.pdf', 2048, 'application/pdf');
 
         $this->repository->save($session);
         $this->em->flush();
@@ -70,6 +73,10 @@ final class DoctrineSessionRepositoryTest extends KernelTestCase
         self::assertSame('10:00', $reloaded->timeRange->endLabel());
         self::assertSame(2, $reloaded->activityCount());
         self::assertSame(1, $reloaded->doneCount());
+        self::assertSame('Classe agitée, revoir le plan', $reloaded->note);
+        self::assertSame(1, $reloaded->documentCount());
+        self::assertSame('fiche.pdf', $reloaded->documents[0]->name);
+        self::assertSame(2048, $reloaded->documents[0]->size);
     }
 
     public function testItReconcilesTheCollectionOnUpdate(): void

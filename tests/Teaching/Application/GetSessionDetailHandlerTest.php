@@ -6,9 +6,14 @@ namespace App\Tests\Teaching\Application;
 
 use App\Teaching\Application\Command\AddActivityToSession\AddActivityToSession;
 use App\Teaching\Application\Command\AddActivityToSession\AddActivityToSessionHandler;
+use App\Teaching\Application\Command\AttachDocumentToSession\AttachDocumentToSession;
+use App\Teaching\Application\Command\AttachDocumentToSession\AttachDocumentToSessionHandler;
+use App\Teaching\Application\Command\SetSessionNote\SetSessionNote;
+use App\Teaching\Application\Command\SetSessionNote\SetSessionNoteHandler;
 use App\Teaching\Application\Query\GetSessionDetail\GetSessionDetail;
 use App\Teaching\Application\Query\GetSessionDetail\GetSessionDetailHandler;
 use App\Teaching\Domain\Exception\SlotNotScheduled;
+use App\Tests\Support\InMemoryDocumentStorage;
 use App\Tests\Support\InMemoryOccurrenceProvider;
 use App\Tests\Support\InMemorySessionRepository;
 use App\Tests\Support\OccurrenceMother;
@@ -61,7 +66,54 @@ final class GetSessionDetailHandlerTest extends TestCase
 
         self::assertFalse($view->materialized);
         self::assertSame([], $view->activities);
+        self::assertNull($view->note);
+        self::assertSame([], $view->documents);
         self::assertSame('4e A', $view->classroomName);
+    }
+
+    public function testItSurfacesTheNoteAndDocuments(): void
+    {
+        $this->occurrences->add(OccurrenceMother::create('slot-2', 'class-1', '2026-06-08', '11:00', '12:00'));
+
+        $setNote = new SetSessionNoteHandler($this->sessions, $this->occurrences, new SequentialIdGenerator('n'));
+        $setNote(new SetSessionNote('slot-2', '2026-06-08', 'Reprendre la dictée'));
+
+        $attach = new AttachDocumentToSessionHandler(
+            $this->sessions,
+            $this->occurrences,
+            new InMemoryDocumentStorage(),
+            new SequentialIdGenerator('d'),
+        );
+        $attach(new AttachDocumentToSession('slot-2', '2026-06-08', 'dictee.pdf', 2048, 'application/pdf', '/tmp/x'));
+
+        $view = ($this->handler)(new GetSessionDetail('slot-2', '2026-06-08'));
+
+        self::assertSame('Reprendre la dictée', $view->note);
+        self::assertCount(1, $view->documents);
+        self::assertSame('dictee.pdf', $view->documents[0]->name);
+        self::assertSame('dictee.pdf', $view->documents[0]->displayName);
+        self::assertSame('2 Ko', $view->documents[0]->sizeLabel);
+    }
+
+    public function testItTruncatesLongDocumentNamesKeepingTheExtension(): void
+    {
+        $this->occurrences->add(OccurrenceMother::create('slot-3', 'class-1', '2026-06-08', '15:00', '16:00'));
+
+        $attach = new AttachDocumentToSessionHandler(
+            $this->sessions,
+            $this->occurrences,
+            new InMemoryDocumentStorage(),
+            new SequentialIdGenerator('d'),
+        );
+        $longName = 'exercices-fractions-niveau-5eme-avec-corrige-detaille-version-finale.pdf';
+        $attach(new AttachDocumentToSession('slot-3', '2026-06-08', $longName, 2048, 'application/pdf', '/tmp/x'));
+
+        $document = ($this->handler)(new GetSessionDetail('slot-3', '2026-06-08'))->documents[0];
+
+        self::assertSame($longName, $document->name);
+        self::assertLessThanOrEqual(35, mb_strlen($document->displayName));
+        self::assertStringEndsWith('.pdf', $document->displayName);
+        self::assertStringContainsString('…', $document->displayName);
     }
 
     public function testItRejectsAnUnscheduledSlot(): void

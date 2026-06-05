@@ -1,0 +1,15 @@
+# Stateless CSRF protection (Symfony Flex default). No session needed, so pages
+# stay cacheable; the baseline check is the same-origin Origin/Referer header
+# (Turbo sends it on fetch). The csrf_protection_controller.js adds defense-in-
+# depth by generating a fresh token at submit time — which also avoids stale
+# tokens in Turbo-cached pages.
+framework:
+    form:
+        csrf_protection:
+            token_id: submit
+
+    csrf_protection:
+        stateless_token_ids:
+            - submit
+            - authenticate
+            - logout

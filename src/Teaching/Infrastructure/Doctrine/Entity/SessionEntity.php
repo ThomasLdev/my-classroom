@@ -39,6 +39,9 @@ class SessionEntity
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
     public bool $cancelled = false;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    public ?string $note = null;
+
     /** @var Collection<int, ActivityEntity> */
     #[ORM\OneToMany(
         targetEntity: ActivityEntity::class,
@@ -49,8 +52,19 @@ class SessionEntity
     #[ORM\OrderBy(['position' => 'ASC'])]
     public Collection $activities;
 
+    /** @var Collection<int, DocumentEntity> */
+    #[ORM\OneToMany(
+        targetEntity: DocumentEntity::class,
+        mappedBy: 'session',
+        cascade: ['persist', 'remove'],
+        orphanRemoval: true,
+    )]
+    #[ORM\OrderBy(['id' => 'ASC'])]
+    public Collection $documents;
+
     public function __construct()
     {
         $this->activities = new ArrayCollection();
+        $this->documents = new ArrayCollection();
     }
 }

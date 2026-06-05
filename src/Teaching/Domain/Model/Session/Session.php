@@ -10,9 +10,11 @@ use App\Shared\Domain\Identifier\SlotId;
 use App\Shared\Domain\Occurrence;
 use App\Shared\Domain\TimeRange;
 use App\Teaching\Domain\Exception\ActivityNotFound;
+use App\Teaching\Domain\Exception\DocumentNotFound;
 
 /**
  * @phpstan-import-type ActivityStateArray from Activity
+ * @phpstan-import-type DocumentStateArray from AttachedDocument
  *
  * @phpstan-type SessionStateArray array{
  *     id: string,
@@ -23,13 +25,20 @@ use App\Teaching\Domain\Exception\ActivityNotFound;
  *     endMinute: int,
  *     closedAt: string|null,
  *     cancelled: bool,
+ *     note: string|null,
  *     activities: list<ActivityStateArray>,
+ *     documents: list<DocumentStateArray>,
  * }
  */
 final class Session
 {
     /** @var list<Activity> */
     public private(set) array $activities = [];
+
+    /** @var list<AttachedDocument> */
+    public private(set) array $documents = [];
+
+    public private(set) ?string $note = null;
 
     public private(set) ?\DateTimeImmutable $closedAt = null;
 
@@ -74,6 +83,11 @@ final class Session
             static fn (array $activity): Activity => Activity::fromState($activity),
             $state['activities'],
         ));
+        $session->documents = array_values(array_map(
+            static fn (array $document): AttachedDocument => AttachedDocument::fromState($document),
+            $state['documents'],
+        ));
+        $session->note = $state['note'];
         $session->closedAt = $state['closedAt'] !== null ? new \DateTimeImmutable($state['closedAt']) : null;
         $session->cancelled = $state['cancelled'];
 
@@ -94,9 +108,14 @@ final class Session
             'endMinute' => $this->timeRange->endMinute,
             'closedAt' => $this->closedAt?->format(\DateTimeInterface::ATOM),
             'cancelled' => $this->cancelled,
+            'note' => $this->note,
             'activities' => array_map(
                 static fn (Activity $activity): array => $activity->toState(),
                 $this->activities,
+            ),
+            'documents' => array_map(
+                static fn (AttachedDocument $document): array => $document->toState(),
+                $this->documents,
             ),
         ];
     }
@@ -107,6 +126,35 @@ final class Session
         $this->activities[] = $activity;
 
         return $activity;
+    }
+
+    public function setNote(?string $note): void
+    {
+        $note = $note !== null ? trim($note) : null;
+        $this->note = ($note === null || $note === '') ? null : $note;
+    }
+
+    public function attachDocument(DocumentId $id, string $name, int $size, string $contentType): AttachedDocument
+    {
+        $document = AttachedDocument::attach($id, $name, $size, $contentType);
+        $this->documents[] = $document;
+
+        return $document;
+    }
+
+    public function removeDocument(DocumentId $id): void
+    {
+        $this->documentWith($id);
+
+        $this->documents = array_values(array_filter(
+            $this->documents,
+            static fn (AttachedDocument $d): bool => !$d->id->equals($id),
+        ));
+    }
+
+    public function documentCount(): int
+    {
+        return \count($this->documents);
     }
 
     public function receiveCarriedOver(ActivityId $newId, Activity $source): Activity
@@ -182,6 +230,17 @@ final class Session
         }
 
         throw ActivityNotFound::inSession($this->id, $id);
+    }
+
+    private function documentWith(DocumentId $id): AttachedDocument
+    {
+        foreach ($this->documents as $document) {
+            if ($document->id->equals($id)) {
+                return $document;
+            }
+        }
+
+        throw DocumentNotFound::inSession($this->id, $id);
     }
 
     private function nextPosition(): int
