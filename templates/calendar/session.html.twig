@@ -5,7 +5,8 @@
 {% block body %}
     <turbo-frame id="sheet">
     <div class="detail">
-        <header class="detail__hero">
+        <header class="detail__hero"
+                data-action="pointerdown->sheet#startDrag pointermove->sheet#drag pointerup->sheet#endDrag pointercancel->sheet#endDrag">
             <a class="detail__back" href="{{ path('app_calendar_day', { date: backDate }) }}">
                 <twig:ux:icon name="lucide:arrow-left" class="detail__back-icon" /> Retour au calendrier
             </a>

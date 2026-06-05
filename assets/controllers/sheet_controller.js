@@ -56,8 +56,8 @@ export default class extends Controller {
     }
 
     startDrag(event) {
-        if (!this.isCompact()) {
-            return; // drag-to-resize is a phone-only gesture
+        if (!this.hasDialogTarget || !this.isCompact()) {
+            return; // drag-to-resize is a phone-only gesture, and needs the dialog
         }
         this.dragging = true;
         this.startY = event.clientY;

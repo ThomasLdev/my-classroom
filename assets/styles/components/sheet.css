@@ -42,6 +42,8 @@
     border-radius: 50%;
     color: var(--ink-2);
     background: var(--surface-2);
+    /* Above the sticky hero, otherwise the header would paint over it. */
+    z-index: 2;
   }
   & .sheet__close-icon { inline-size: 18px; block-size: 18px; }
 
@@ -59,6 +61,18 @@
 
 .sheet .detail__back { display: none; }
 
+/* Fixed header: the hero stays pinned while the sheet body scrolls under it,
+   and doubles as the drag grip (the small handle alone is too easy to miss). */
+.sheet .detail__hero {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 1;
+  background: var(--surface);
+  touch-action: none;
+  cursor: grab;
+}
+.sheet .detail__hero:active { cursor: grabbing; }
+
 html:has(.sheet[open]) { overflow: hidden; }
 
 /* Desktop / tablet: centered modal, no drag handle. */
@@ -72,6 +86,8 @@ html:has(.sheet[open]) { overflow: hidden; }
     padding-block-start: 1.25rem;
   }
   .sheet .sheet__handle { display: none; }
+  /* Centered modal: the header isn't a drag grip here. */
+  .sheet .detail__hero { cursor: auto; touch-action: auto; }
 }
 
 @media (prefers-reduced-motion: no-preference) {
