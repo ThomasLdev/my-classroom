@@ -9,11 +9,6 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Persistence model for the Session aggregate. Pure data holder: it carries
- * ORM mapping only, never behaviour. The domain <-> entity translation lives
- * in {@see \App\Teaching\Infrastructure\Doctrine\Mapper\SessionMapper}.
- */
 #[ORM\Entity]
 #[ORM\Table(name: 'teaching_session')]
 #[ORM\UniqueConstraint(name: 'uniq_session_slot_date', columns: ['slot_id', 'date'])]

@@ -16,10 +16,6 @@ use Symfony\Component\Messenger\HandleTrait;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
-/**
- * Driving adapter for the calendar. Thin: it dispatches the GetDayView query
- * and shapes a small view-model (week strip, localized labels, prev/next).
- */
 final class CalendarController extends AbstractController
 {
     use HandleTrait;

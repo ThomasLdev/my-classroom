@@ -16,11 +16,6 @@ use App\Teaching\Domain\Port\OccurrenceProvider;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AsAlias;
 
-/**
- * Anti-corruption adapter: implements Teaching's OccurrenceProvider port by
- * reading the Scheduling timetable and delegating the expansion to the pure
- * {@see OccurrenceCalculator}.
- */
 #[AsAlias(OccurrenceProvider::class)]
 final class DoctrineOccurrenceProvider implements OccurrenceProvider
 {

@@ -8,10 +8,6 @@ use App\Scheduling\Infrastructure\Factory\ClassroomFactory;
 use App\Scheduling\Infrastructure\Factory\TimetableSlotFactory;
 use Zenstruck\Foundry\Story;
 
-/**
- * A deterministic weekly timetable used as fixtures, so the calendar shows
- * predictable occurrences across the week (Mon–Fri).
- */
 final class DefaultTimetableStory extends Story
 {
     public function build(): void
@@ -19,7 +15,7 @@ final class DefaultTimetableStory extends Story
         $classe5B = ClassroomFactory::createOne(['name' => '5e B']);
         $classe4A = ClassroomFactory::createOne(['name' => '4e A']);
 
-        // [classroom, dayOfWeek (1=Mon), startMinute, endMinute]
+        // dayOfWeek is ISO-8601: 1=Mon
         $grid = [
             [$classe5B, 1, 8 * 60, 9 * 60],
             [$classe5B, 1, 9 * 60, 10 * 60],

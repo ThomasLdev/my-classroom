@@ -10,17 +10,16 @@
     {% if total > 0 %}
         <ul class="act-list">
             {% for a in detail.activities %}
-                <li class="act{{ a.done ? ' act--done' }}">
-                    <button type="button" class="act__check"
+                <li>
+                    <button type="button" class="act{{ a.done ? ' act--done' }}"
                             aria-pressed="{{ a.done ? 'true' : 'false' }}"
-                            aria-label="{{ a.done ? 'Marquer comme non terminée' : 'Marquer comme terminée' }}"
                             data-action="live#action"
                             data-live-action-param="{{ a.done ? 'markNotDone' : 'markDone' }}"
                             data-live-activity-id-param="{{ a.id }}">
                         <span class="act__box"><twig:ux:icon name="lucide:check" class="act__check-icon" /></span>
+                        <span class="act__title">{{ a.title }}</span>
+                        {% if a.carriedOver %}<span class="act__flag">reporté</span>{% endif %}
                     </button>
-                    <span class="act__title">{{ a.title }}</span>
-                    {% if a.carriedOver %}<span class="act__flag">reporté</span>{% endif %}
                 </li>
             {% endfor %}
         </ul>

@@ -8,10 +8,6 @@ use App\Shared\Domain\Identifier\ClassroomId;
 use App\Shared\Domain\Identifier\SlotId;
 use App\Shared\Domain\Occurrence;
 
-/**
- * Pure domain service: expands recurring timetable slots into concrete
- * occurrences. No persistence, no clock — fully deterministic and testable.
- */
 final class OccurrenceCalculator
 {
     /**
@@ -50,9 +46,6 @@ final class OccurrenceCalculator
     }
 
     /**
-     * Next occurrence of the same classroom strictly after the given instant,
-     * scanning forward day by day up to a bounded horizon.
-     *
      * @param list<ScheduledSlot> $slots
      */
     public function nextAfter(

@@ -1,11 +1,4 @@
-/* ============================================================
-   Tokens — source de vérité du theming.
-   Direction : "planner papeterie pastel", sobre, aplats doux.
-   Palettes de classes surchargées via [data-palette].
-   Densités via [data-density].
-   ============================================================ */
 :root {
-  /* Surfaces & encre */
   --canvas: #FBFAF6;
   --surface: #FFFFFF;
   --surface-2: #F4F2EC;
@@ -17,41 +10,33 @@
   --hairline-2: #E2DDD2;
   --line-strong: #D8D2C5;
 
-  /* Accent neutre (événements, sélection) */
   --clay: #B98F6B;
   --clay-soft: #F0E7DB;
   --event-tint: #EFEBE3;
   --event-accent: #908578;
 
-  /* Statut */
   --status-error: #B5462B;
 
-  /* Overlay */
   --overlay: rgb(42 40 37 / .32);
 
-  /* Palette de classes — défaut "doux" (surchargée par [data-palette]) */
   --k1-tint: #E6EEF7; --k1-accent: #577FA8; --k1-deep: #3C5C7E;
   --k2-tint: #E7EFE4; --k2-accent: #6E9A66; --k2-deep: #4F7349;
   --k3-tint: #F8E9D9; --k3-accent: #C28A54; --k3-deep: #996A39;
   --k4-tint: #EDE5F3; --k4-accent: #8A72B4; --k4-deep: #67518F;
 
-  /* Type */
   --serif: "Instrument Serif", Georgia, serif;
   --sans: "Hanken Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
-  /* Rayons (px : primitives visuelles) */
   --r-sm: 8px;
   --r-md: 14px;
   --r-lg: 20px;
   --r-xl: 26px;
 
-  /* Ombres (px) */
   --shadow-card: 0 1px 2px rgb(42 40 37 / .04), 0 6px 18px rgb(42 40 37 / .05);
   --shadow-pop: 0 8px 40px rgb(42 40 37 / .16);
 
   --ease: cubic-bezier(.22, .61, .36, 1);
 
-  /* Espacement (rem : suit la préférence de taille du texte) */
   --space-2xs: .25rem;
   --space-xs: .5rem;
   --space-sm: .75rem;
@@ -59,15 +44,11 @@
   --space-lg: 1.5rem;
   --space-xl: 2.5rem;
 
-  /* Largeur max du contenu (colonne app, centrée sur grand écran) */
   --content-max-inline-size: 60rem;
 
-  /* Densité (surchargée par [data-density]) */
   --card-padding: .9375rem 1rem .875rem;
 
-  /* Breakpoints (référence — les custom props ne marchent pas dans @media,
-     on duplique la valeur littérale dans chaque @media) :
-     --bp-sm: 600px · --bp-md: 720px · --bp-lg: 980px · --bp-xl: 1200px */
+  /* Custom props don't work in @media, so breakpoints are duplicated literally: sm 600 · md 720 · lg 980 · xl 1200. */
 }
 
 [data-palette="froid"] {

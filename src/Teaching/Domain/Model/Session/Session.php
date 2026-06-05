@@ -12,11 +12,6 @@ use App\Shared\Domain\TimeRange;
 use App\Teaching\Domain\Exception\ActivityNotFound;
 
 /**
- * Aggregate root for the daily teaching life. A session only exists in the
- * database once it carries something (an activity, a note, a document) or
- * deviates from the timetable (cancelled). Until then it is a virtual
- * occurrence computed from the timetable — never persisted.
- *
  * @phpstan-import-type ActivityStateArray from Activity
  *
  * @phpstan-type SessionStateArray array{
@@ -49,9 +44,6 @@ final class Session
     ) {
     }
 
-    /**
-     * Materialise a session from a (previously virtual) timetable occurrence.
-     */
     public static function materialize(SessionId $id, Occurrence $occurrence): self
     {
         return new self(
@@ -64,7 +56,6 @@ final class Session
     }
 
     /**
-     * Rehydrate the aggregate from its persisted state (Memento pattern).
      * Deliberately bypasses creation invariants: the stored state was valid.
      *
      * @param SessionStateArray $state
@@ -90,9 +81,6 @@ final class Session
     }
 
     /**
-     * Flat, serializable snapshot of the whole aggregate, tailored for
-     * persistence (DB-ready primitives, no value objects leaking out).
-     *
      * @return SessionStateArray
      */
     public function toState(): array
@@ -140,10 +128,6 @@ final class Session
     }
 
     /**
-     * The session's time is over: close it and return the activities that were
-     * still planned, so the caller can carry them to the next occurrence.
-     * Idempotent — a session already closed yields nothing.
-     *
      * @return list<Activity>
      */
     public function close(Clock $clock): array

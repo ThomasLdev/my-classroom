@@ -3,6 +3,7 @@
 {% block title %}{{ detail.classroomName }} — {{ header.num }} {{ header.month }}{% endblock %}
 
 {% block body %}
+    <turbo-frame id="sheet">
     <div class="detail">
         <header class="detail__hero">
             <a class="detail__back" href="{{ path('app_calendar_day', { date: backDate }) }}">
@@ -23,4 +24,5 @@
 
         <twig:SessionActivities slotId="{{ detail.slotId }}" date="{{ detail.date }}" />
     </div>
+    </turbo-frame>
 {% endblock %}

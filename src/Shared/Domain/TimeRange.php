@@ -4,10 +4,6 @@ declare(strict_types=1);
 
 namespace App\Shared\Domain;
 
-/**
- * A time-of-day range, independent of any date.
- * Stored as minutes-from-midnight to stay a pure, comparable value object.
- */
 final readonly class TimeRange
 {
     public function __construct(

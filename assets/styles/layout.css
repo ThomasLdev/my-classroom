@@ -1,4 +1,3 @@
-/* Centre et borne le contenu sur une colonne uniforme (header + pages). */
 .wrap {
   inline-size: 100%;
   max-inline-size: var(--content-max-inline-size);

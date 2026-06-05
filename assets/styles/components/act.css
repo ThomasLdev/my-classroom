@@ -37,22 +37,20 @@
 .act {
   display: flex;
   align-items: center;
-  gap: .5rem;
-  padding-block: .375rem;
-  padding-inline: .5rem .875rem;
+  gap: .625rem;
+  inline-size: 100%;
+  padding-block: .625rem;
+  padding-inline: .75rem;
+  text-align: start;
   background: var(--surface);
   border: 1px solid var(--hairline-2);
   border-radius: var(--r-md);
+  transition: border-color .15s var(--ease);
 
-  & .act__check {
-    flex: none;
-    inline-size: 44px;
-    block-size: 44px;
-    display: grid;
-    place-items: center;
-  }
+  &:hover { border-color: var(--line-strong); }
 
   & .act__box {
+    flex: none;
     inline-size: 24px;
     block-size: 24px;
     display: grid;

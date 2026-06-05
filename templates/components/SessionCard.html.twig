@@ -3,7 +3,8 @@
 {% set done = session.doneCount %}
 {% set pct = total > 0 ? (done / total * 100)|round : 0 %}
 <a class="session-card session-card--{{ colorKey }}{{ session.cancelled ? ' session-card--cancelled' }}"
-   href="{{ path('app_session_detail', { date: date, slotId: session.slotId }) }}" {{ attributes }}>
+   href="{{ path('app_session_detail', { date: date, slotId: session.slotId }) }}"
+   data-turbo-frame="sheet" {{ attributes }}>
     <span class="session-card__bar" aria-hidden="true"></span>
 
     <div class="session-card__top">
@@ -16,7 +17,7 @@
     {% elseif total > 0 %}
         <div class="session-card__progress">
             <span class="session-card__progressbar">
-                <span class="session-card__progressbar-fill" style="inline-size: {{ pct }}%"></span>
+                <span class="session-card__progressbar-fill" style="--fill: {{ pct }}%"></span>
             </span>
             <span class="tnum">{{ done }}/{{ total }} activités</span>
         </div>

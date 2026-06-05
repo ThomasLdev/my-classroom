@@ -5,9 +5,7 @@
   min-block-size: 0;
   touch-action: pan-y;
 
-  /* Header & weekstrip stay put (auto height); only this region scrolls and
-     slides. Constant box height across days → no view-transition size morph,
-     so the chrome is perfectly still. scrollbar-gutter avoids a width jump. */
+  /* Constant box height across days avoids a view-transition size morph; scrollbar-gutter avoids a width jump. */
   & .dayview__content {
     flex: 1;
     min-block-size: 0;

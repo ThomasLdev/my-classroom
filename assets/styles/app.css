@@ -1,4 +1,3 @@
-/* Entrypoint CSS : ordre des layers + imports. */
 @layer reset, tokens, base, layout, components, utilities;
 
 @import "./reset.css" layer(reset);
@@ -16,4 +15,5 @@
 @import "./components/dayview.css" layer(components);
 @import "./components/detail.css" layer(components);
 @import "./components/act.css" layer(components);
+@import "./components/sheet.css" layer(components);
 @import "./transitions.css" layer(components);

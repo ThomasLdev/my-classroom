@@ -56,9 +56,7 @@ final class DoctrineSessionRepository implements SessionRepository
 
     public function elapsedOpenWithPlannedActivities(\DateTimeImmutable $now): array
     {
-        // Pre-filter on the DB: open, not yet closed, with at least one planned
-        // activity. The "elapsed" check (date + end minute <= now) is a computed
-        // value, evaluated in PHP afterwards — the candidate set is tiny.
+        // Elapsed (date + end minute <= now) is computed, so it is filtered in PHP after a narrow DB pre-filter.
         $candidates = $this->entities->createQueryBuilder('s')
             ->innerJoin('s.activities', 'a')
             ->andWhere('s.closedAt IS NULL')

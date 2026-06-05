@@ -1,0 +1,117 @@
+.sheet {
+  /* NO `display` here: a closed <dialog> must keep its native display:none. */
+  margin: auto auto 0;
+  inline-size: 100%;
+  max-inline-size: var(--content-max-inline-size);
+  max-block-size: 92dvh;
+  flex-direction: column;
+  padding: 0 1rem calc(1.25rem + env(safe-area-inset-bottom));
+  border: none;
+  border-radius: var(--r-xl) var(--r-xl) 0 0;
+  background: var(--surface);
+  box-shadow: var(--shadow-pop);
+  overflow: hidden;
+
+  &::backdrop { background: var(--overlay); }
+
+  & .sheet__handle {
+    flex: none;
+    display: grid;
+    place-items: center;
+    padding-block: .5rem .375rem;
+    touch-action: none;
+    cursor: grab;
+  }
+  & .sheet__handle:active { cursor: grabbing; }
+
+  & .sheet__grip {
+    inline-size: 38px;
+    block-size: 4px;
+    border-radius: 999px;
+    background: var(--line-strong);
+  }
+
+  & .sheet__close {
+    position: absolute;
+    inset-block-start: .625rem;
+    inset-inline-end: .75rem;
+    inline-size: 44px;
+    block-size: 44px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    color: var(--ink-2);
+    background: var(--surface-2);
+  }
+  & .sheet__close-icon { inline-size: 18px; block-size: 18px; }
+
+  & .sheet__body {
+    flex: 1;
+    min-block-size: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
+
+.sheet[open] {
+  display: flex;
+}
+
+.sheet .detail__back { display: none; }
+
+html:has(.sheet[open]) { overflow: hidden; }
+
+/* Desktop / tablet: centered modal, no drag handle. */
+@media (min-width: 720px) {
+  .sheet {
+    margin: auto;
+    inline-size: min(34rem, 100vw - 3rem);
+    max-inline-size: none;
+    max-block-size: 85dvh;
+    border-radius: var(--r-xl);
+    padding-block-start: 1.25rem;
+  }
+  .sheet .sheet__handle { display: none; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sheet {
+    translate: 0 100%;
+    transition:
+      translate .3s var(--ease),
+      height .25s var(--ease),
+      overlay .3s allow-discrete,
+      display .3s allow-discrete;
+  }
+  .sheet[open] { translate: 0 0; }
+  @starting-style {
+    .sheet[open] { translate: 0 100%; }
+  }
+
+  .sheet::backdrop {
+    opacity: 0;
+    transition: opacity .3s, overlay .3s allow-discrete, display .3s allow-discrete;
+  }
+  .sheet[open]::backdrop { opacity: 1; }
+  @starting-style {
+    .sheet[open]::backdrop { opacity: 0; }
+  }
+}
+
+/* Modal entry on larger screens: fade + scale, no slide. */
+@media (prefers-reduced-motion: no-preference) and (min-width: 720px) {
+  .sheet {
+    translate: none;
+    opacity: 0;
+    scale: .96;
+    transition:
+      opacity .2s var(--ease),
+      scale .2s var(--ease),
+      overlay .2s allow-discrete,
+      display .2s allow-discrete;
+  }
+  .sheet[open] { opacity: 1; scale: 1; }
+  @starting-style {
+    .sheet[open] { translate: none; opacity: 0; scale: .96; }
+  }
+}

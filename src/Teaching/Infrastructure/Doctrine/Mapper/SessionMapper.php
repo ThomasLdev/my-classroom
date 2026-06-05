@@ -10,12 +10,6 @@ use App\Teaching\Infrastructure\Doctrine\Entity\ActivityEntity;
 use App\Teaching\Infrastructure\Doctrine\Entity\SessionEntity;
 
 /**
- * Shuttles the Session aggregate to and from its persistence entity through the
- * aggregate's own state snapshot (Memento pattern: {@see Session::toState()} /
- * {@see Session::fromState()}). All value-object translation lives in the
- * aggregate; the mapper only moves a flat state array in and out of columns and
- * reconciles the activities collection (Doctrine identity / orphanRemoval).
- *
  * @phpstan-import-type ActivityStateArray from \App\Teaching\Domain\Model\Session\Activity
  */
 final class SessionMapper
@@ -63,6 +57,8 @@ final class SessionMapper
     }
 
     /**
+     * Manual collection sync so Doctrine identity / orphanRemoval stays correct.
+     *
      * @param list<ActivityStateArray> $activities
      */
     private function reconcileActivities(array $activities, SessionEntity $entity): void

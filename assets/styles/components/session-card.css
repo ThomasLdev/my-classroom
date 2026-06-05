@@ -53,9 +53,10 @@
   & .session-card__progressbar-fill {
     display: block;
     block-size: 100%;
+    inline-size: var(--fill, 0);
     border-radius: 999px;
     background: var(--c-accent, var(--ink));
-    transition: inline-size .3s var(--ease);
+    transition: inline-size .45s var(--ease);
   }
 
   & .session-card__empty {
@@ -71,7 +72,6 @@
     color: var(--status-error);
   }
 
-  /* Accent par classe */
   &.session-card--k1 { --c-accent: var(--k1-accent); }
   &.session-card--k2 { --c-accent: var(--k2-accent); }
   &.session-card--k3 { --c-accent: var(--k3-accent); }

@@ -8,10 +8,6 @@ use App\Teaching\Application\Port\CalendarEventProvider;
 use App\Teaching\Domain\Port\OccurrenceProvider;
 use App\Teaching\Domain\Repository\SessionRepository;
 
-/**
- * Merges the read side: virtual occurrences (timetable) + materialised sessions
- * + calendar events. Pure read — never mutates, never materialises.
- */
 final readonly class GetDayViewHandler
 {
     public function __construct(

@@ -17,12 +17,8 @@ use Symfony\UX\LiveComponent\Attribute\LiveAction;
 use Symfony\UX\LiveComponent\Attribute\LiveArg;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
+use Symfony\UX\LiveComponent\LiveResponder;
 
-/**
- * Driving adapter (UI): the reactive activities section of a session.
- * LiveActions dispatch commands on the command bus; the component re-renders
- * by re-querying GetSessionDetail. The domain stays untouched.
- */
 #[AsLiveComponent]
 final class SessionActivities
 {
@@ -54,7 +50,7 @@ final class SessionActivities
     }
 
     #[LiveAction]
-    public function addActivity(): void
+    public function addActivity(LiveResponder $live): void
     {
         $title = trim($this->newTitle);
         if ($title === '') {
@@ -63,17 +59,20 @@ final class SessionActivities
 
         $this->commandBus->dispatch(new AddActivityToSession($this->slotId, $this->date, $title));
         $this->newTitle = '';
+        $live->dispatchBrowserEvent('session:changed');
     }
 
     #[LiveAction]
-    public function markDone(#[LiveArg] string $activityId): void
+    public function markDone(#[LiveArg] string $activityId, LiveResponder $live): void
     {
         $this->commandBus->dispatch(new MarkActivityDone($this->slotId, $this->date, $activityId));
+        $live->dispatchBrowserEvent('session:changed');
     }
 
     #[LiveAction]
-    public function markNotDone(#[LiveArg] string $activityId): void
+    public function markNotDone(#[LiveArg] string $activityId, LiveResponder $live): void
     {
         $this->commandBus->dispatch(new MarkActivityNotDone($this->slotId, $this->date, $activityId));
+        $live->dispatchBrowserEvent('session:changed');
     }
 }

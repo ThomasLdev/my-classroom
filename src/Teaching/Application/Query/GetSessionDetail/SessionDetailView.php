@@ -4,10 +4,6 @@ declare(strict_types=1);
 
 namespace App\Teaching\Application\Query\GetSessionDetail;
 
-/**
- * UX-oriented read model for a single session's detail (activities first).
- * Notes & documents will extend this in later iterations.
- */
 final readonly class SessionDetailView
 {
     /**
