@@ -1,0 +1,43 @@
+.dayview {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-block-size: 0;
+  touch-action: pan-y;
+
+  /* Header & weekstrip stay put (auto height); only this region scrolls and
+     slides. Constant box height across days → no view-transition size morph,
+     so the chrome is perfectly still. scrollbar-gutter avoids a width jump. */
+  & .dayview__content {
+    flex: 1;
+    min-block-size: 0;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    scrollbar-gutter: stable;
+    padding-block-end: 2.5rem;
+    view-transition-name: day-content;
+  }
+
+  & .dayview__list {
+    display: flex;
+    flex-direction: column;
+    gap: .75rem;
+    margin-top: .625rem;
+  }
+}
+
+.empty {
+  text-align: center;
+  color: var(--ink-3);
+  padding: 3.5rem 1.25rem;
+
+  & .empty__icon {
+    inline-size: 40px;
+    block-size: 40px;
+    margin-inline: auto;
+    margin-bottom: .75rem;
+    color: var(--line-strong);
+  }
+
+  & p { font-size: .9375rem; }
+}

@@ -1,0 +1,16 @@
+{% props header, prevDate, nextDate %}
+<header class="dayhead">
+    <div class="dayhead__date">
+        <div class="dayhead__dow">{{ header.dow }}</div>
+        <div class="dayhead__sub tnum">{{ header.num }} {{ header.month }} {{ header.year }}</div>
+    </div>
+    {% if header.isToday %}<span class="dayhead__today">Aujourd'hui</span>{% endif %}
+    <div class="dayhead__nav">
+        <a class="iconbtn" href="{{ path('app_calendar_day', { date: prevDate }) }}" rel="prev" aria-label="Jour précédent">
+            <twig:ux:icon name="lucide:chevron-left" />
+        </a>
+        <a class="iconbtn" href="{{ path('app_calendar_day', { date: nextDate }) }}" rel="next" aria-label="Jour suivant">
+            <twig:ux:icon name="lucide:chevron-right" />
+        </a>
+    </div>
+</header>

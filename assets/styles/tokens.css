@@ -1,0 +1,88 @@
+/* ============================================================
+   Tokens — source de vérité du theming.
+   Direction : "planner papeterie pastel", sobre, aplats doux.
+   Palettes de classes surchargées via [data-palette].
+   Densités via [data-density].
+   ============================================================ */
+:root {
+  /* Surfaces & encre */
+  --canvas: #FBFAF6;
+  --surface: #FFFFFF;
+  --surface-2: #F4F2EC;
+  --ink: #2A2825;
+  --ink-2: #6B665E;
+  --ink-3: #9A948A;
+  --on-accent: #FFFFFF;
+  --hairline: #ECE8DF;
+  --hairline-2: #E2DDD2;
+  --line-strong: #D8D2C5;
+
+  /* Accent neutre (événements, sélection) */
+  --clay: #B98F6B;
+  --clay-soft: #F0E7DB;
+  --event-tint: #EFEBE3;
+  --event-accent: #908578;
+
+  /* Statut */
+  --status-error: #B5462B;
+
+  /* Overlay */
+  --overlay: rgb(42 40 37 / .32);
+
+  /* Palette de classes — défaut "doux" (surchargée par [data-palette]) */
+  --k1-tint: #E6EEF7; --k1-accent: #577FA8; --k1-deep: #3C5C7E;
+  --k2-tint: #E7EFE4; --k2-accent: #6E9A66; --k2-deep: #4F7349;
+  --k3-tint: #F8E9D9; --k3-accent: #C28A54; --k3-deep: #996A39;
+  --k4-tint: #EDE5F3; --k4-accent: #8A72B4; --k4-deep: #67518F;
+
+  /* Type */
+  --serif: "Instrument Serif", Georgia, serif;
+  --sans: "Hanken Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  /* Rayons (px : primitives visuelles) */
+  --r-sm: 8px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --r-xl: 26px;
+
+  /* Ombres (px) */
+  --shadow-card: 0 1px 2px rgb(42 40 37 / .04), 0 6px 18px rgb(42 40 37 / .05);
+  --shadow-pop: 0 8px 40px rgb(42 40 37 / .16);
+
+  --ease: cubic-bezier(.22, .61, .36, 1);
+
+  /* Espacement (rem : suit la préférence de taille du texte) */
+  --space-2xs: .25rem;
+  --space-xs: .5rem;
+  --space-sm: .75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2.5rem;
+
+  /* Largeur max du contenu (colonne app, centrée sur grand écran) */
+  --content-max-inline-size: 60rem;
+
+  /* Densité (surchargée par [data-density]) */
+  --card-padding: .9375rem 1rem .875rem;
+
+  /* Breakpoints (référence — les custom props ne marchent pas dans @media,
+     on duplique la valeur littérale dans chaque @media) :
+     --bp-sm: 600px · --bp-md: 720px · --bp-lg: 980px · --bp-xl: 1200px */
+}
+
+[data-palette="froid"] {
+  --k1-tint: #E4EDF5; --k1-accent: #577EA6; --k1-deep: #3C5B7C;
+  --k2-tint: #DFEEEA; --k2-accent: #549389; --k2-deep: #386B63;
+  --k3-tint: #E8EAF7; --k3-accent: #7681C2; --k3-deep: #535D97;
+  --k4-tint: #EDE4F2; --k4-accent: #8E73B0; --k4-deep: #675089;
+}
+
+[data-palette="chaud"] {
+  --k1-tint: #F7EAD9; --k1-accent: #C08A53; --k1-deep: #946739;
+  --k2-tint: #F4E8E2; --k2-accent: #BF8579; --k2-deep: #915D52;
+  --k3-tint: #F0EBDA; --k3-accent: #A0974F; --k3-deep: #766D36;
+  --k4-tint: #F2E3E7; --k4-accent: #B57E96; --k4-deep: #8A596F;
+}
+
+[data-density="compact"] { --card-padding: .6875rem .8125rem; }
+[data-density="confort"] { --card-padding: 1.1875rem 1.1875rem 1.0625rem; }

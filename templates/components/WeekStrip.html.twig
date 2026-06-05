@@ -1,0 +1,11 @@
+{% props days %}
+<nav class="weekstrip" aria-label="Navigation par jour">
+    {% for d in days %}
+        <a class="weekstrip__cell{{ d.isSelected ? ' weekstrip__cell--selected' }}{{ d.isToday ? ' weekstrip__cell--today' }}{{ d.isWeekend ? ' weekstrip__cell--weekend' }}"
+           href="{{ path('app_calendar_day', { date: d.date }) }}"
+           {{ d.isSelected ? 'aria-current="date"' }}>
+            <span class="weekstrip__dow">{{ d.dow }}</span>
+            <span class="weekstrip__num tnum">{{ d.num }}</span>
+        </a>
+    {% endfor %}
+</nav>

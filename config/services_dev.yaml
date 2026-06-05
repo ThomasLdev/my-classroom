@@ -1,0 +1,10 @@
+# Dev-only services. Foundry and DoctrineFixturesBundle are require-dev, so the
+# fixtures/factories/stories must NOT be registered in the prod container
+# (they are excluded from services.yaml). Here we re-enable them for dev.
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\DataFixtures\:
+        resource: '../src/DataFixtures/'

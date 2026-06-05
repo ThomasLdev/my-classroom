@@ -1,0 +1,43 @@
+# yaml-language-server: $schema=../vendor/symfony/dependency-injection/Loader/schema/services.schema.json
+
+# Hexagonal wiring. The Domain and Application layers stay framework-free:
+# they are excluded from auto-registration and bound to their adapters here.
+parameters:
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/Kernel.php'
+            - '../src/Shared/Domain/'
+            - '../src/Teaching/Domain/'
+            - '../src/Teaching/Application/'
+            - '../src/Teaching/Infrastructure/Doctrine/Entity/'
+            - '../src/Scheduling/Domain/'
+            - '../src/Scheduling/Infrastructure/Doctrine/Entity/'
+            # Dev-only (Foundry / fixtures): registered by their own bundles, kept out of prod container.
+            - '../src/Scheduling/Infrastructure/Factory/'
+            - '../src/Scheduling/Infrastructure/Story/'
+            - '../src/DataFixtures/'
+
+    # Ports → Adapters are bound with #[AsAlias] on each adapter (infra layer).
+    # Pure domain service, wired explicitly since the Domain dir is excluded.
+    App\Scheduling\Domain\OccurrenceCalculator: ~
+
+    # —— Use cases ————————————————————————————————————————————————————————
+    # Handlers stay framework-free (no #[AsMessageHandler]); they are tagged by
+    # convention: everything under Command/ goes on the command bus, everything
+    # under Query/ on the query bus. Two rules, not one line per handler.
+    App\Teaching\Application\Command\:
+        resource: '../src/Teaching/Application/Command/*/*Handler.php'
+        tags:
+            - { name: messenger.message_handler, bus: command.bus }
+
+    App\Teaching\Application\Query\:
+        resource: '../src/Teaching/Application/Query/*/*Handler.php'
+        tags:
+            - { name: messenger.message_handler, bus: query.bus }

@@ -1,0 +1,8 @@
+# Test-only services (same rationale as services_dev.yaml).
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\DataFixtures\:
+        resource: '../src/DataFixtures/'

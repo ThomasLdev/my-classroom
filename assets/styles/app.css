@@ -1,0 +1,17 @@
+/* Entrypoint CSS : ordre des layers + imports. */
+@layer reset, tokens, base, layout, components, utilities;
+
+@import "./reset.css" layer(reset);
+@import "./tokens.css" layer(tokens);
+@import "./base.css" layer(base);
+@import "./layout.css" layer(layout);
+@import "./utilities.css" layer(utilities);
+
+@import "./components/app-shell.css" layer(components);
+@import "./components/button.css" layer(components);
+@import "./components/dayhead.css" layer(components);
+@import "./components/weekstrip.css" layer(components);
+@import "./components/classchip.css" layer(components);
+@import "./components/session-card.css" layer(components);
+@import "./components/dayview.css" layer(components);
+@import "./transitions.css" layer(components);

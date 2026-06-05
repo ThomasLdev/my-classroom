@@ -1,0 +1,78 @@
+.session-card {
+  position: relative;
+  display: block;
+  padding: var(--card-padding);
+  background: var(--surface);
+  border: 1px solid var(--hairline-2);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+
+  & .session-card__bar {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    inline-size: 5px;
+    background: var(--c-accent, var(--line-strong));
+  }
+
+  & .session-card__top {
+    display: flex;
+    align-items: center;
+    gap: .625rem;
+    margin-bottom: .5625rem;
+  }
+
+  & .session-card__time {
+    margin-inline-start: auto;
+    font-size: .8125rem;
+    font-weight: 600;
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+
+  & .session-card__progress {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    margin-top: .6875rem;
+    font-size: .75rem;
+    font-weight: 600;
+    color: var(--ink-3);
+  }
+
+  & .session-card__progressbar {
+    flex: 1;
+    block-size: 5px;
+    border-radius: 999px;
+    background: var(--hairline);
+    overflow: hidden;
+  }
+  & .session-card__progressbar-fill {
+    display: block;
+    block-size: 100%;
+    border-radius: 999px;
+    background: var(--c-accent, var(--ink));
+    transition: inline-size .3s var(--ease);
+  }
+
+  & .session-card__empty {
+    margin-top: .625rem;
+    font-size: .8125rem;
+    color: var(--ink-3);
+  }
+
+  & .session-card__flag {
+    margin-top: .625rem;
+    font-size: .8125rem;
+    font-weight: 600;
+    color: var(--status-error);
+  }
+
+  /* Accent par classe */
+  &.session-card--k1 { --c-accent: var(--k1-accent); }
+  &.session-card--k2 { --c-accent: var(--k2-accent); }
+  &.session-card--k3 { --c-accent: var(--k3-accent); }
+  &.session-card--k4 { --c-accent: var(--k4-accent); }
+
+  &.session-card--cancelled { opacity: .6; }
+}

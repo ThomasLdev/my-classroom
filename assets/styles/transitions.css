@@ -1,0 +1,41 @@
+/* Transitions de page (View Transitions API, déclenchées par Turbo via la meta
+   view-transition). La direction est posée par transition_controller sur <html>.
+
+   Découpage par zone :
+   - root (chrome global, topbar) : figé, pas d'animation.
+   - dayhead + weekstrip : restent en place, simple fondu de mise à jour.
+   - day-content : glisse directionnellement (effet "carte qui swipe"). */
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+
+  ::view-transition-old(dayhead),
+  ::view-transition-new(dayhead),
+  ::view-transition-old(weekstrip),
+  ::view-transition-new(weekstrip) {
+    animation-duration: .2s;
+    animation-timing-function: var(--ease);
+  }
+
+  ::view-transition-old(day-content),
+  ::view-transition-new(day-content) {
+    animation-duration: .3s;
+    animation-timing-function: var(--ease);
+  }
+
+  /* Le slide est clippé à la largeur du conteneur : la carte ne traverse pas
+     l'écran, elle disparaît au bord de sa colonne. */
+  ::view-transition-group(day-content) { overflow: clip; }
+
+  html[data-transition="next"]::view-transition-old(day-content) { animation-name: vt-out-left; }
+  html[data-transition="next"]::view-transition-new(day-content) { animation-name: vt-in-right; }
+  html[data-transition="prev"]::view-transition-old(day-content) { animation-name: vt-out-right; }
+  html[data-transition="prev"]::view-transition-new(day-content) { animation-name: vt-in-left; }
+
+  @keyframes vt-out-left  { to   { transform: translateX(-100%); } }
+  @keyframes vt-in-right  { from { transform: translateX(100%); } }
+  @keyframes vt-out-right { to   { transform: translateX(100%); } }
+  @keyframes vt-in-left   { from { transform: translateX(-100%); } }
+}

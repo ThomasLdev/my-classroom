@@ -1,0 +1,25 @@
+{% props session, colorKey = 'k1' %}
+{% set total = session.activityCount %}
+{% set done = session.doneCount %}
+{% set pct = total > 0 ? (done / total * 100)|round : 0 %}
+<article class="session-card session-card--{{ colorKey }}{{ session.cancelled ? ' session-card--cancelled' }}" {{ attributes }}>
+    <span class="session-card__bar" aria-hidden="true"></span>
+
+    <div class="session-card__top">
+        <twig:ClassChip name="{{ session.classroomName }}" colorKey="{{ colorKey }}" />
+        <span class="session-card__time tnum">{{ session.start }}–{{ session.end }}</span>
+    </div>
+
+    {% if session.cancelled %}
+        <p class="session-card__flag">Séance annulée</p>
+    {% elseif total > 0 %}
+        <div class="session-card__progress">
+            <span class="session-card__progressbar">
+                <span class="session-card__progressbar-fill" style="inline-size: {{ pct }}%"></span>
+            </span>
+            <span class="tnum">{{ done }}/{{ total }} activités</span>
+        </div>
+    {% else %}
+        <p class="session-card__empty">Aucune activité prévue</p>
+    {% endif %}
+</article>

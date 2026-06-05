@@ -1,0 +1,56 @@
+[ 1280110ms] [LOG] This log comes from assets/app.js - welcome to AssetMapper! 🎉 @ https://localhost/assets/app-TNXHCQF.js:9
+[ 1280110ms] [LOG] details: {application: X} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1280111ms] [LOG] details: {application: X, identifier: transition, controller: t, element: body} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1280112ms] [LOG] details: {application: X, identifier: transition, controller: t, element: body} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1280112ms] [LOG] details: {application: X, identifier: swipe, controller: t, element: div.dayview} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1280113ms] [LOG] details: {application: X, identifier: swipe, controller: t, element: div.dayview} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1280113ms] [LOG] details: {application: X} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1287508ms] [LOG] This log comes from assets/app.js - welcome to AssetMapper! 🎉 @ https://localhost/assets/app-TNXHCQF.js:9
+[ 1287508ms] [LOG] details: {application: X} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1287508ms] [LOG] details: {application: X, identifier: transition, controller: t, element: body} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1287508ms] [LOG] details: {application: X, identifier: transition, controller: t, element: body} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1287508ms] [LOG] details: {application: X, identifier: swipe, controller: t, element: div.dayview} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1287509ms] [LOG] details: {application: X, identifier: swipe, controller: t, element: div.dayview} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1287509ms] [LOG] details: {application: X} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1290766ms] [LOG] details: {application: X, identifier: transition, controller: t, element: body} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1290767ms] [LOG] details: {application: X, identifier: swipe, controller: t, element: div.dayview} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1290767ms] [LOG] details: {application: X, identifier: transition, controller: t, element: body} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1290768ms] [LOG] details: {application: X, identifier: transition, controller: t, element: body} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1290768ms] [LOG] details: {application: X, identifier: swipe, controller: t, element: div.dayview} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1290768ms] [LOG] details: {application: X, identifier: swipe, controller: t, element: div.dayview} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1291532ms] [LOG] details: {application: X, identifier: transition, controller: t, element: body} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1291532ms] [LOG] details: {application: X, identifier: swipe, controller: t, element: div.dayview} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1291532ms] [LOG] details: {application: X, identifier: transition, controller: t, element: body} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1291533ms] [LOG] details: {application: X, identifier: transition, controller: t, element: body} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1291533ms] [LOG] details: {application: X, identifier: swipe, controller: t, element: div.dayview} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1291533ms] [LOG] details: {application: X, identifier: swipe, controller: t, element: div.dayview} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1292098ms] [LOG] details: {application: X, identifier: transition, controller: t, element: body} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1292098ms] [LOG] details: {application: X, identifier: swipe, controller: t, element: div.dayview} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1292098ms] [LOG] details: {application: X, identifier: transition, controller: t, element: body} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1292099ms] [LOG] details: {application: X, identifier: transition, controller: t, element: body} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1292099ms] [LOG] details: {application: X, identifier: swipe, controller: t, element: div.dayview} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1292099ms] [LOG] details: {application: X, identifier: swipe, controller: t, element: div.dayview} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1292987ms] [LOG] details: {application: X, identifier: transition, controller: t, element: body} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1292987ms] [LOG] details: {application: X, identifier: swipe, controller: t, element: div.dayview} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1292988ms] [LOG] details: {application: X, identifier: transition, controller: t, element: body} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1292988ms] [LOG] details: {application: X, identifier: transition, controller: t, element: body} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1292988ms] [LOG] details: {application: X, identifier: swipe, controller: t, element: div.dayview} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1292988ms] [LOG] details: {application: X, identifier: swipe, controller: t, element: div.dayview} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1293295ms] [LOG] details: {application: X, identifier: transition, controller: t, element: body} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1293295ms] [LOG] details: {application: X, identifier: swipe, controller: t, element: div.dayview} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1293296ms] [LOG] details: {application: X, identifier: transition, controller: t, element: body} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1293296ms] [LOG] details: {application: X, identifier: transition, controller: t, element: body} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1293296ms] [LOG] details: {application: X, identifier: swipe, controller: t, element: div.dayview} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1293296ms] [LOG] details: {application: X, identifier: swipe, controller: t, element: div.dayview} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1293398ms] [LOG] details: {application: X, identifier: transition, controller: t, element: body} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1293398ms] [LOG] details: {application: X, identifier: swipe, controller: t, element: div.dayview} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1293398ms] [LOG] details: {application: X, identifier: transition, controller: t, element: body} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1293399ms] [LOG] details: {application: X, identifier: transition, controller: t, element: body} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1293399ms] [LOG] details: {application: X, identifier: swipe, controller: t, element: div.dayview} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1293399ms] [LOG] details: {application: X, identifier: swipe, controller: t, element: div.dayview} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1293712ms] [LOG] details: {application: X, identifier: transition, controller: t, element: body} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1293712ms] [LOG] details: {application: X, identifier: swipe, controller: t, element: div.dayview} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1293712ms] [LOG] details: {application: X, identifier: transition, controller: t, element: body} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1293712ms] [LOG] details: {application: X, identifier: transition, controller: t, element: body} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1293712ms] [LOG] details: {application: X, identifier: swipe, controller: t, element: div.dayview} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6
+[ 1293713ms] [LOG] details: {application: X, identifier: swipe, controller: t, element: div.dayview} @ https://localhost/assets/vendor/@hotwired/stimulus/stimulus.index-S4zNcea.js:6

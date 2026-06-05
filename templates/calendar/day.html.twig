@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ header.dow }} {{ header.num }} {{ header.month }} — Ma classe{% endblock %}
+
+{% block body %}
+    <div class="dayview"
+         data-controller="swipe"
+         data-swipe-prev-url-value="{{ path('app_calendar_day', { date: prevDate }) }}"
+         data-swipe-next-url-value="{{ path('app_calendar_day', { date: nextDate }) }}">
+
+        <twig:DayHeader :header="header" prevDate="{{ prevDate }}" nextDate="{{ nextDate }}" />
+        <twig:WeekStrip :days="week" />
+
+        <div class="dayview__content">
+            {% if day.sessions is empty and day.events is empty %}
+                <div class="empty">
+                    <twig:ux:icon name="lucide:calendar" class="empty__icon" />
+                    <p>Pas de cours ni d'évènement ce jour-là.</p>
+                </div>
+            {% else %}
+                <div class="dayview__list">
+                    {% for s in day.sessions %}
+                        <twig:SessionCard :session="s" colorKey="{{ colorByClass[s.classroomName] }}" />
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

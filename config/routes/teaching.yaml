@@ -1,0 +1,3 @@
+teaching_http:
+    resource: ../../src/Teaching/Infrastructure/Http/
+    type: attribute

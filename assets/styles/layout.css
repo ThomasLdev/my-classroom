@@ -1,0 +1,22 @@
+/* Centre et borne le contenu sur une colonne uniforme (header + pages). */
+.wrap {
+  inline-size: 100%;
+  max-inline-size: var(--content-max-inline-size);
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+
+@media (min-width: 980px) {
+  .wrap { padding-inline: 2.5rem; }
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  min-block-size: 0;
+  padding-block-start: 1.125rem;
+}
+
+@media (min-width: 980px) {
+  .page { padding-block-start: 1.875rem; }
+}

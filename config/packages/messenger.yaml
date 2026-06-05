@@ -1,0 +1,17 @@
+framework:
+    messenger:
+        default_bus: command.bus
+
+        buses:
+            # Write side: each command runs inside a Doctrine transaction and is
+            # flushed once, at the boundary. Handlers never call flush themselves.
+            command.bus:
+                middleware:
+                    - doctrine_transaction
+            # Read side: queries return their handler's result.
+            query.bus: ~
+
+        transports:
+            sync: 'sync://'
+
+        routing: ~

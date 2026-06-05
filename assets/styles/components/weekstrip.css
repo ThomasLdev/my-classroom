@@ -1,0 +1,50 @@
+.weekstrip {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: .375rem;
+  margin-block: .875rem .375rem;
+  view-transition-name: weekstrip;
+
+  & .weekstrip__cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .3125rem;
+    padding: .5625rem 0 .5rem;
+    border: 1px solid transparent;
+    border-radius: var(--r-md);
+    color: var(--ink-2);
+    transition: background .15s, border-color .15s;
+  }
+  & .weekstrip__cell:hover { background: var(--surface); }
+
+  & .weekstrip__dow {
+    font-size: .6875rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+
+  & .weekstrip__num {
+    inline-size: 30px;
+    block-size: 30px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  & .weekstrip__cell--selected {
+    background: var(--surface);
+    border-color: var(--hairline-2);
+  }
+  & .weekstrip__cell--selected .weekstrip__num {
+    background: var(--ink);
+    color: var(--on-accent);
+  }
+
+  & .weekstrip__cell--today .weekstrip__dow { color: var(--clay); }
+  & .weekstrip__cell--weekend { opacity: .55; }
+}

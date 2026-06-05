@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr" data-palette="doux" data-density="aerated">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="view-transition" content="same-origin">
+        <title>{% block title %}Ma classe{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>📒</text></svg>">
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Instrument+Serif&display=swap" rel="stylesheet">
+
+        {% block stylesheets %}{% endblock %}
+
+        {% block javascripts %}
+            {% block importmap %}{{ importmap('app') }}{% endblock %}
+        {% endblock %}
+
+        {% set frankenphpHotReload = app.request.server.get('FRANKENPHP_HOT_RELOAD') %}
+        {% if frankenphpHotReload %}
+        <meta name="frankenphp-hot-reload:url" content="{{ frankenphpHotReload }}">
+        <script src="https://cdn.jsdelivr.net/npm/idiomorph"></script>
+        <script src="https://cdn.jsdelivr.net/npm/frankenphp-hot-reload/+esm" type="module"></script>
+        {% endif %}
+    </head>
+    <body data-controller="transition">
+        <div class="app">
+            <header class="topbar wrap">
+                <div class="topbar__title">
+                    <span class="topbar__brand">Ma classe</span>
+                    <span class="topbar__who">Calendrier</span>
+                </div>
+            </header>
+            <main class="app__main">
+                <div class="page wrap">
+                    {% block body %}{% endblock %}
+                </div>
+            </main>
+        </div>
+    </body>
+</html>
