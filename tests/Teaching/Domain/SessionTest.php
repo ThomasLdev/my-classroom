@@ -87,6 +87,26 @@ final class SessionTest extends TestCase
         $session->markActivityDone(ActivityId::fromString('ghost'));
     }
 
+    public function testRemovingAnActivityDropsItFromTheList(): void
+    {
+        $session = $this->materialize();
+        $session->addActivity(ActivityId::fromString('a-1'), 'Lire le chapitre');
+        $session->addActivity(ActivityId::fromString('a-2'), 'Corriger le DM');
+
+        $session->removeActivity(ActivityId::fromString('a-1'));
+
+        self::assertSame(1, $session->activityCount());
+        self::assertSame('a-2', (string) $session->activities[0]->id);
+    }
+
+    public function testRemovingAnUnknownActivityThrows(): void
+    {
+        $session = $this->materialize();
+
+        $this->expectException(ActivityNotFound::class);
+        $session->removeActivity(ActivityId::fromString('ghost'));
+    }
+
     public function testNoteIsTrimmedAndBlankCollapsesToNull(): void
     {
         $session = $this->materialize();

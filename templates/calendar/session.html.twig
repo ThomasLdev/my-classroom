@@ -4,6 +4,9 @@
 
 {% block body %}
     <turbo-frame id="sheet">
+    {% if refreshDay|default(false) %}
+        <div data-controller="signal" data-signal-event-value="session:changed" hidden></div>
+    {% endif %}
     <div class="detail">
         <header class="detail__hero"
                 data-action="pointerdown->sheet#startDrag pointermove->sheet#drag pointerup->sheet#endDrag pointercancel->sheet#endDrag">
@@ -38,6 +41,7 @@
             {{ form_end(uploadForm) }}
 
             <div class="section__head">
+                <twig:ux:icon name="lucide:paperclip" class="section__icon" />
                 <h2 class="section__title">Documents</h2>
                 {% if detail.documents|length > 0 %}<span class="section__count tnum">{{ detail.documents|length }}</span>{% endif %}
                 <span class="section__grow"></span>

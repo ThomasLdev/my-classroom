@@ -40,4 +40,14 @@ final class SetSessionNoteHandlerTest extends TestCase
 
         self::assertSame([], $this->sessions->all());
     }
+
+    public function testItClearsTheNoteWhenEmptiedOnAnExistingSession(): void
+    {
+        ($this->handler)(new SetSessionNote('slot-1', '2026-06-08', 'Un mot'));
+        self::assertSame('Un mot', $this->sessions->all()[0]->note);
+
+        // Wiping the textarea must drop the note, not keep an empty one.
+        ($this->handler)(new SetSessionNote('slot-1', '2026-06-08', '   '));
+        self::assertNull($this->sessions->all()[0]->note);
+    }
 }

@@ -6,10 +6,15 @@ namespace App\Tests\Teaching\Application;
 
 use App\Teaching\Application\Command\AddActivityToSession\AddActivityToSession;
 use App\Teaching\Application\Command\AddActivityToSession\AddActivityToSessionHandler;
+use App\Teaching\Application\Command\AttachDocumentToSession\AttachDocumentToSession;
+use App\Teaching\Application\Command\AttachDocumentToSession\AttachDocumentToSessionHandler;
+use App\Teaching\Application\Command\SetSessionNote\SetSessionNote;
+use App\Teaching\Application\Command\SetSessionNote\SetSessionNoteHandler;
 use App\Teaching\Application\Query\GetDayView\GetDayView;
 use App\Teaching\Application\Query\GetDayView\GetDayViewHandler;
 use App\Teaching\Application\Query\GetDayView\SessionViewFactory;
 use App\Tests\Support\InMemoryCalendarEventProvider;
+use App\Tests\Support\InMemoryDocumentStorage;
 use App\Tests\Support\InMemoryOccurrenceProvider;
 use App\Tests\Support\InMemorySessionRepository;
 use App\Tests\Support\OccurrenceMother;
@@ -31,6 +36,12 @@ final class GetDayViewHandlerTest extends TestCase
         $add(new AddActivityToSession('slot-am', '2026-06-08', 'Activité 2'));
         $sessions->all()[0]->activities[0]->markDone();
 
+        // ... plus a note and one attached document on the morning slot.
+        $setNote = new SetSessionNoteHandler($sessions, $occurrences, new SequentialIdGenerator('note'));
+        $setNote(new SetSessionNote('slot-am', '2026-06-08', 'Penser au manuel'));
+        $attach = new AttachDocumentToSessionHandler($sessions, $occurrences, new InMemoryDocumentStorage(), new SequentialIdGenerator('doc'));
+        $attach(new AttachDocumentToSession('slot-am', '2026-06-08', 'fiche.pdf', 1024, 'application/pdf', '/tmp/x'));
+
         $handler = new GetDayViewHandler($sessions, $occurrences, new InMemoryCalendarEventProvider(), new SessionViewFactory());
         $view = $handler(new GetDayView('2026-06-08'));
 
@@ -45,6 +56,8 @@ final class GetDayViewHandlerTest extends TestCase
         self::assertSame('214', $morning->room);
         self::assertSame(2, $morning->activityCount);
         self::assertSame(1, $morning->doneCount);
+        self::assertSame(1, $morning->documentCount);
+        self::assertTrue($morning->hasNote);
 
         $afternoon = $view->sessions[1];
         self::assertFalse($afternoon->materialized);
@@ -52,5 +65,7 @@ final class GetDayViewHandlerTest extends TestCase
         self::assertSame('Soutien', $afternoon->subject);
         self::assertNull($afternoon->room);
         self::assertSame(0, $afternoon->activityCount);
+        self::assertSame(0, $afternoon->documentCount);
+        self::assertFalse($afternoon->hasNote);
     }
 }

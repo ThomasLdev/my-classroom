@@ -206,6 +206,16 @@ final class Session
         $this->activityWith($id)->markNotDone();
     }
 
+    public function removeActivity(ActivityId $id): void
+    {
+        $this->activityWith($id);
+
+        $this->activities = array_values(array_filter(
+            $this->activities,
+            static fn (Activity $a): bool => !$a->id->equals($id),
+        ));
+    }
+
     public function endsAt(): \DateTimeImmutable
     {
         return $this->timeRange->endsOn($this->date);

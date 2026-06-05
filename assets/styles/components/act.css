@@ -12,6 +12,13 @@
   gap: .625rem;
   margin-block-end: .75rem;
 
+  & .section__icon {
+    flex: none;
+    inline-size: 18px;
+    block-size: 18px;
+    color: var(--ink-2);
+  }
+
   & .section__title {
     font-family: var(--sans);
     font-size: 1rem;
@@ -32,8 +39,36 @@
   display: flex;
   flex-direction: column;
   gap: .5625rem;
-    list-style: none;
-    padding-left: 0;
+  list-style: none;
+  padding-left: 0;
+}
+
+/* Swipe-to-delete row: the red action sits behind, the .act surface slides over it. */
+.act-swipe {
+  position: relative;
+  border-radius: var(--r-md);
+  overflow: hidden;
+  touch-action: pan-y;
+
+  & .act-swipe__action {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-inline-end: 1.125rem;
+    background: var(--status-error);
+    color: #fff;
+  }
+  &.is-armed .act-swipe__action { background: color-mix(in oklab, var(--status-error), black 12%); }
+  & .act-swipe__action-icon { inline-size: 20px; block-size: 20px; }
+
+  & .act {
+    position: relative;
+    z-index: 1;
+    touch-action: pan-y;
+    transition: border-color .15s var(--ease), transform .2s var(--ease);
+  }
 }
 
 .act {

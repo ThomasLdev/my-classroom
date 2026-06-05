@@ -9,6 +9,21 @@
 
     <div class="session-card__top">
         <twig:ClassChip name="{{ session.classroomName }}" />
+        {% if session.documentCount > 0 or session.hasNote %}
+            <span class="session-card__indicators">
+                {% if session.documentCount > 0 %}
+                    <span class="session-card__indicator">
+                        <twig:ux:icon name="lucide:paperclip" class="session-card__indicator-icon" />
+                        <span class="tnum">{{ session.documentCount }}</span>
+                    </span>
+                {% endif %}
+                {% if session.hasNote %}
+                    <span class="session-card__indicator" title="Note de séance">
+                        <twig:ux:icon name="lucide:sticky-note" class="session-card__indicator-icon" />
+                    </span>
+                {% endif %}
+            </span>
+        {% endif %}
         <span class="session-card__time tnum">{{ session.start }}–{{ session.end }}</span>
     </div>
 

@@ -7,6 +7,7 @@ namespace App\Teaching\Infrastructure\Http\Component;
 use App\Teaching\Application\Command\AddActivityToSession\AddActivityToSession;
 use App\Teaching\Application\Command\MarkActivityDone\MarkActivityDone;
 use App\Teaching\Application\Command\MarkActivityNotDone\MarkActivityNotDone;
+use App\Teaching\Application\Command\RemoveActivityFromSession\RemoveActivityFromSession;
 use App\Teaching\Application\Command\SetSessionNote\SetSessionNote;
 use App\Teaching\Application\Query\GetSessionDetail\GetSessionDetail;
 use App\Teaching\Application\Query\GetSessionDetail\SessionDetailView;
@@ -17,12 +18,13 @@ use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\Attribute\LiveAction;
 use Symfony\UX\LiveComponent\Attribute\LiveArg;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
+use Symfony\UX\LiveComponent\ComponentToolsTrait;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
-use Symfony\UX\LiveComponent\LiveResponder;
 
 #[AsLiveComponent]
 final class SessionBoard
 {
+    use ComponentToolsTrait;
     use DefaultActionTrait;
     use HandleTrait;
 
@@ -62,14 +64,19 @@ final class SessionBoard
         return $this->detail ??= $this->handle(new GetSessionDetail($this->slotId, $this->date));
     }
 
-    public function onNoteUpdated(): void
+    public function onNoteUpdated(string $previousValue): void
     {
         $this->commandBus->dispatch(new SetSessionNote($this->slotId, $this->date, $this->note));
         $this->detail = null;
+
+        // Refresh the day card only when the note's presence flips (its indicator changes).
+        if ((trim($previousValue) === '') !== (trim($this->note) === '')) {
+            $this->dispatchBrowserEvent('session:changed');
+        }
     }
 
     #[LiveAction]
-    public function addActivity(LiveResponder $live): void
+    public function addActivity(): void
     {
         $title = trim($this->newTitle);
         if ($title === '') {
@@ -79,22 +86,30 @@ final class SessionBoard
         $this->commandBus->dispatch(new AddActivityToSession($this->slotId, $this->date, $title));
         $this->newTitle = '';
         $this->detail = null;
-        $live->dispatchBrowserEvent('session:changed');
+        $this->dispatchBrowserEvent('session:changed');
     }
 
     #[LiveAction]
-    public function markDone(#[LiveArg] string $activityId, LiveResponder $live): void
+    public function markDone(#[LiveArg] string $activityId): void
     {
         $this->commandBus->dispatch(new MarkActivityDone($this->slotId, $this->date, $activityId));
         $this->detail = null;
-        $live->dispatchBrowserEvent('session:changed');
+        $this->dispatchBrowserEvent('session:changed');
     }
 
     #[LiveAction]
-    public function markNotDone(#[LiveArg] string $activityId, LiveResponder $live): void
+    public function markNotDone(#[LiveArg] string $activityId): void
     {
         $this->commandBus->dispatch(new MarkActivityNotDone($this->slotId, $this->date, $activityId));
         $this->detail = null;
-        $live->dispatchBrowserEvent('session:changed');
+        $this->dispatchBrowserEvent('session:changed');
+    }
+
+    #[LiveAction]
+    public function deleteActivity(#[LiveArg] string $activityId): void
+    {
+        $this->commandBus->dispatch(new RemoveActivityFromSession($this->slotId, $this->date, $activityId));
+        $this->detail = null;
+        $this->dispatchBrowserEvent('session:changed');
     }
 }

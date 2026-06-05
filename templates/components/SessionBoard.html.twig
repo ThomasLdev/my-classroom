@@ -5,6 +5,7 @@
 
     <section class="section">
         <div class="section__head">
+            <twig:ux:icon name="lucide:list-checks" class="section__icon" />
             <h2 class="section__title">Activités</h2>
             {% if total > 0 %}<span class="section__count tnum">{{ done }}/{{ total }} terminées</span>{% endif %}
         </div>
@@ -12,16 +13,26 @@
         {% if total > 0 %}
             <ul class="act-list">
                 {% for a in detail.activities %}
-                    <li>
+                    <li class="act-swipe" data-controller="swipe-delete"
+                        data-action="pointerdown->swipe-delete#start pointermove->swipe-delete#move pointerup->swipe-delete#end pointercancel->swipe-delete#end">
+                        <span class="act-swipe__action" aria-hidden="true">
+                            <twig:ux:icon name="lucide:trash-2" class="act-swipe__action-icon" />
+                        </span>
                         <button type="button" class="act{{ a.done ? ' act--done' }}"
+                                data-swipe-delete-target="surface"
                                 aria-pressed="{{ a.done ? 'true' : 'false' }}"
-                                data-action="live#action"
+                                data-action="click->swipe-delete#tap live#action"
                                 data-live-action-param="{{ a.done ? 'markNotDone' : 'markDone' }}"
                                 data-live-activity-id-param="{{ a.id }}">
                             <span class="act__box"><twig:ux:icon name="lucide:check" class="act__check-icon" /></span>
                             <span class="act__title">{{ a.title }}</span>
                             {% if a.carriedOver %}<span class="act__flag">reporté</span>{% endif %}
                         </button>
+                        <button type="button" hidden
+                                data-swipe-delete-target="trigger"
+                                data-action="live#action"
+                                data-live-action-param="deleteActivity"
+                                data-live-activity-id-param="{{ a.id }}"></button>
                     </li>
                 {% endfor %}
             </ul>
@@ -40,6 +51,7 @@
 
     <section class="section">
         <div class="section__head">
+            <twig:ux:icon name="lucide:sticky-note" class="section__icon" />
             <h2 class="section__title">Notes de séance</h2>
         </div>
         <textarea class="notearea" data-model="debounce(600)|note"

@@ -17,6 +17,8 @@ final readonly class SessionView
         public string $end,
         public int $activityCount,
         public int $doneCount,
+        public int $documentCount,
+        public bool $hasNote,
         public bool $cancelled,
         public bool $materialized,
     ) {

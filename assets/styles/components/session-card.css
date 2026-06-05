@@ -101,6 +101,17 @@
     color: var(--status-error);
   }
 
+  & .session-card__indicators {
+    display: inline-flex;
+    align-items: center;
+    gap: .625rem;
+    font-size: .75rem;
+    font-weight: 600;
+    color: var(--ink-3);
+  }
+  & .session-card__indicator { display: inline-flex; align-items: center; gap: .25rem; }
+  & .session-card__indicator-icon { inline-size: 14px; block-size: 14px; }
+
   &.session-card--k1 { --c-accent: var(--k1-accent); }
   &.session-card--k2 { --c-accent: var(--k2-accent); }
   &.session-card--k3 { --c-accent: var(--k3-accent); }

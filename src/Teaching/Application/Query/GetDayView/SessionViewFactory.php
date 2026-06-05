@@ -21,6 +21,8 @@ final class SessionViewFactory
             end: $occurrence->timeRange->endLabel(),
             activityCount: $session?->activityCount() ?? 0,
             doneCount: $session?->doneCount() ?? 0,
+            documentCount: $session?->documentCount() ?? 0,
+            hasNote: $session?->note !== null,
             cancelled: $session?->cancelled ?? false,
             materialized: $session !== null,
         );

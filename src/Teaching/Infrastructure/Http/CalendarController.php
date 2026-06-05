@@ -34,16 +34,13 @@ final class CalendarController extends AbstractController
 {
     use HandleTrait;
 
-    private const array DOW = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
-    private const array DOW_SHORT = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
-    private const array MONTHS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
-
     private const int MAX_UPLOAD_BYTES = 15 * 1024 * 1024;
 
     public function __construct(
         #[Autowire(service: 'query.bus')] MessageBusInterface $queryBus,
         #[Autowire(service: 'command.bus')] private readonly MessageBusInterface $commandBus,
         private readonly DocumentStorage $storage,
+        private readonly CalendarPresenter $presenter,
     ) {
         $this->messageBus = $queryBus;
     }
@@ -75,42 +72,17 @@ final class CalendarController extends AbstractController
             ];
         }
 
-        $monday = $selected->modify('monday this week');
-        $week = [];
-        foreach (new \DatePeriod($monday, new \DateInterval('P1D'), $monday->modify('+7 days')) as $cursor) {
-            $weekday = (int) $cursor->format('N');
-            $key = $cursor->format('Y-m-d');
-            $week[] = [
-                'date' => $key,
-                'dow' => self::DOW_SHORT[$weekday - 1],
-                'num' => (int) $cursor->format('j'),
-                'isSelected' => $key === $selected->format('Y-m-d'),
-                'isToday' => $key === $today->format('Y-m-d'),
-                'isWeekend' => $weekday >= 6,
-                'dots' => $dotsByDate[$key]['count'] ?? 0,
-                'hasEvent' => $dotsByDate[$key]['hasEvent'] ?? false,
-            ];
-        }
-
-        $weekday = (int) $selected->format('N');
-
         return $this->render('calendar/day.html.twig', [
             'day' => $day,
-            'header' => [
-                'dow' => self::DOW[$weekday - 1],
-                'num' => (int) $selected->format('j'),
-                'month' => self::MONTHS[(int) $selected->format('n') - 1],
-                'year' => (int) $selected->format('Y'),
-                'isToday' => $selected->format('Y-m-d') === $today->format('Y-m-d'),
-            ],
-            'week' => $week,
+            'header' => $this->presenter->header($selected, $today),
+            'week' => $this->presenter->week($selected, $today, $dotsByDate),
             'prevDate' => $selected->modify('-1 day')->format('Y-m-d'),
             'nextDate' => $selected->modify('+1 day')->format('Y-m-d'),
         ]);
     }
 
     #[Route('/calendar/{date}/session/{slotId}', name: 'app_session_detail', requirements: ['date' => '\d{4}-\d{2}-\d{2}'], methods: ['GET'])]
-    public function session(string $date, string $slotId): Response
+    public function session(string $date, string $slotId, Request $request): Response
     {
         try {
             /** @var SessionDetailView $detail */
@@ -120,7 +92,6 @@ final class CalendarController extends AbstractController
         }
 
         $selected = \DateTimeImmutable::createFromFormat('!Y-m-d', $date) ?: new \DateTimeImmutable('today');
-        $weekday = (int) $selected->format('N');
 
         $uploadForm = $this->createForm(AttachDocumentType::class, null, [
             'action' => $this->generateUrl('app_session_document_add', ['date' => $date, 'slotId' => $slotId]),
@@ -137,15 +108,12 @@ final class CalendarController extends AbstractController
 
         return $this->render('calendar/session.html.twig', [
             'detail' => $detail,
-            'header' => [
-                'dow' => self::DOW[$weekday - 1],
-                'num' => (int) $selected->format('j'),
-                'month' => self::MONTHS[(int) $selected->format('n') - 1],
-                'year' => (int) $selected->format('Y'),
-            ],
+            'header' => $this->presenter->header($selected, new \DateTimeImmutable('today')),
             'backDate' => $date,
             'uploadForm' => $uploadForm->createView(),
             'deleteForms' => $deleteForms,
+            // Set after a document mutation so the day cards (their doc indicator) refresh.
+            'refreshDay' => $request->query->getBoolean('refreshDay'),
         ]);
     }
 
@@ -174,7 +142,7 @@ final class CalendarController extends AbstractController
             }
         }
 
-        return $this->redirectToRoute('app_session_detail', ['date' => $date, 'slotId' => $slotId]);
+        return $this->redirectToRoute('app_session_detail', ['date' => $date, 'slotId' => $slotId, 'refreshDay' => 1]);
     }
 
     #[Route('/calendar/{date}/session/{slotId}/document/{documentId}', name: 'app_session_document_remove', requirements: ['date' => '\d{4}-\d{2}-\d{2}'], methods: ['POST'])]
@@ -187,7 +155,7 @@ final class CalendarController extends AbstractController
             $this->commandBus->dispatch(new RemoveDocumentFromSession($slotId, $date, $documentId));
         }
 
-        return $this->redirectToRoute('app_session_detail', ['date' => $date, 'slotId' => $slotId]);
+        return $this->redirectToRoute('app_session_detail', ['date' => $date, 'slotId' => $slotId, 'refreshDay' => 1]);
     }
 
     #[Route('/calendar/{date}/session/{slotId}/document/{documentId}/download', name: 'app_session_document_download', requirements: ['date' => '\d{4}-\d{2}-\d{2}'], methods: ['GET'])]
