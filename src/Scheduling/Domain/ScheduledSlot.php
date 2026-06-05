@@ -17,6 +17,8 @@ final readonly class ScheduledSlot
         public string $classroomName,
         public DayOfWeek $dayOfWeek,
         public TimeRange $timeRange,
+        public string $subject,
+        public ?string $room = null,
         public ?\DateTimeImmutable $validFrom = null,
         public ?\DateTimeImmutable $validTo = null,
     ) {
@@ -45,6 +47,8 @@ final readonly class ScheduledSlot
             $date->setTime(0, 0),
             $this->timeRange,
             $this->classroomName,
+            $this->subject,
+            $this->room,
         );
     }
 }

@@ -21,6 +21,8 @@ final class OccurrenceMother
         string $start,
         string $end,
         string $classroomName = '5e B',
+        string $subject = 'Français',
+        ?string $room = '214',
     ): Occurrence {
         return new Occurrence(
             SlotId::fromString($slotId),
@@ -28,6 +30,8 @@ final class OccurrenceMother
             new \DateTimeImmutable($date.' 00:00:00'),
             TimeRange::fromLabels($start, $end),
             $classroomName,
+            $subject,
+            $room,
         );
     }
 }

@@ -15,6 +15,8 @@ final readonly class Occurrence
         public \DateTimeImmutable $date,
         public TimeRange $timeRange,
         public string $classroomName,
+        public string $subject,
+        public ?string $room = null,
     ) {
     }
 }

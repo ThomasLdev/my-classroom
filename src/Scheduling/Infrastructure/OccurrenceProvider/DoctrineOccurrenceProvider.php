@@ -19,6 +19,11 @@ use Symfony\Component\DependencyInjection\Attribute\AsAlias;
 #[AsAlias(OccurrenceProvider::class)]
 final class DoctrineOccurrenceProvider implements OccurrenceProvider
 {
+    /**
+     * @var list<ScheduledSlot>|null
+     */
+    private ?array $slots = null;
+
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly OccurrenceCalculator $calculator,
@@ -45,6 +50,14 @@ final class DoctrineOccurrenceProvider implements OccurrenceProvider
      */
     private function loadSlots(): array
     {
+        return $this->slots ??= $this->fetchSlots();
+    }
+
+    /**
+     * @return list<ScheduledSlot>
+     */
+    private function fetchSlots(): array
+    {
         $rows = $this->em->getRepository(TimetableSlotEntity::class)
             ->createQueryBuilder('s')
             ->addSelect('c')
@@ -59,6 +72,8 @@ final class DoctrineOccurrenceProvider implements OccurrenceProvider
                 $e->classroom->name,
                 DayOfWeek::from($e->dayOfWeek),
                 new TimeRange($e->startMinute, $e->endMinute),
+                $e->subject,
+                $e->room,
                 $e->validFrom,
                 $e->validTo,
             ),

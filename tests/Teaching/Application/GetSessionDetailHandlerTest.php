@@ -30,7 +30,7 @@ final class GetSessionDetailHandlerTest extends TestCase
 
     public function testItReturnsTheMaterialisedSessionWithItsActivities(): void
     {
-        $this->occurrences->add(OccurrenceMother::create('slot-1', 'class-1', '2026-06-08', '09:00', '10:00', '5e B'));
+        $this->occurrences->add(OccurrenceMother::create('slot-1', 'class-1', '2026-06-08', '09:00', '10:00', '5e B', 'Français', '214'));
 
         $add = new AddActivityToSessionHandler($this->sessions, $this->occurrences, new SequentialIdGenerator('gen'));
         $add(new AddActivityToSession('slot-1', '2026-06-08', 'Activité 1'));
@@ -43,6 +43,8 @@ final class GetSessionDetailHandlerTest extends TestCase
 
         self::assertTrue($view->materialized);
         self::assertSame('5e B', $view->classroomName);
+        self::assertSame('Français', $view->subject);
+        self::assertSame('214', $view->room);
         self::assertSame('09:00', $view->start);
         self::assertCount(2, $view->activities);
         self::assertSame('Activité 1', $view->activities[0]->title);

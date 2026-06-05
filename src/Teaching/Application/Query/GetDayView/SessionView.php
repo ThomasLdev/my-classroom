@@ -11,6 +11,8 @@ final readonly class SessionView
         public string $slotId,
         public ?string $sessionId,
         public string $classroomName,
+        public string $subject,
+        public ?string $room,
         public string $start,
         public string $end,
         public int $activityCount,

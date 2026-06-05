@@ -21,7 +21,7 @@
                 {% else %}
                     <div class="dayview__list">
                         {% for s in day.sessions %}
-                            <twig:SessionCard :session="s" colorKey="{{ colorByClass[s.classroomName] }}" date="{{ day.date }}" />
+                            <twig:SessionCard :session="s" date="{{ day.date }}" />
                         {% endfor %}
                     </div>
                 {% endif %}

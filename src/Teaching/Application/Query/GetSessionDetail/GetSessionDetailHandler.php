@@ -47,6 +47,8 @@ final readonly class GetSessionDetailHandler
             slotId: (string) $occurrence->slotId,
             date: $date->format('Y-m-d'),
             classroomName: $occurrence->classroomName,
+            subject: $occurrence->subject,
+            room: $occurrence->room,
             start: $occurrence->timeRange->startLabel(),
             end: $occurrence->timeRange->endLabel(),
             materialized: $session !== null,

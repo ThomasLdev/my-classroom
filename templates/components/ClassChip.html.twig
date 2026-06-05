@@ -1,4 +1,4 @@
-{% props name, colorKey = 'k1' %}
-<span class="classchip classchip--{{ colorKey }}" {{ attributes }}>
+{% props name, colorKey = null %}
+<span class="classchip{{ colorKey ? ' classchip--' ~ colorKey }}" {{ attributes }}>
     <span class="classchip__dot" aria-hidden="true"></span>{{ name }}
 </span>

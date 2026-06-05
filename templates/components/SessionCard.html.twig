@@ -1,16 +1,21 @@
-{% props session, colorKey = 'k1', date %}
+{% props session, date %}
 {% set total = session.activityCount %}
 {% set done = session.doneCount %}
 {% set pct = total > 0 ? (done / total * 100)|round : 0 %}
-<a class="session-card session-card--{{ colorKey }}{{ session.cancelled ? ' session-card--cancelled' }}"
+<a class="session-card{{ session.cancelled ? ' session-card--cancelled' }}"
    href="{{ path('app_session_detail', { date: date, slotId: session.slotId }) }}"
    data-turbo-frame="sheet" {{ attributes }}>
     <span class="session-card__bar" aria-hidden="true"></span>
 
     <div class="session-card__top">
-        <twig:ClassChip name="{{ session.classroomName }}" colorKey="{{ colorKey }}" />
+        <twig:ClassChip name="{{ session.classroomName }}" />
         <span class="session-card__time tnum">{{ session.start }}–{{ session.end }}</span>
     </div>
+
+    <p class="session-card__meta">
+        <span class="session-card__subject">{{ session.subject }}</span>
+        {% if session.room %}<span class="session-card__room">Salle {{ session.room }}</span>{% endif %}
+    </p>
 
     {% if session.cancelled %}
         <p class="session-card__flag">Séance annulée</p>

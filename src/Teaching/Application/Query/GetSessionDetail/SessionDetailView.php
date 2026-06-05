@@ -13,6 +13,8 @@ final readonly class SessionDetailView
         public string $slotId,
         public string $date,
         public string $classroomName,
+        public string $subject,
+        public ?string $room,
         public string $start,
         public string $end,
         public bool $materialized,

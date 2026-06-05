@@ -75,6 +75,7 @@ final class OccurrenceCalculatorTest extends TestCase
             '5e B',
             $day,
             TimeRange::fromLabels($start, $end),
+            'Français',
         );
     }
 }

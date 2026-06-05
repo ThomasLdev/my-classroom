@@ -21,8 +21,8 @@ final class GetDayViewHandlerTest extends TestCase
     {
         $sessions = new InMemorySessionRepository();
         $occurrences = new InMemoryOccurrenceProvider();
-        $occurrences->add(OccurrenceMother::create('slot-am', 'class-1', '2026-06-08', '09:00', '10:00', '5e B'));
-        $occurrences->add(OccurrenceMother::create('slot-pm', 'class-2', '2026-06-08', '14:00', '15:00', '4e A'));
+        $occurrences->add(OccurrenceMother::create('slot-am', 'class-1', '2026-06-08', '09:00', '10:00', '5e B', 'Français', '214'));
+        $occurrences->add(OccurrenceMother::create('slot-pm', 'class-2', '2026-06-08', '14:00', '15:00', '4e A', 'Soutien', null));
 
         // Materialise only the morning slot with two activities, one done.
         $add = new AddActivityToSessionHandler($sessions, $occurrences, new SequentialIdGenerator('gen'));
@@ -40,12 +40,16 @@ final class GetDayViewHandlerTest extends TestCase
         $morning = $view->sessions[0];
         self::assertTrue($morning->materialized);
         self::assertSame('09:00', $morning->start);
+        self::assertSame('Français', $morning->subject);
+        self::assertSame('214', $morning->room);
         self::assertSame(2, $morning->activityCount);
         self::assertSame(1, $morning->doneCount);
 
         $afternoon = $view->sessions[1];
         self::assertFalse($afternoon->materialized);
         self::assertNull($afternoon->sessionId);
+        self::assertSame('Soutien', $afternoon->subject);
+        self::assertNull($afternoon->room);
         self::assertSame(0, $afternoon->activityCount);
     }
 }

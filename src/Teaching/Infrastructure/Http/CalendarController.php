@@ -8,6 +8,8 @@ use App\Teaching\Application\Query\GetDayView\DayView;
 use App\Teaching\Application\Query\GetDayView\GetDayView;
 use App\Teaching\Application\Query\GetSessionDetail\GetSessionDetail;
 use App\Teaching\Application\Query\GetSessionDetail\SessionDetailView;
+use App\Teaching\Application\Query\GetWeek\GetWeek;
+use App\Teaching\Application\Query\GetWeek\WeekView;
 use App\Teaching\Domain\Exception\SlotNotScheduled;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -47,10 +49,14 @@ final class CalendarController extends AbstractController
         /** @var DayView $day */
         $day = $this->handle(new GetDayView($selected->format('Y-m-d')));
 
-        // Stable pastel key per classroom (no color in the domain yet).
-        $colorByClass = [];
-        foreach ($day->sessions as $session) {
-            $colorByClass[$session->classroomName] ??= 'k'.(crc32($session->classroomName) % 4 + 1);
+        /** @var WeekView $weekView */
+        $weekView = $this->handle(new GetWeek($selected->format('Y-m-d')));
+        $dotsByDate = [];
+        foreach ($weekView->days as $weekDay) {
+            $dotsByDate[$weekDay->date] = [
+                'count' => count($weekDay->classroomNames),
+                'hasEvent' => $weekDay->hasEvent,
+            ];
         }
 
         $monday = $selected->modify('monday this week');
@@ -58,13 +64,16 @@ final class CalendarController extends AbstractController
         for ($i = 0; $i < 7; ++$i) {
             $cursor = $monday->modify(sprintf('+%d days', $i));
             $weekday = (int) $cursor->format('N');
+            $key = $cursor->format('Y-m-d');
             $week[] = [
-                'date' => $cursor->format('Y-m-d'),
+                'date' => $key,
                 'dow' => self::DOW_SHORT[$weekday - 1],
                 'num' => (int) $cursor->format('j'),
-                'isSelected' => $cursor->format('Y-m-d') === $selected->format('Y-m-d'),
-                'isToday' => $cursor->format('Y-m-d') === $today->format('Y-m-d'),
+                'isSelected' => $key === $selected->format('Y-m-d'),
+                'isToday' => $key === $today->format('Y-m-d'),
                 'isWeekend' => $weekday >= 6,
+                'dots' => $dotsByDate[$key]['count'] ?? 0,
+                'hasEvent' => $dotsByDate[$key]['hasEvent'] ?? false,
             ];
         }
 
@@ -80,7 +89,6 @@ final class CalendarController extends AbstractController
                 'isToday' => $selected->format('Y-m-d') === $today->format('Y-m-d'),
             ],
             'week' => $week,
-            'colorByClass' => $colorByClass,
             'prevDate' => $selected->modify('-1 day')->format('Y-m-d'),
             'nextDate' => $selected->modify('+1 day')->format('Y-m-d'),
         ]);

@@ -6,6 +6,12 @@
            {{ d.isSelected ? 'aria-current="date"' }}>
             <span class="weekstrip__dow">{{ d.dow }}</span>
             <span class="weekstrip__num tnum">{{ d.num }}</span>
+            <span class="weekstrip__dots" aria-hidden="true">
+                {% if d.dots > 0 %}
+                    {% for i in 1..min(d.dots, 4) %}<i class="weekstrip__dot"></i>{% endfor %}
+                {% endif %}
+                {% if d.hasEvent %}<i class="weekstrip__dot weekstrip__dot--event"></i>{% endif %}
+            </span>
         </a>
     {% endfor %}
 </nav>

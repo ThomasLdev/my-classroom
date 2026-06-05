@@ -29,6 +29,8 @@ final readonly class GetDayViewHandler
                 slotId: (string) $occurrence->slotId,
                 sessionId: $session !== null ? (string) $session->id : null,
                 classroomName: $occurrence->classroomName,
+                subject: $occurrence->subject,
+                room: $occurrence->room,
                 start: $occurrence->timeRange->startLabel(),
                 end: $occurrence->timeRange->endLabel(),
                 activityCount: $session?->activityCount() ?? 0,

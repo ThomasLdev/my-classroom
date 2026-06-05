@@ -28,6 +28,12 @@ class TimetableSlotEntity
     #[ORM\Column(name: 'end_minute', type: Types::INTEGER)]
     public int $endMinute;
 
+    #[ORM\Column(length: 80)]
+    public string $subject;
+
+    #[ORM\Column(length: 40, nullable: true)]
+    public ?string $room = null;
+
     #[ORM\Column(name: 'valid_from', type: Types::DATE_IMMUTABLE, nullable: true)]
     public ?\DateTimeImmutable $validFrom = null;
 

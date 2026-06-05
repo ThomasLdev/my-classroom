@@ -51,6 +51,7 @@ final class DoctrineSessionRepositoryTest extends KernelTestCase
                 new \DateTimeImmutable('2026-06-08'),
                 TimeRange::fromLabels('09:00', '10:00'),
                 '5e B',
+                'Français',
             ),
         );
         $session->addActivity(ActivityId::fromString((string) Uuid::v7()), 'À finir');
@@ -81,6 +82,7 @@ final class DoctrineSessionRepositoryTest extends KernelTestCase
                 new \DateTimeImmutable('2026-06-09'),
                 TimeRange::fromLabels('10:00', '11:00'),
                 '4e A',
+                'Soutien',
             ),
         );
         $session->addActivity(ActivityId::fromString((string) Uuid::v7()), 'Tâche A');

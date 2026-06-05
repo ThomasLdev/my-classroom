@@ -47,4 +47,17 @@
 
   & .weekstrip__cell--today .weekstrip__dow { color: var(--clay); }
   & .weekstrip__cell--weekend { opacity: .55; }
+
+  & .weekstrip__dots {
+    display: flex;
+    gap: 3px;
+    block-size: 6px;
+  }
+  & .weekstrip__dot {
+    inline-size: 5px;
+    block-size: 5px;
+    border-radius: 50%;
+    background: var(--ink-3);
+  }
+  & .weekstrip__dot--event { background: var(--clay); }
 }

@@ -1,4 +1,6 @@
 .session-card {
+  /* Neutral default; per-class colours come from the user later (session-card--kN). */
+  --c-accent: var(--ink-2);
   position: relative;
   display: block;
   padding: var(--card-padding);
@@ -31,6 +33,33 @@
     font-weight: 600;
     color: var(--ink-2);
     white-space: nowrap;
+  }
+
+  & .session-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem;
+    font-size: .8125rem;
+    font-weight: 500;
+    color: var(--ink-2);
+  }
+  & .session-card__subject { font-weight: 600; }
+  & .session-card__room {
+    position: relative;
+    padding-inline-start: .625rem;
+    color: var(--ink-3);
+  }
+  & .session-card__room::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block: 0;
+    margin-block: auto;
+    inline-size: 3px;
+    block-size: 3px;
+    border-radius: 50%;
+    background: var(--ink-3);
   }
 
   & .session-card__progress {
