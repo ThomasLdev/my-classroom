@@ -17,7 +17,10 @@ services:
       #- /app/vendor
     environment:
       FRANKENPHP_WORKER_CONFIG: watch
-      FRANKENPHP_SITE_CONFIG: hot_reload
+      # hot_reload désactivé : il morphe le DOM live (idiomorph + SSE Mercure) et
+      # peut "stranded" le <dialog> ouvert -> page bloquée. `watch` recharge le
+      # code côté worker ; on rafraîchit le navigateur à la main.
+      # FRANKENPHP_SITE_CONFIG: hot_reload
       MERCURE_EXTRA_DIRECTIVES: demo
       # See https://xdebug.org/docs/all_settings#mode
       XDEBUG_MODE: "${XDEBUG_MODE:-develop}"
