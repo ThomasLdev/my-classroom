@@ -6,6 +6,9 @@
   border: 1px solid var(--hairline-2);
   border-radius: var(--r-lg);
   overflow: hidden;
+  transition: box-shadow .18s var(--ease);
+
+  &:hover { box-shadow: var(--shadow-card); }
 
   & .session-card__bar {
     position: absolute;

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Teaching\Domain;
 
+use App\Teaching\Domain\Exception\ActivityNotFound;
 use App\Teaching\Domain\Model\Session\ActivityId;
 use App\Teaching\Domain\Model\Session\Session;
 use App\Teaching\Domain\Model\Session\SessionId;
@@ -59,6 +60,29 @@ final class SessionTest extends TestCase
         self::assertTrue($carried->isPlanned());
         self::assertNotNull($carried->carriedOverFrom);
         self::assertSame('a-1', (string) $carried->carriedOverFrom);
+    }
+
+    public function testMarkingAnActivityDoneThenBackToNotDone(): void
+    {
+        $session = $this->materialize();
+        $activity = $session->addActivity(ActivityId::fromString('a-1'), 'Corriger le DM');
+        self::assertTrue($activity->isPlanned());
+
+        $session->markActivityDone(ActivityId::fromString('a-1'));
+        self::assertFalse($activity->isPlanned());
+        self::assertSame(1, $session->doneCount());
+
+        $session->markActivityNotDone(ActivityId::fromString('a-1'));
+        self::assertTrue($activity->isPlanned());
+        self::assertSame(0, $session->doneCount());
+    }
+
+    public function testMarkingAnUnknownActivityThrows(): void
+    {
+        $session = $this->materialize();
+
+        $this->expectException(ActivityNotFound::class);
+        $session->markActivityDone(ActivityId::fromString('ghost'));
     }
 
     private function materialize(): Session

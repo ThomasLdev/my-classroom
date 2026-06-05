@@ -1,0 +1,38 @@
+{% set detail = this.detail %}
+{% set total = detail.activities|length %}
+{% set done = detail.activities|filter(a => a.done)|length %}
+<div{{ attributes.defaults({ class: 'session-activities' }) }}>
+    <div class="section__head">
+        <h2 class="section__title">Activités</h2>
+        {% if total > 0 %}<span class="section__count tnum">{{ done }}/{{ total }} terminées</span>{% endif %}
+    </div>
+
+    {% if total > 0 %}
+        <ul class="act-list">
+            {% for a in detail.activities %}
+                <li class="act{{ a.done ? ' act--done' }}">
+                    <button type="button" class="act__check"
+                            aria-pressed="{{ a.done ? 'true' : 'false' }}"
+                            aria-label="{{ a.done ? 'Marquer comme non terminée' : 'Marquer comme terminée' }}"
+                            data-action="live#action"
+                            data-live-action-param="{{ a.done ? 'markNotDone' : 'markDone' }}"
+                            data-live-activity-id-param="{{ a.id }}">
+                        <span class="act__box"><twig:ux:icon name="lucide:check" class="act__check-icon" /></span>
+                    </button>
+                    <span class="act__title">{{ a.title }}</span>
+                    {% if a.carriedOver %}<span class="act__flag">reporté</span>{% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="session-activities__empty">Aucune activité prévue — ajoutez-en une ci-dessous.</p>
+    {% endif %}
+
+    <form class="add-row" data-action="live#action:prevent" data-live-action-param="addActivity">
+        <input class="add-row__input" type="text"
+               data-model="norender|newTitle"
+               value="{{ newTitle }}"
+               placeholder="Ajouter une activité…" autocomplete="off" aria-label="Nouvelle activité">
+        <button type="submit" class="btn btn--sm">Ajouter</button>
+    </form>
+</div>

@@ -9,6 +9,7 @@ use App\Shared\Domain\Identifier\ClassroomId;
 use App\Shared\Domain\Identifier\SlotId;
 use App\Shared\Domain\Occurrence;
 use App\Shared\Domain\TimeRange;
+use App\Teaching\Domain\Exception\ActivityNotFound;
 
 /**
  * Aggregate root for the daily teaching life. A session only exists in the
@@ -163,6 +164,16 @@ final class Session
         $this->cancelled = true;
     }
 
+    public function markActivityDone(ActivityId $id): void
+    {
+        $this->activityWith($id)->markDone();
+    }
+
+    public function markActivityNotDone(ActivityId $id): void
+    {
+        $this->activityWith($id)->markNotDone();
+    }
+
     public function endsAt(): \DateTimeImmutable
     {
         return $this->timeRange->endsOn($this->date);
@@ -176,6 +187,17 @@ final class Session
     public function doneCount(): int
     {
         return \count(array_filter($this->activities, static fn (Activity $a): bool => !$a->isPlanned()));
+    }
+
+    private function activityWith(ActivityId $id): Activity
+    {
+        foreach ($this->activities as $activity) {
+            if ($activity->id->equals($id)) {
+                return $activity;
+            }
+        }
+
+        throw ActivityNotFound::inSession($this->id, $id);
     }
 
     private function nextPosition(): int

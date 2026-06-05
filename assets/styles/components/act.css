@@ -1,0 +1,110 @@
+.session-activities {
+  & .session-activities__empty {
+    margin-block: .25rem .75rem;
+    font-size: .875rem;
+    color: var(--ink-3);
+  }
+}
+
+.section__head {
+  display: flex;
+  align-items: center;
+  gap: .625rem;
+  margin-block-end: .75rem;
+
+  & .section__title {
+    font-family: var(--sans);
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  & .section__count {
+    font-size: .75rem;
+    font-weight: 600;
+    color: var(--ink-3);
+    background: var(--surface-2);
+    border-radius: 999px;
+    padding: .125rem .5625rem;
+  }
+}
+
+.act-list {
+  display: flex;
+  flex-direction: column;
+  gap: .5625rem;
+}
+
+.act {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding-block: .375rem;
+  padding-inline: .5rem .875rem;
+  background: var(--surface);
+  border: 1px solid var(--hairline-2);
+  border-radius: var(--r-md);
+
+  & .act__check {
+    flex: none;
+    inline-size: 44px;
+    block-size: 44px;
+    display: grid;
+    place-items: center;
+  }
+
+  & .act__box {
+    inline-size: 24px;
+    block-size: 24px;
+    display: grid;
+    place-items: center;
+    border: 1.5px solid var(--line-strong);
+    border-radius: 7px;
+    background: var(--surface);
+    transition: background .15s, border-color .15s;
+  }
+
+  & .act__check-icon {
+    inline-size: 14px;
+    block-size: 14px;
+    color: var(--on-accent);
+    opacity: 0;
+    transition: opacity .15s;
+  }
+
+  & .act__title {
+    flex: 1;
+    font-size: .9375rem;
+    font-weight: 600;
+  }
+
+  & .act__flag {
+    flex: none;
+    font-size: .6875rem;
+    font-weight: 600;
+    color: var(--clay);
+    background: var(--clay-soft);
+    border-radius: 999px;
+    padding: .125rem .5rem;
+  }
+
+  &.act--done .act__box { background: var(--ink); border-color: var(--ink); }
+  &.act--done .act__check-icon { opacity: 1; }
+  &.act--done .act__title { text-decoration: line-through; color: var(--ink-3); }
+}
+
+.add-row {
+  display: flex;
+  gap: .5rem;
+  margin-block-start: .625rem;
+
+  & .add-row__input {
+    flex: 1;
+    min-width: 0;
+    padding: .75rem .8125rem;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-md);
+    background: var(--surface);
+    color: var(--ink);
+  }
+  & .add-row__input:focus { outline: none; border-color: var(--clay); }
+}

@@ -1,8 +1,9 @@
-{% props session, colorKey = 'k1' %}
+{% props session, colorKey = 'k1', date %}
 {% set total = session.activityCount %}
 {% set done = session.doneCount %}
 {% set pct = total > 0 ? (done / total * 100)|round : 0 %}
-<article class="session-card session-card--{{ colorKey }}{{ session.cancelled ? ' session-card--cancelled' }}" {{ attributes }}>
+<a class="session-card session-card--{{ colorKey }}{{ session.cancelled ? ' session-card--cancelled' }}"
+   href="{{ path('app_session_detail', { date: date, slotId: session.slotId }) }}" {{ attributes }}>
     <span class="session-card__bar" aria-hidden="true"></span>
 
     <div class="session-card__top">
@@ -22,4 +23,4 @@
     {% else %}
         <p class="session-card__empty">Aucune activité prévue</p>
     {% endif %}
-</article>
+</a>

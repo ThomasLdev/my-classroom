@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ detail.classroomName }} — {{ header.num }} {{ header.month }}{% endblock %}
+
+{% block body %}
+    <div class="detail">
+        <header class="detail__hero">
+            <a class="detail__back" href="{{ path('app_calendar_day', { date: backDate }) }}">
+                <twig:ux:icon name="lucide:arrow-left" class="detail__back-icon" /> Retour au calendrier
+            </a>
+            <div class="detail__title">
+                <span class="detail__cls">{{ detail.classroomName }}</span>
+            </div>
+            <div class="detail__when">
+                <span class="detail__when-item">
+                    <twig:ux:icon name="lucide:calendar" class="detail__when-icon" /> {{ header.dow }} {{ header.num }} {{ header.month }} {{ header.year }}
+                </span>
+                <span class="detail__when-item">
+                    <twig:ux:icon name="lucide:clock" class="detail__when-icon" /> {{ detail.start }}–{{ detail.end }}
+                </span>
+            </div>
+        </header>
+
+        <twig:SessionActivities slotId="{{ detail.slotId }}" date="{{ detail.date }}" />
+    </div>
+{% endblock %}

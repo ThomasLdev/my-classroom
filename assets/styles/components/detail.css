@@ -1,0 +1,36 @@
+.detail {
+  & .detail__hero {
+    padding-block-end: 1rem;
+    margin-block-end: 1.125rem;
+    border-block-end: 1px solid var(--hairline);
+  }
+
+  & .detail__back {
+    display: inline-flex;
+    align-items: center;
+    gap: .375rem;
+    padding-block-end: .75rem;
+    font-size: .8125rem;
+    font-weight: 600;
+    color: var(--ink-2);
+  }
+  & .detail__back-icon { inline-size: 17px; block-size: 17px; }
+
+  & .detail__cls {
+    font-family: var(--serif);
+    font-size: clamp(1.75rem, 6vw, 2.375rem);
+    line-height: 1;
+  }
+
+  & .detail__when {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .875rem;
+    margin-block-start: .5rem;
+    font-size: .875rem;
+    font-weight: 500;
+    color: var(--ink-2);
+  }
+  & .detail__when-item { display: inline-flex; align-items: center; gap: .3125rem; }
+  & .detail__when-icon { inline-size: 15px; block-size: 15px; color: var(--ink-3); }
+}
