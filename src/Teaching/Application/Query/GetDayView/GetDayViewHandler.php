@@ -14,6 +14,7 @@ final readonly class GetDayViewHandler
         private SessionRepository $sessions,
         private OccurrenceProvider $occurrences,
         private CalendarEventProvider $events,
+        private SessionViewFactory $viewFactory,
     ) {
     }
 
@@ -24,20 +25,7 @@ final readonly class GetDayViewHandler
         $sessionViews = [];
         foreach ($this->occurrences->forDay($date) as $occurrence) {
             $session = $this->sessions->ofOccurrence($occurrence->slotId, $occurrence->date);
-
-            $sessionViews[] = new SessionView(
-                slotId: (string) $occurrence->slotId,
-                sessionId: $session !== null ? (string) $session->id : null,
-                classroomName: $occurrence->classroomName,
-                subject: $occurrence->subject,
-                room: $occurrence->room,
-                start: $occurrence->timeRange->startLabel(),
-                end: $occurrence->timeRange->endLabel(),
-                activityCount: $session?->activityCount() ?? 0,
-                doneCount: $session?->doneCount() ?? 0,
-                cancelled: $session?->cancelled ?? false,
-                materialized: $session !== null,
-            );
+            $sessionViews[] = $this->viewFactory->create($occurrence, $session);
         }
 
         return new DayView(

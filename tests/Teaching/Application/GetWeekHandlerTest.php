@@ -7,6 +7,7 @@ namespace App\Tests\Teaching\Application;
 use App\Teaching\Application\Query\GetDayView\EventView;
 use App\Teaching\Application\Query\GetWeek\GetWeek;
 use App\Teaching\Application\Query\GetWeek\GetWeekHandler;
+use App\Teaching\Application\Query\GetWeek\WeekDayViewFactory;
 use App\Tests\Support\InMemoryCalendarEventProvider;
 use App\Tests\Support\InMemoryOccurrenceProvider;
 use App\Tests\Support\OccurrenceMother;
@@ -23,7 +24,7 @@ final class GetWeekHandlerTest extends TestCase
         $occurrences->add(OccurrenceMother::create('slot-3', 'class-2', '2026-06-10', '10:00', '11:00', '4e A'));
 
         $event = new EventView('e1', 'Conseil de classe', 'meeting', '2026-06-09 17:00', null, false);
-        $handler = new GetWeekHandler($occurrences, new InMemoryCalendarEventProvider([$event]));
+        $handler = new GetWeekHandler($occurrences, new InMemoryCalendarEventProvider([$event]), new WeekDayViewFactory());
 
         $week = $handler(new GetWeek('2026-06-08'));
 
@@ -42,7 +43,7 @@ final class GetWeekHandlerTest extends TestCase
     public function testItAnchorsOnMondayWhateverTheGivenWeekday(): void
     {
         $occurrences = new InMemoryOccurrenceProvider();
-        $handler = new GetWeekHandler($occurrences, new InMemoryCalendarEventProvider());
+        $handler = new GetWeekHandler($occurrences, new InMemoryCalendarEventProvider(), new WeekDayViewFactory());
 
         // 2026-06-11 is a Thursday; the week still starts on Monday 2026-06-08.
         $week = $handler(new GetWeek('2026-06-11'));

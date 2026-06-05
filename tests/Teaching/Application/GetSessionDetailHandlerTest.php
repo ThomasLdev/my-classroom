@@ -10,8 +10,11 @@ use App\Teaching\Application\Command\AttachDocumentToSession\AttachDocumentToSes
 use App\Teaching\Application\Command\AttachDocumentToSession\AttachDocumentToSessionHandler;
 use App\Teaching\Application\Command\SetSessionNote\SetSessionNote;
 use App\Teaching\Application\Command\SetSessionNote\SetSessionNoteHandler;
+use App\Teaching\Application\Query\GetSessionDetail\ActivityViewFactory;
+use App\Teaching\Application\Query\GetSessionDetail\DocumentViewFactory;
 use App\Teaching\Application\Query\GetSessionDetail\GetSessionDetail;
 use App\Teaching\Application\Query\GetSessionDetail\GetSessionDetailHandler;
+use App\Teaching\Application\Query\GetSessionDetail\SessionDetailViewFactory;
 use App\Teaching\Domain\Exception\SlotNotScheduled;
 use App\Tests\Support\InMemoryDocumentStorage;
 use App\Tests\Support\InMemoryOccurrenceProvider;
@@ -30,7 +33,11 @@ final class GetSessionDetailHandlerTest extends TestCase
     {
         $this->sessions = new InMemorySessionRepository();
         $this->occurrences = new InMemoryOccurrenceProvider();
-        $this->handler = new GetSessionDetailHandler($this->sessions, $this->occurrences);
+        $this->handler = new GetSessionDetailHandler(
+            $this->sessions,
+            $this->occurrences,
+            new SessionDetailViewFactory(new ActivityViewFactory(), new DocumentViewFactory()),
+        );
     }
 
     public function testItReturnsTheMaterialisedSessionWithItsActivities(): void

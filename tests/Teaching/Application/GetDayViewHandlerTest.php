@@ -8,6 +8,7 @@ use App\Teaching\Application\Command\AddActivityToSession\AddActivityToSession;
 use App\Teaching\Application\Command\AddActivityToSession\AddActivityToSessionHandler;
 use App\Teaching\Application\Query\GetDayView\GetDayView;
 use App\Teaching\Application\Query\GetDayView\GetDayViewHandler;
+use App\Teaching\Application\Query\GetDayView\SessionViewFactory;
 use App\Tests\Support\InMemoryCalendarEventProvider;
 use App\Tests\Support\InMemoryOccurrenceProvider;
 use App\Tests\Support\InMemorySessionRepository;
@@ -30,7 +31,7 @@ final class GetDayViewHandlerTest extends TestCase
         $add(new AddActivityToSession('slot-am', '2026-06-08', 'Activité 2'));
         $sessions->all()[0]->activities[0]->markDone();
 
-        $handler = new GetDayViewHandler($sessions, $occurrences, new InMemoryCalendarEventProvider());
+        $handler = new GetDayViewHandler($sessions, $occurrences, new InMemoryCalendarEventProvider(), new SessionViewFactory());
         $view = $handler(new GetDayView('2026-06-08'));
 
         self::assertSame('2026-06-08', $view->date);

@@ -12,6 +12,7 @@ final readonly class GetWeekHandler
     public function __construct(
         private OccurrenceProvider $occurrences,
         private CalendarEventProvider $events,
+        private WeekDayViewFactory $viewFactory,
     ) {
     }
 
@@ -22,18 +23,10 @@ final readonly class GetWeekHandler
         $days = [];
         for ($i = 0; $i < 7; ++$i) {
             $cursor = $monday->modify(sprintf('+%d days', $i));
-
-            $names = [];
-            foreach ($this->occurrences->forDay($cursor) as $occurrence) {
-                if (!in_array($occurrence->classroomName, $names, true)) {
-                    $names[] = $occurrence->classroomName;
-                }
-            }
-
-            $days[] = new WeekDayView(
-                date: $cursor->format('Y-m-d'),
-                classroomNames: $names,
-                hasEvent: $this->events->forDay($cursor) !== [],
+            $days[] = $this->viewFactory->create(
+                $cursor,
+                $this->occurrences->forDay($cursor),
+                $this->events->forDay($cursor) !== [],
             );
         }
 

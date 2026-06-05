@@ -77,8 +77,7 @@ final class CalendarController extends AbstractController
 
         $monday = $selected->modify('monday this week');
         $week = [];
-        for ($i = 0; $i < 7; ++$i) {
-            $cursor = $monday->modify(sprintf('+%d days', $i));
+        foreach (new \DatePeriod($monday, new \DateInterval('P1D'), $monday->modify('+7 days')) as $cursor) {
             $weekday = (int) $cursor->format('N');
             $key = $cursor->format('Y-m-d');
             $week[] = [
