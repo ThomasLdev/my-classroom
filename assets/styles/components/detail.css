@@ -1,53 +1,64 @@
 .detail {
-  & .detail__hero {
-    padding-block-end: 1rem;
-    margin-block-end: 1.125rem;
-    border-block-end: 1px solid var(--hairline);
-  }
+    & .detail__hero {
+        padding-block-end: 1rem;
+        margin-block-end: 1.125rem;
+        border-block-end: 1px solid var(--hairline);
+    }
 
-  & .detail__back {
-    display: inline-flex;
-    align-items: center;
-    gap: .375rem;
-    padding-block-end: .75rem;
-    font-size: .8125rem;
-    font-weight: 600;
-    color: var(--ink-2);
-  }
-  & .detail__back-icon { inline-size: 17px; block-size: 17px; }
+    & .detail__back {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        padding-block-end: 0.75rem;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: var(--ink-2);
+    }
+    & .detail__back-icon {
+        inline-size: 17px;
+        block-size: 17px;
+    }
 
-  & .detail__title {
-    display: flex;
-    align-items: baseline;
-    flex-wrap: wrap;
-    gap: .625rem;
-  }
+    & .detail__title {
+        display: flex;
+        align-items: baseline;
+        flex-wrap: wrap;
+        gap: 0.625rem;
+    }
 
-  & .detail__cls {
-    font-family: var(--serif);
-    font-size: clamp(1.75rem, 6vw, 2.375rem);
-    line-height: 1;
-  }
+    & .detail__cls {
+        font-family: var(--serif);
+        font-size: clamp(1.75rem, 6vw, 2.375rem);
+        line-height: 1;
+    }
 
-  & .detail__subject {
-    font-family: var(--sans);
-    font-size: .8125rem;
-    font-weight: 600;
-    color: var(--clay);
-    background: var(--clay-soft);
-    border-radius: 999px;
-    padding: .1875rem .625rem;
-  }
+    & .detail__subject {
+        font-family: var(--sans);
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: var(--clay);
+        background: var(--clay-soft);
+        border-radius: 999px;
+        padding: 0.1875rem 0.625rem;
+    }
 
-  & .detail__when {
-    display: flex;
-    flex-wrap: wrap;
-    gap: .875rem;
-    margin-block-start: .5rem;
-    font-size: .875rem;
-    font-weight: 500;
-    color: var(--ink-2);
-  }
-  & .detail__when-item { display: inline-flex; align-items: center; gap: .3125rem; }
-  & .detail__when-icon { inline-size: 15px; block-size: 15px; color: var(--ink-3); }
+    & .detail__when {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.875rem;
+        margin-block-start: 0.5rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--ink-2);
+    }
+    & .detail__when-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3125rem;
+    }
+    & .detail__when-icon {
+        inline-size: 15px;
+        block-size: 15px;
+        color: var(--ink-3);
+    }
 }

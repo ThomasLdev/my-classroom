@@ -26,6 +26,8 @@ jobs:
           persist-credentials: false
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
+      # Build once. Every later step reuses this image: the running app that
+      # Playwright drives, and (later) functional tests via `docker compose exec php`.
       - name: Build Docker images
         uses: docker/bake-action@v7
         with:
@@ -43,39 +45,34 @@ jobs:
         run: docker compose up --wait --no-build
       - name: Check HTTP reachability
         run: curl -v --fail-with-body http://localhost
-      # Uncomment when the homepage is configured, or change the path to check
-      # - name: Check HTTPS reachability
-      #   run: curl -v --insecure --fail-with-body https://localhost
-      # Uncomment if Doctrine ORM is installed
-      # - name: Create test database
-      #   run: docker compose exec -T php bin/console -e test doctrine:database:create
-      # Uncomment if Doctrine Migrations is installed
-      # - name: Run migrations
-      #   run: docker compose exec -T php bin/console -e test doctrine:migrations:migrate --no-interaction
-      # Uncomment if PHPUnit is installed
-      # - name: Run PHPUnit
-      #   run: docker compose exec -T php bin/phpunit
-      # Uncomment if Doctrine ORM is installed
-      # - name: Doctrine Schema Validator
-      #   run: docker compose exec -T php bin/console -e test doctrine:schema:validate
+      # Unit suite needs no database; runs in the image built above (fail fast before E2E).
+      - name: Unit tests (PHPUnit)
+        run: docker compose exec -T -e APP_ENV=test php bin/phpunit --testsuite unit
+      # Isolated step — reuses the image built above; the playwright service
+      # reaches the already-running php service over the compose network.
+      - name: E2E tests (Playwright)
+        run: docker compose run --rm playwright
+      # The functional suite needs a database. Add a dedicated DB-backed step here
+      # (same image-reuse pattern) when it's needed, e.g.:
+      #   docker compose exec -T -e APP_ENV=test php bin/console doctrine:migrations:migrate -n
+      #   docker compose exec -T -e APP_ENV=test php bin/phpunit --testsuite functional
+
+  front-lint:
+    name: Front lint (Biome)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6.0.2
+        with:
+          persist-credentials: false
+      - name: Lint front-end (Biome)
+        run: docker run --rm -v "$PWD:/code" ghcr.io/biomejs/biome:2.4.4 ci assets
 
   quality:
     name: Quality
     runs-on: ubuntu-latest
-    services:
-      database:
-        image: postgres:16-alpine
-        env:
-          POSTGRES_USER: app
-          POSTGRES_PASSWORD: "!ChangeMe!"
-          POSTGRES_DB: app
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U app"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+    # Static analysis only — no database. Unit tests run in the `tests` job;
+    # DB-backed schema validation + functional tests get their own setup later.
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -100,44 +97,38 @@ jobs:
         run: composer rector
       - name: Static analysis (PHPStan + PHPat)
         run: composer phpstan
-      - name: Create test database
-        run: php bin/console --env=test doctrine:database:create --if-not-exists
-      - name: Run migrations
-        run: php bin/console --env=test doctrine:migrations:migrate --no-interaction
-      - name: Tests (PHPUnit)
-        run: composer test
 
-#  lint:
-#    name: Lint
-#    runs-on: ubuntu-latest
-#    permissions:
-#      contents: read
-#      packages: read
-#      statuses: write
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v6.0.2
-#        with:
-#          fetch-depth: 0
-#          persist-credentials: false
-#      - name: Lint Code Base
-#        uses: super-linter/super-linter/slim@v8
-#        env:
-#          GITHUB_ACTIONS_CONFIG_FILE: actionlint.yaml
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#          # Whitelist mode: only the validators set to true run; every other
-#          # linter (Prettier formatters, JSCPD, codespell, natural-language,
-#          # PHP, ...) stays off. PHP is linted/tested in the Docker `tests`
-#          # job; front-end formatting is owned by project-native tooling.
-#          # NB: super-linter forbids mixing true and false — keep all-true here.
-#          VALIDATE_YAML: true
-#          VALIDATE_JSON: true
-#          VALIDATE_BASH: true
-#          VALIDATE_DOCKERFILE_HADOLINT: true
-#          VALIDATE_GITHUB_ACTIONS: true
-#          VALIDATE_GITHUB_ACTIONS_ZIZMOR: true
-#          VALIDATE_GITLEAKS: true
-#          VALIDATE_GIT_MERGE_CONFLICT_MARKERS: true
-#          VALIDATE_EDITORCONFIG: true
-#          # Skip vendored / generated files so linters ignore third-party code.
-#          FILTER_REGEX_EXCLUDE: (assets/vendor/|var/|public/bundles/)
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+      statuses: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6.0.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Lint Code Base
+        uses: super-linter/super-linter/slim@v8
+        env:
+          GITHUB_ACTIONS_CONFIG_FILE: actionlint.yaml
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Whitelist mode: only the validators set to true run; every other
+          # linter (Prettier formatters, JSCPD, codespell, natural-language,
+          # PHP, ...) stays off. PHP is linted/tested in the Docker `tests`
+          # job; front-end formatting is owned by project-native tooling.
+          # NB: super-linter forbids mixing true and false — keep all-true here.
+          VALIDATE_YAML: true
+          VALIDATE_JSON: true
+          VALIDATE_BASH: true
+          VALIDATE_DOCKERFILE_HADOLINT: true
+          VALIDATE_GITHUB_ACTIONS: true
+          VALIDATE_GITHUB_ACTIONS_ZIZMOR: true
+          VALIDATE_GITLEAKS: true
+          VALIDATE_GIT_MERGE_CONFLICT_MARKERS: true
+          VALIDATE_EDITORCONFIG: true
+          # Skip vendored / generated / tool-managed files so linters ignore code we don't own.
+          FILTER_REGEX_EXCLUDE: (assets/vendor/|var/|public/bundles/|\.serena/)

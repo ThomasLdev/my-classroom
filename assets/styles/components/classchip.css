@@ -1,28 +1,44 @@
 .classchip {
-  /* Neutral default; per-class colours come from the user later (classchip--kN). */
-  --chip-tint: var(--surface-2);
-  --chip-accent: var(--ink-2);
-  --chip-deep: var(--ink);
-  display: inline-flex;
-  align-items: center;
-  gap: .4375rem;
-  padding: .25rem .6875rem .25rem .5625rem;
-  border-radius: 999px;
-  font-weight: 600;
-  font-size: .875rem;
-  white-space: nowrap;
-  background: var(--chip-tint);
-  color: var(--chip-deep);
+    /* Neutral default; per-class colours come from the user later (classchip--kN). */
+    --chip-tint: var(--surface-2);
+    --chip-accent: var(--ink-2);
+    --chip-deep: var(--ink);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4375rem;
+    padding: 0.25rem 0.6875rem 0.25rem 0.5625rem;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    background: var(--chip-tint);
+    color: var(--chip-deep);
 
-  & .classchip__dot {
-    inline-size: 8px;
-    block-size: 8px;
-    border-radius: 50%;
-    background: var(--chip-accent);
-  }
+    & .classchip__dot {
+        inline-size: 8px;
+        block-size: 8px;
+        border-radius: 50%;
+        background: var(--chip-accent);
+    }
 
-  &.classchip--k1 { --chip-tint: var(--k1-tint); --chip-accent: var(--k1-accent); --chip-deep: var(--k1-deep); }
-  &.classchip--k2 { --chip-tint: var(--k2-tint); --chip-accent: var(--k2-accent); --chip-deep: var(--k2-deep); }
-  &.classchip--k3 { --chip-tint: var(--k3-tint); --chip-accent: var(--k3-accent); --chip-deep: var(--k3-deep); }
-  &.classchip--k4 { --chip-tint: var(--k4-tint); --chip-accent: var(--k4-accent); --chip-deep: var(--k4-deep); }
+    &.classchip--k1 {
+        --chip-tint: var(--k1-tint);
+        --chip-accent: var(--k1-accent);
+        --chip-deep: var(--k1-deep);
+    }
+    &.classchip--k2 {
+        --chip-tint: var(--k2-tint);
+        --chip-accent: var(--k2-accent);
+        --chip-deep: var(--k2-deep);
+    }
+    &.classchip--k3 {
+        --chip-tint: var(--k3-tint);
+        --chip-accent: var(--k3-accent);
+        --chip-deep: var(--k3-deep);
+    }
+    &.classchip--k4 {
+        --chip-tint: var(--k4-tint);
+        --chip-accent: var(--k4-accent);
+        --chip-deep: var(--k4-deep);
+    }
 }

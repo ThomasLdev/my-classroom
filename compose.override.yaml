@@ -29,6 +29,33 @@ services:
       # Ensure that host.docker.internal is correctly defined on Linux
       - host.docker.internal:host-gateway
     tty: true
+
+  # Front linter — official Biome image (Rust binary, no Node / no package.json).
+  # On-demand task service: `docker compose run --rm biome ci assets`.
+  biome:
+    image: ghcr.io/biomejs/biome:2.4.4
+    profiles: ["dev", "test", "ci"]
+    working_dir: /code
+    volumes:
+      - ./:/code
+
+  # E2E — official Playwright image (browsers + OS deps + SDK bundled).
+  # The image tag MUST match @playwright/test in tests/e2e/package.json.
+  # On-demand task service: `docker compose run --rm playwright`.
+  playwright:
+    image: mcr.microsoft.com/playwright:v1.60.0-noble
+    profiles: ["dev", "test", "ci"]
+    working_dir: /e2e
+    depends_on:
+      php:
+        condition: service_healthy
+    environment:
+      PLAYWRIGHT_BASE_URL: "http://php"
+    volumes:
+      - ./tests/e2e:/e2e
+      # Anonymous volume keeps the container-installed deps from being shadowed by the bind-mount.
+      - /e2e/node_modules
+    command: ["sh", "-c", "npm ci && npx playwright test"]
 ###> symfony/mercure-bundle ###
 ###< symfony/mercure-bundle ###
 

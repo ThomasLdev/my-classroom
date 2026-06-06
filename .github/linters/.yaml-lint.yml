@@ -1,0 +1,27 @@
+---
+# yamllint config consumed by super-linter (auto-discovered at .github/linters/.yaml-lint.yml).
+# Relaxes rules that clash with the conventions of the YAML we actually own/generate:
+# Symfony recipe config, Kubernetes manifests, Docker Compose and translations.
+extends: default
+
+rules:
+  # Symfony's recipes generate config files without a leading `---` marker.
+  document-start: disable
+  # k8s manifests and Symfony config routinely exceed 80 cols (one is 158); not useful here.
+  line-length: disable
+  # Symfony writes mappings/sequences with inner spaces, e.g. `{ resource: '../src/' }`.
+  braces:
+    min-spaces-inside: 0
+    max-spaces-inside: 1
+  brackets:
+    min-spaces-inside: 0
+    max-spaces-inside: 1
+  # Symfony Flex recipe markers (`###> bundle ###`) and commented-out compose lines
+  # legitimately lack a leading space; keep comments but don't police their style.
+  comments:
+    require-starting-space: false
+    min-spaces-from-content: 1
+  comments-indentation: disable
+  # GitHub Actions uses the `on:` key, which yamllint otherwise reads as a boolean.
+  truthy:
+    check-keys: false

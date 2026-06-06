@@ -1,7 +1,7 @@
-import { Controller } from '@hotwired/stimulus';
+import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-    static targets = ['dialog'];
+    static targets = ["dialog"];
     static values = {
         peek: { type: Number, default: 55 },
         full: { type: Number, default: 80 },
@@ -15,13 +15,13 @@ export default class extends Controller {
         if (this.isCompact()) {
             this.setDetent(this.peekValue);
         } else {
-            this.dialogTarget.style.height = ''; // centered modal: size to content
+            this.dialogTarget.style.height = ""; // centered modal: size to content
         }
         this.dialogTarget.showModal();
     }
 
     isCompact() {
-        return !window.matchMedia('(min-width: 720px)').matches;
+        return !window.matchMedia("(min-width: 720px)").matches;
     }
 
     close() {
@@ -31,14 +31,14 @@ export default class extends Controller {
     // Open only once the session frame has its content (never an empty dialog
     // that would block the page while the request is in flight or cancelled).
     openIfSheet(event) {
-        if (event.target && event.target.id === 'sheet') {
+        if (event.target && event.target.id === "sheet") {
             this.open();
         }
     }
 
     // Reload only the background sessions frame so the open sheet and backdrop stay in place.
     reloadSessions() {
-        const frame = document.getElementById('day-sessions');
+        const frame = document.getElementById("day-sessions");
         if (!frame) {
             return;
         }
@@ -62,7 +62,7 @@ export default class extends Controller {
         this.dragging = true;
         this.startY = event.clientY;
         this.startHeight = this.dialogTarget.getBoundingClientRect().height;
-        this.dialogTarget.style.transition = 'none';
+        this.dialogTarget.style.transition = "none";
         event.currentTarget.setPointerCapture(event.pointerId);
     }
 
@@ -81,7 +81,7 @@ export default class extends Controller {
             return;
         }
         this.dragging = false;
-        this.dialogTarget.style.transition = '';
+        this.dialogTarget.style.transition = "";
 
         const vh = window.innerHeight;
         const height = this.dialogTarget.getBoundingClientRect().height;
@@ -93,7 +93,11 @@ export default class extends Controller {
 
         const peek = (vh * this.peekValue) / 100;
         const full = (vh * this.fullValue) / 100;
-        this.setDetent(Math.abs(height - full) < Math.abs(height - peek) ? this.fullValue : this.peekValue);
+        this.setDetent(
+            Math.abs(height - full) < Math.abs(height - peek)
+                ? this.fullValue
+                : this.peekValue,
+        );
     }
 
     setDetent(dvh) {

@@ -1,4 +1,4 @@
-import { Controller } from '@hotwired/stimulus';
+import { Controller } from "@hotwired/stimulus";
 
 // Progressive enhancement: the gesture is additive; arrows and weekstrip stay accessible links.
 export default class extends Controller {
@@ -15,13 +15,17 @@ export default class extends Controller {
 
         this.onStart = this.onStart.bind(this);
         this.onEnd = this.onEnd.bind(this);
-        this.element.addEventListener('touchstart', this.onStart, { passive: true });
-        this.element.addEventListener('touchend', this.onEnd, { passive: true });
+        this.element.addEventListener("touchstart", this.onStart, {
+            passive: true,
+        });
+        this.element.addEventListener("touchend", this.onEnd, {
+            passive: true,
+        });
     }
 
     disconnect() {
-        this.element.removeEventListener('touchstart', this.onStart);
-        this.element.removeEventListener('touchend', this.onEnd);
+        this.element.removeEventListener("touchstart", this.onStart);
+        this.element.removeEventListener("touchend", this.onEnd);
     }
 
     onStart(event) {
@@ -39,7 +43,8 @@ export default class extends Controller {
         const dx = touch.clientX - this.startX;
         const dy = touch.clientY - this.startY;
 
-        if (Math.abs(dx) < this.thresholdValue || Math.abs(dx) <= Math.abs(dy)) return;
+        if (Math.abs(dx) < this.thresholdValue || Math.abs(dx) <= Math.abs(dy))
+            return;
 
         const url = dx < 0 ? this.nextUrlValue : this.prevUrlValue;
         if (!url) return;

@@ -11,7 +11,8 @@ end_of_line = lf
 indent_style = space
 indent_size = 4
 
-[**/{Dockerfile,Caddyfile,*.sh}]
+# Makefiles require tabs; Dockerfile, Caddyfile (incl. variants) and shell scripts use them too.
+[**/{Dockerfile,Caddyfile*,Makefile,*.sh}]
 indent_style = tab
 
 [{compose.*yaml,.devcontainer/compose.*yaml,.github/**/*.yaml}]

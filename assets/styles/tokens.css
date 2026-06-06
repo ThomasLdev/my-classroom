@@ -1,69 +1,100 @@
 :root {
-  --canvas: #FBFAF6;
-  --surface: #FFFFFF;
-  --surface-2: #F4F2EC;
-  --ink: #2A2825;
-  --ink-2: #6B665E;
-  --ink-3: #9A948A;
-  --on-accent: #FFFFFF;
-  --hairline: #ECE8DF;
-  --hairline-2: #E2DDD2;
-  --line-strong: #D8D2C5;
+    --canvas: #fbfaf6;
+    --surface: #ffffff;
+    --surface-2: #f4f2ec;
+    --ink: #2a2825;
+    --ink-2: #6b665e;
+    --ink-3: #9a948a;
+    --on-accent: #ffffff;
+    --hairline: #ece8df;
+    --hairline-2: #e2ddd2;
+    --line-strong: #d8d2c5;
 
-  --clay: #B98F6B;
-  --clay-soft: #F0E7DB;
-  --event-tint: #EFEBE3;
-  --event-accent: #908578;
+    --clay: #b98f6b;
+    --clay-soft: #f0e7db;
+    --event-tint: #efebe3;
+    --event-accent: #908578;
 
-  --status-error: #B5462B;
+    --status-error: #b5462b;
 
-  --overlay: rgb(42 40 37 / .32);
+    --overlay: rgb(42 40 37 / 0.32);
 
-  --k1-tint: #E6EEF7; --k1-accent: #577FA8; --k1-deep: #3C5C7E;
-  --k2-tint: #E7EFE4; --k2-accent: #6E9A66; --k2-deep: #4F7349;
-  --k3-tint: #F8E9D9; --k3-accent: #C28A54; --k3-deep: #996A39;
-  --k4-tint: #EDE5F3; --k4-accent: #8A72B4; --k4-deep: #67518F;
+    --k1-tint: #e6eef7;
+    --k1-accent: #577fa8;
+    --k1-deep: #3c5c7e;
+    --k2-tint: #e7efe4;
+    --k2-accent: #6e9a66;
+    --k2-deep: #4f7349;
+    --k3-tint: #f8e9d9;
+    --k3-accent: #c28a54;
+    --k3-deep: #996a39;
+    --k4-tint: #ede5f3;
+    --k4-accent: #8a72b4;
+    --k4-deep: #67518f;
 
-  --serif: "Instrument Serif", Georgia, serif;
-  --sans: "Hanken Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --serif: "Instrument Serif", Georgia, serif;
+    --sans:
+        "Hanken Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
 
-  --r-sm: 8px;
-  --r-md: 14px;
-  --r-lg: 20px;
-  --r-xl: 26px;
+    --r-sm: 8px;
+    --r-md: 14px;
+    --r-lg: 20px;
+    --r-xl: 26px;
 
-  --shadow-card: 0 1px 2px rgb(42 40 37 / .04), 0 6px 18px rgb(42 40 37 / .05);
-  --shadow-pop: 0 8px 40px rgb(42 40 37 / .16);
+    --shadow-card:
+        0 1px 2px rgb(42 40 37 / 0.04), 0 6px 18px rgb(42 40 37 / 0.05);
+    --shadow-pop: 0 8px 40px rgb(42 40 37 / 0.16);
 
-  --ease: cubic-bezier(.22, .61, .36, 1);
+    --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
 
-  --space-2xs: .25rem;
-  --space-xs: .5rem;
-  --space-sm: .75rem;
-  --space-md: 1rem;
-  --space-lg: 1.5rem;
-  --space-xl: 2.5rem;
+    --space-2xs: 0.25rem;
+    --space-xs: 0.5rem;
+    --space-sm: 0.75rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2.5rem;
 
-  --content-max-inline-size: 60rem;
+    --content-max-inline-size: 60rem;
 
-  --card-padding: .9375rem 1rem .875rem;
+    --card-padding: 0.9375rem 1rem 0.875rem;
 
-  /* Custom props don't work in @media, so breakpoints are duplicated literally: sm 600 · md 720 · lg 980 · xl 1200. */
+    /* Custom props don't work in @media, so breakpoints are duplicated literally: sm 600 · md 720 · lg 980 · xl 1200. */
 }
 
 [data-palette="froid"] {
-  --k1-tint: #E4EDF5; --k1-accent: #577EA6; --k1-deep: #3C5B7C;
-  --k2-tint: #DFEEEA; --k2-accent: #549389; --k2-deep: #386B63;
-  --k3-tint: #E8EAF7; --k3-accent: #7681C2; --k3-deep: #535D97;
-  --k4-tint: #EDE4F2; --k4-accent: #8E73B0; --k4-deep: #675089;
+    --k1-tint: #e4edf5;
+    --k1-accent: #577ea6;
+    --k1-deep: #3c5b7c;
+    --k2-tint: #dfeeea;
+    --k2-accent: #549389;
+    --k2-deep: #386b63;
+    --k3-tint: #e8eaf7;
+    --k3-accent: #7681c2;
+    --k3-deep: #535d97;
+    --k4-tint: #ede4f2;
+    --k4-accent: #8e73b0;
+    --k4-deep: #675089;
 }
 
 [data-palette="chaud"] {
-  --k1-tint: #F7EAD9; --k1-accent: #C08A53; --k1-deep: #946739;
-  --k2-tint: #F4E8E2; --k2-accent: #BF8579; --k2-deep: #915D52;
-  --k3-tint: #F0EBDA; --k3-accent: #A0974F; --k3-deep: #766D36;
-  --k4-tint: #F2E3E7; --k4-accent: #B57E96; --k4-deep: #8A596F;
+    --k1-tint: #f7ead9;
+    --k1-accent: #c08a53;
+    --k1-deep: #946739;
+    --k2-tint: #f4e8e2;
+    --k2-accent: #bf8579;
+    --k2-deep: #915d52;
+    --k3-tint: #f0ebda;
+    --k3-accent: #a0974f;
+    --k3-deep: #766d36;
+    --k4-tint: #f2e3e7;
+    --k4-accent: #b57e96;
+    --k4-deep: #8a596f;
 }
 
-[data-density="compact"] { --card-padding: .6875rem .8125rem; }
-[data-density="confort"] { --card-padding: 1.1875rem 1.1875rem 1.0625rem; }
+[data-density="compact"] {
+    --card-padding: 0.6875rem 0.8125rem;
+}
+[data-density="confort"] {
+    --card-padding: 1.1875rem 1.1875rem 1.0625rem;
+}

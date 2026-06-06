@@ -1,162 +1,208 @@
 .section {
-  margin-block-start: 1.5rem;
+    margin-block-start: 1.5rem;
 
-  & .section__grow { flex: 1; }
+    & .section__grow {
+        flex: 1;
+    }
 }
 
 /* Notes — lined-paper feel, autosaved */
 .notearea {
-  inline-size: 100%;
-  min-block-size: 7.5rem;
-  resize: vertical;
-  padding: 0 .9375rem;
-  border: 1px solid var(--hairline-2);
-  border-radius: var(--r-md);
-  font-family: inherit;
-  font-size: .9375rem;
-  color: var(--ink);
-  background: var(--surface);
-  background-image: linear-gradient(transparent 31px, var(--hairline) 31px, var(--hairline) 32px);
-  background-size: 100% 32px;
-  background-attachment: local;
-  line-height: 32px;
+    inline-size: 100%;
+    min-block-size: 7.5rem;
+    resize: vertical;
+    padding: 0 0.9375rem;
+    border: 1px solid var(--hairline-2);
+    border-radius: var(--r-md);
+    font-family: inherit;
+    font-size: 0.9375rem;
+    color: var(--ink);
+    background: var(--surface);
+    background-image: linear-gradient(
+        transparent 31px,
+        var(--hairline) 31px,
+        var(--hairline) 32px
+    );
+    background-size: 100% 32px;
+    background-attachment: local;
+    line-height: 32px;
 
-  &:focus { outline: none; border-color: var(--clay); }
-  &::placeholder { color: var(--ink-3); }
+    &:focus {
+        outline: none;
+        border-color: var(--clay);
+    }
+    &::placeholder {
+        color: var(--ink-3);
+    }
 }
 
 .note-saved {
-  display: flex;
-  align-items: center;
-  gap: .3125rem;
-  margin-block-start: .375rem;
-  font-size: .75rem;
-  color: var(--ink-3);
+    display: flex;
+    align-items: center;
+    gap: 0.3125rem;
+    margin-block-start: 0.375rem;
+    font-size: 0.75rem;
+    color: var(--ink-3);
 
-  & .note-saved__icon { inline-size: 13px; block-size: 13px; color: var(--clay); }
+    & .note-saved__icon {
+        inline-size: 13px;
+        block-size: 13px;
+        color: var(--clay);
+    }
 }
 
 /* Documents */
 .doc-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: .5625rem;
-  margin-block-end: .625rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.5625rem;
+    margin-block-end: 0.625rem;
 }
 @media (min-width: 30rem) {
-  .doc-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+    .doc-grid {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
 }
 
 .doc {
-  display: flex;
-  align-items: center;
-  gap: .75rem;
-  padding: .6875rem .8125rem;
-  background: var(--surface);
-  border: 1px solid var(--hairline-2);
-  border-radius: var(--r-md);
-  /* Let the grid/flex item shrink below its content so a long file name is
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6875rem 0.8125rem;
+    background: var(--surface);
+    border: 1px solid var(--hairline-2);
+    border-radius: var(--r-md);
+    /* Let the grid/flex item shrink below its content so a long file name is
      ellipsed instead of widening the track past the parent. */
-  min-inline-size: 0;
-
-  & .doc__ic {
-    flex: none;
-    inline-size: 38px;
-    block-size: 38px;
-    display: grid;
-    place-items: center;
-    border-radius: 10px;
-    background: var(--surface-2);
-    color: var(--ink-2);
-  }
-  & .doc__ic svg { inline-size: 19px; block-size: 19px; }
-
-  & .doc__body {
-    flex: 1;
     min-inline-size: 0;
-    color: var(--ink);
-  }
-  & .doc__name {
-    display: block;
-    font-weight: 600;
-    font-size: .875rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  & .doc__meta {
-    display: block;
-    font-size: .75rem;
-    color: var(--ink-3);
-  }
 
-  & .doc__del {
-    flex: none;
-    padding: .3125rem;
-    border: none;
-    border-radius: 8px;
-    background: none;
-    color: var(--ink-3);
-  }
-  & .doc__del:hover { background: var(--surface-2); color: var(--ink); }
-  & .doc__del svg { inline-size: 16px; block-size: 16px; }
+    & .doc__ic {
+        flex: none;
+        inline-size: 38px;
+        block-size: 38px;
+        display: grid;
+        place-items: center;
+        border-radius: 10px;
+        background: var(--surface-2);
+        color: var(--ink-2);
+    }
+    & .doc__ic svg {
+        inline-size: 19px;
+        block-size: 19px;
+    }
+
+    & .doc__body {
+        flex: 1;
+        min-inline-size: 0;
+        color: var(--ink);
+    }
+    & .doc__name {
+        display: block;
+        font-weight: 600;
+        font-size: 0.875rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    & .doc__meta {
+        display: block;
+        font-size: 0.75rem;
+        color: var(--ink-3);
+    }
+
+    & .doc__del {
+        flex: none;
+        padding: 0.3125rem;
+        border: none;
+        border-radius: 8px;
+        background: none;
+        color: var(--ink-3);
+    }
+    & .doc__del:hover {
+        background: var(--surface-2);
+        color: var(--ink);
+    }
+    & .doc__del svg {
+        inline-size: 16px;
+        block-size: 16px;
+    }
 }
 
 .dropzone {
-  padding: 1.125rem;
-  border: 1px dashed var(--line-strong);
-  border-radius: var(--r-md);
-  text-align: center;
-  font-size: .8125rem;
-  color: var(--ink-3);
-  cursor: pointer;
-  transition: background .15s, border-color .15s;
+    padding: 1.125rem;
+    border: 1px dashed var(--line-strong);
+    border-radius: var(--r-md);
+    text-align: center;
+    font-size: 0.8125rem;
+    color: var(--ink-3);
+    cursor: pointer;
+    transition:
+        background 0.15s,
+        border-color 0.15s;
 
-  &.is-over { background: var(--clay-soft); border-color: var(--clay); color: var(--ink); }
+    &.is-over {
+        background: var(--clay-soft);
+        border-color: var(--clay);
+        color: var(--ink);
+    }
 }
 
 /* Homework recall: last session's homework, surfaced to be ticked off. */
 .homework-recall {
-  display: flex;
-  align-items: flex-start;
-  gap: .75rem;
-  margin-block-end: .75rem;
-  padding: .8125rem .875rem;
-  background: var(--clay-soft);
-  border: 1px solid color-mix(in oklab, var(--clay), white 50%);
-  border-radius: var(--r-md);
-
-  & .homework-recall__check {
-    flex: none;
-    inline-size: 24px;
-    block-size: 24px;
-    display: grid;
-    place-items: center;
-    border: 1.5px solid var(--clay);
-    border-radius: 7px;
-    background: var(--surface);
-    color: var(--clay);
-    transition: background .15s var(--ease), color .15s var(--ease);
-  }
-  & .homework-recall__check:hover { background: var(--clay); color: #fff; }
-  & .homework-recall__check-icon { inline-size: 14px; block-size: 14px; }
-
-  & .homework-recall__body { flex: 1; min-inline-size: 0; }
-
-  & .homework-recall__head {
     display: flex;
-    align-items: center;
-    gap: .375rem;
-    margin-block-end: .25rem;
-    font-size: .75rem;
-    font-weight: 700;
-    color: color-mix(in oklab, var(--clay), black 28%);
-  }
-  & .homework-recall__head-icon { inline-size: 14px; block-size: 14px; }
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-block-end: 0.75rem;
+    padding: 0.8125rem 0.875rem;
+    background: var(--clay-soft);
+    border: 1px solid color-mix(in oklab, var(--clay), white 50%);
+    border-radius: var(--r-md);
 
-  & .homework-recall__text {
-    font-size: .875rem;
-    color: var(--ink);
-    white-space: pre-wrap;
-  }
+    & .homework-recall__check {
+        flex: none;
+        inline-size: 24px;
+        block-size: 24px;
+        display: grid;
+        place-items: center;
+        border: 1.5px solid var(--clay);
+        border-radius: 7px;
+        background: var(--surface);
+        color: var(--clay);
+        transition:
+            background 0.15s var(--ease),
+            color 0.15s var(--ease);
+    }
+    & .homework-recall__check:hover {
+        background: var(--clay);
+        color: #fff;
+    }
+    & .homework-recall__check-icon {
+        inline-size: 14px;
+        block-size: 14px;
+    }
+
+    & .homework-recall__body {
+        flex: 1;
+        min-inline-size: 0;
+    }
+
+    & .homework-recall__head {
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+        margin-block-end: 0.25rem;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: color-mix(in oklab, var(--clay), black 28%);
+    }
+    & .homework-recall__head-icon {
+        inline-size: 14px;
+        block-size: 14px;
+    }
+
+    & .homework-recall__text {
+        font-size: 0.875rem;
+        color: var(--ink);
+        white-space: pre-wrap;
+    }
 }
