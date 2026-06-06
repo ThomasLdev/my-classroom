@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: documents-pvc
+  namespace: my-classroom
+spec:
+  # Persists uploaded session documents. LocalDocumentStorage writes them to
+  # /app/var/storage/documents (path hardcoded via #[Autowire] in
+  # src/Teaching/Infrastructure/Storage/LocalDocumentStorage.php), so this
+  # volume is mounted at /app/var/storage to survive pod restarts/redeploys.
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 2Gi

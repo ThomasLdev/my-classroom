@@ -1,0 +1,163 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-classroom
+  namespace: my-classroom
+  labels:
+    app: my-classroom
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-classroom
+  template:
+    metadata:
+      labels:
+        app: my-classroom
+    spec:
+      imagePullSecrets:
+        - name: ghcr-secret
+      # Image runs as www-data (uid/gid 33). fsGroup makes the local-path PVC
+      # group-owned by 33 so the container can write uploaded documents.
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 33
+        fsGroup: 33
+      initContainers:
+        # Runs migrations once before the app starts. Overriding args to the
+        # migrate command makes the entrypoint wait for the DB, then exec it.
+        # The app container keeps RUN_MIGRATIONS unset, so it never migrates.
+        - name: migrate
+          image: ghcr.io/thomasldev/my-classroom:placeholder
+          imagePullPolicy: Always
+          args:
+            - php
+            - bin/console
+            - doctrine:migrations:migrate
+            - --no-interaction
+            - --all-or-nothing
+          env:
+            # CNPG's auto-generated `uri` omits the query params
+            # (?serverVersion=16&charset=utf8) Doctrine DBAL needs, so we
+            # rebuild DATABASE_URL from the individual Secret fields. Order
+            # matters: referenced $(VAR) must be declared before DATABASE_URL.
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: my-classroom-db-app
+                  key: user
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: my-classroom-db-app
+                  key: password
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: my-classroom-db-app
+                  key: host
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: my-classroom-db-app
+                  key: port
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: my-classroom-db-app
+                  key: dbname
+            - name: DATABASE_URL
+              value: "postgresql://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?serverVersion=16&charset=utf8"
+      containers:
+        - name: my-classroom
+          # Placeholder tag; the live tag is set by the `images:` transformer
+          # in k8s/overlays/<env>/kustomization.yaml, which Flux
+          # ImageUpdateAutomation rewrites on every new build.
+          image: ghcr.io/thomasldev/my-classroom:placeholder
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              name: http
+          env:
+            - name: APP_ENV
+              value: "prod"
+            - name: APP_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: my-classroom-secrets
+                  key: APP_SECRET
+            # Messenger runs synchronously (no async worker on staging).
+            - name: MESSENGER_TRANSPORT_DSN
+              value: "sync://"
+            # Used only for URL generation outside an HTTP request (CLI);
+            # in-request URLs use the real Host. Point it at the NodePort URL.
+            - name: DEFAULT_URI
+              value: "http://localhost:30081"
+            - name: TRUSTED_PROXIES
+              value: "127.0.0.0/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
+            - name: TRUSTED_HOSTS
+              value: "^.*$"
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: my-classroom-db-app
+                  key: user
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: my-classroom-db-app
+                  key: password
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: my-classroom-db-app
+                  key: host
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: my-classroom-db-app
+                  key: port
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: my-classroom-db-app
+                  key: dbname
+            - name: DATABASE_URL
+              value: "postgresql://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?serverVersion=16&charset=utf8"
+          volumeMounts:
+            - name: caddy-config
+              mountPath: /etc/frankenphp/Caddyfile
+              subPath: Caddyfile
+            - name: documents
+              mountPath: /app/var/storage
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "1000m"
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            # Caddy's admin endpoint (:2019) binds to localhost only, so it is
+            # unreachable via an httpGet probe — run the check inside the
+            # container instead (mirrors the image HEALTHCHECK).
+            exec:
+              command:
+                - php
+                - -r
+                - 'exit(false === @file_get_contents("http://localhost:2019/metrics", context: stream_context_create(["http" => ["timeout" => 5]])) ? 1 : 0);'
+            initialDelaySeconds: 30
+            periodSeconds: 10
+      volumes:
+        - name: caddy-config
+          configMap:
+            name: caddy-config
+        - name: documents
+          persistentVolumeClaim:
+            claimName: documents-pvc

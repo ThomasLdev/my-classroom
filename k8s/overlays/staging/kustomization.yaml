@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../base
+# Image tag is rewritten in place by Flux ImageUpdateAutomation every time CI
+# publishes a new ghcr.io tag matching the `my-classroom-staging` ImagePolicy.
+# The marker comment tells the automation which line to update — do not remove it.
+images:
+  - name: ghcr.io/thomasldev/my-classroom
+    newTag: latest # {"$imagepolicy": "flux-system:my-classroom-staging:tag"}

@@ -1,0 +1,30 @@
+# Staging Caddyfile for k8s (pi-staging). Mounted over /etc/frankenphp/Caddyfile
+# via the `caddy-config` ConfigMap. Differs from the app default Caddyfile:
+#   - serves plain HTTP on :80 (TLS is not terminated here; NodePort fronts it)
+#   - auto_https off (no Let's Encrypt / internal CA on a private cluster)
+#   - no Mercure / vulcain (the app ships no mercure-bundle; not used on staging)
+{
+	auto_https off
+
+	{$CADDY_GLOBAL_OPTIONS}
+
+	frankenphp {
+		{$FRANKENPHP_CONFIG}
+	}
+}
+
+:80 {
+	log
+
+	root /app/public
+	encode zstd br gzip
+
+	{$CADDY_SERVER_EXTRA_DIRECTIVES}
+
+	# Disable Topics tracking unless explicitly enabled: https://github.com/jkarlin/topics
+	header ?Permissions-Policy "browsing-topics=()"
+
+	php_server {
+		worker ./public/index.php
+	}
+}

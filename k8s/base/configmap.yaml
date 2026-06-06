@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: caddy-config
+  namespace: my-classroom
+data:
+  # Mirror of frankenphp/Caddyfile.staging — mounted over
+  # /etc/frankenphp/Caddyfile in the Deployment. Plain HTTP :80, no Mercure.
+  Caddyfile: |
+    {
+      auto_https off
+
+      {$CADDY_GLOBAL_OPTIONS}
+
+      frankenphp {
+        {$FRANKENPHP_CONFIG}
+      }
+    }
+
+    :80 {
+      log
+
+      root /app/public
+      encode zstd br gzip
+
+      {$CADDY_SERVER_EXTRA_DIRECTIVES}
+
+      header ?Permissions-Policy "browsing-topics=()"
+
+      php_server {
+        worker ./public/index.php
+      }
+    }

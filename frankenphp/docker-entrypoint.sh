@@ -33,7 +33,9 @@ if [ "$1" = 'frankenphp' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
 			echo 'The database is now ready and reachable'
 		fi
 
-		if [ "$(find ./migrations -iname '*.php' -print -quit)" ]; then
+		# Migrations are opt-in: on k8s they run from a dedicated initContainer
+		# (RUN_MIGRATIONS=true), so the app container never migrates on startup.
+		if [ "${RUN_MIGRATIONS:-false}" = "true" ] && [ "$(find ./migrations -iname '*.php' -print -quit)" ]; then
 			php bin/console doctrine:migrations:migrate --no-interaction --all-or-nothing
 		fi
 	fi
