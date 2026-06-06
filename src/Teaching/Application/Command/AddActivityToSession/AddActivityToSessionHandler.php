@@ -6,11 +6,11 @@ namespace App\Teaching\Application\Command\AddActivityToSession;
 
 use App\Shared\Domain\Identifier\IdGenerator;
 use App\Shared\Domain\Identifier\SlotId;
+use App\Shared\Domain\Port\OccurrenceProvider;
 use App\Teaching\Domain\Exception\SlotNotScheduled;
 use App\Teaching\Domain\Model\Session\ActivityId;
 use App\Teaching\Domain\Model\Session\Session;
 use App\Teaching\Domain\Model\Session\SessionId;
-use App\Teaching\Domain\Port\OccurrenceProvider;
 use App\Teaching\Domain\Repository\SessionRepository;
 use DateTimeImmutable;
 use InvalidArgumentException;

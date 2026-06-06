@@ -94,14 +94,14 @@ final class Session
             new TimeRange($state['startMinute'], $state['endMinute']),
         );
 
-        $session->activities = array_values(array_map(
+        $session->activities = array_map(
             Activity::fromState(...),
             $state['activities'],
-        ));
-        $session->documents = array_values(array_map(
+        );
+        $session->documents = array_map(
             AttachedDocument::fromState(...),
             $state['documents'],
-        ));
+        );
         $session->note = $state['note'];
         $session->homework = $state['homework'];
         $session->homeworkChecked = $state['homeworkChecked'];

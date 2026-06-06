@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Teaching\Domain\Port;
+namespace App\Shared\Domain\Port;
 
 use App\Shared\Domain\Identifier\ClassroomId;
 use App\Shared\Domain\Identifier\SlotId;

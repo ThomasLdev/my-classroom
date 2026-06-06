@@ -38,7 +38,8 @@ final class AddActivityToSessionHandlerTest extends TestCase
     {
         $this->occurrences->add(OccurrenceMother::create('slot-1', 'class-1', '2026-06-08', '09:00', '10:00'));
 
-        self::assertNull($this->sessions->ofOccurrence(SlotId::fromString('slot-1'), new DateTimeImmutable('2026-06-08')));
+        $before = $this->sessions->ofOccurrence(SlotId::fromString('slot-1'), new DateTimeImmutable('2026-06-08'));
+        self::assertNull($before);
 
         ($this->handler)(new AddActivityToSession('slot-1', '2026-06-08', 'Distribuer le contrôle'));
 

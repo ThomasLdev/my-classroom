@@ -25,7 +25,8 @@ final class HexagonalArchitectureTest
     {
         return PHPat::rule()
             ->classes(Selector::inNamespace(self::DOMAIN, true))
-            ->shouldNotDependOn()
+            ->shouldNot()
+            ->dependOn()
             ->classes(
                 Selector::inNamespace(self::APPLICATION, true),
                 Selector::inNamespace(self::INFRASTRUCTURE, true),
@@ -40,7 +41,8 @@ final class HexagonalArchitectureTest
     {
         return PHPat::rule()
             ->classes(Selector::inNamespace(self::DOMAIN, true))
-            ->shouldNotDependOn()
+            ->shouldNot()
+            ->dependOn()
             ->classes(
                 Selector::inNamespace('Symfony'),
                 Selector::inNamespace('Doctrine'),
@@ -51,7 +53,8 @@ final class HexagonalArchitectureTest
     {
         return PHPat::rule()
             ->classes(Selector::inNamespace(self::APPLICATION, true))
-            ->shouldNotDependOn()
+            ->shouldNot()
+            ->dependOn()
             ->classes(Selector::inNamespace(self::INFRASTRUCTURE, true));
     }
 
@@ -63,7 +66,8 @@ final class HexagonalArchitectureTest
     {
         return PHPat::rule()
             ->classes(Selector::inNamespace('App\\Teaching'))
-            ->shouldNotDependOn()
+            ->shouldNot()
+            ->dependOn()
             ->classes(Selector::inNamespace('App\\Scheduling'));
     }
 
@@ -71,7 +75,8 @@ final class HexagonalArchitectureTest
     {
         return PHPat::rule()
             ->classes(Selector::inNamespace('App\\Scheduling'))
-            ->shouldNotDependOn()
+            ->shouldNot()
+            ->dependOn()
             ->classes(Selector::inNamespace('App\\Teaching'));
     }
 }

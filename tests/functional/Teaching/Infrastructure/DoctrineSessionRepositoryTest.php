@@ -46,16 +46,17 @@ final class DoctrineSessionRepositoryTest extends KernelTestCase
 
     protected function tearDown(): void
     {
-        parent::tearDown();
         $this->em->close();
+        parent::tearDown();
     }
 
     public function testItRoundTripsAnAggregateWithItsActivities(): void
     {
+        $slotId = SlotId::fromString((string) Uuid::v7());
         $session = Session::materialize(
             SessionId::fromString((string) Uuid::v7()),
             new Occurrence(
-                SlotId::fromString((string) Uuid::v7()),
+                $slotId,
                 ClassroomId::fromString((string) Uuid::v7()),
                 new DateTimeImmutable('2026-06-08'),
                 TimeRange::fromLabels('09:00', '10:00'),
@@ -73,7 +74,7 @@ final class DoctrineSessionRepositoryTest extends KernelTestCase
         $this->em->flush();
         $this->em->clear();
 
-        $reloaded = $this->repository->ofOccurrence($session->slotId, $session->date);
+        $reloaded = $this->repository->ofOccurrence($slotId, $session->date);
 
         self::assertNotNull($reloaded);
         self::assertTrue($reloaded->id->equals($session->id));
@@ -107,6 +108,7 @@ final class DoctrineSessionRepositoryTest extends KernelTestCase
 
         // Reload, mutate (mark done + add a second activity), persist again.
         $reloaded = $this->repository->ofId($session->id);
+        self::assertNotNull($reloaded);
         $reloaded->activities[0]->markDone();
         $reloaded->addActivity(ActivityId::fromString((string) Uuid::v7()), 'Tâche B');
         $this->repository->save($reloaded);
@@ -114,6 +116,7 @@ final class DoctrineSessionRepositoryTest extends KernelTestCase
         $this->em->clear();
 
         $again = $this->repository->ofId($session->id);
+        self::assertNotNull($again);
         self::assertSame(2, $again->activityCount(), 'The new activity was inserted.');
         self::assertSame(1, $again->doneCount(), 'The status change was persisted.');
     }

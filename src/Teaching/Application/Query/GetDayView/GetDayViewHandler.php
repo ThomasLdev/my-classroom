@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Teaching\Application\Query\GetDayView;
 
+use App\Shared\Domain\Port\OccurrenceProvider;
 use App\Teaching\Application\Port\CalendarEventProvider;
-use App\Teaching\Domain\Port\OccurrenceProvider;
 use App\Teaching\Domain\Repository\SessionRepository;
 use DateTimeImmutable;
 use InvalidArgumentException;

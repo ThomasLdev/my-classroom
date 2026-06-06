@@ -23,7 +23,7 @@ final class SessionViewFactory
             doneCount: $session?->doneCount() ?? 0,
             documentCount: $session?->documentCount() ?? 0,
             hasNote: $session?->note !== null,
-            cancelled: $session?->cancelled ?? false,
+            cancelled: $session instanceof Session && $session->cancelled,
             materialized: $session instanceof Session,
         );
     }

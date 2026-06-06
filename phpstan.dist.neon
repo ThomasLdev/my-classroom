@@ -1,8 +1,4 @@
 includes:
-    # Pre-existing violations frozen so CI is green now; burn the list down over
-    # time. NB: it also holds one architecture violation (Scheduling ->
-    # Teaching\Domain\Port) kept here on purpose until the context is refactored.
-    - phpstan-baseline.neon
     # Curated disallowed-call lists shipped by spaze/phpstan-disallowed-calls.
     - vendor/spaze/phpstan-disallowed-calls/disallowed-dangerous-calls.neon
     - vendor/spaze/phpstan-disallowed-calls/disallowed-execution-calls.neon
@@ -44,6 +40,19 @@ parameters:
         -
             function: 'var_dump()'
             message: 'remove debug output or use the logger'
+    ignoreErrors:
+        # Doctrine entities are hydrated by the ORM without the constructor (via
+        # proxies/reflection) and are mutable persistence state by design, so the
+        # "prefer readonly" rule does not apply to their mapped properties.
+        -
+            identifier: shipmonk.publicPropertyNotReadonly
+            paths:
+                - src/*/Infrastructure/Doctrine/Entity/*.php
+        # Symfony UX LiveComponent #[LiveProp] properties must be public and
+        # writable for the component to bind and re-render them.
+        -
+            identifier: shipmonk.publicPropertyNotReadonly
+            path: src/Teaching/Infrastructure/Http/Component/SessionBoard.php
 
 services:
     # PHPat architecture rules — discovered via the phpat.test tag.

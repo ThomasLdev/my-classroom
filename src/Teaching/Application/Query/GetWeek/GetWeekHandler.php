@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Teaching\Application\Query\GetWeek;
 
+use App\Shared\Domain\Port\OccurrenceProvider;
 use App\Teaching\Application\Port\CalendarEventProvider;
-use App\Teaching\Domain\Port\OccurrenceProvider;
 use DateTimeImmutable;
 use InvalidArgumentException;
 

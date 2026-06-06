@@ -48,7 +48,7 @@ final readonly class TimeRange
 
     private static function toMinutes(string $hhmm): int
     {
-        if (! preg_match('/^([01]\d|2[0-3]):([0-5]\d)$/', $hhmm, $m)) {
+        if (preg_match('/^([01]\d|2[0-3]):([0-5]\d)$/', $hhmm, $m) !== 1) {
             throw new InvalidArgumentException(sprintf('Invalid time label "%s", expected HH:MM.', $hhmm));
         }
 

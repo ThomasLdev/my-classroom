@@ -6,12 +6,12 @@ namespace App\Teaching\Application\Command\AttachDocumentToSession;
 
 use App\Shared\Domain\Identifier\IdGenerator;
 use App\Shared\Domain\Identifier\SlotId;
+use App\Shared\Domain\Port\OccurrenceProvider;
 use App\Teaching\Application\Port\DocumentStorage;
 use App\Teaching\Domain\Exception\SlotNotScheduled;
 use App\Teaching\Domain\Model\Session\DocumentId;
 use App\Teaching\Domain\Model\Session\Session;
 use App\Teaching\Domain\Model\Session\SessionId;
-use App\Teaching\Domain\Port\OccurrenceProvider;
 use App\Teaching\Domain\Repository\SessionRepository;
 use DateTimeImmutable;
 use InvalidArgumentException;

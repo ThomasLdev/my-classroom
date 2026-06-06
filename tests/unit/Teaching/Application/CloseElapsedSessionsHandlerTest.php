@@ -40,6 +40,7 @@ final class CloseElapsedSessionsHandlerTest extends TestCase
         ($this->add)(new AddActivityToSession('slot-mon', '2026-06-08', 'À finir'));
         ($this->add)(new AddActivityToSession('slot-mon', '2026-06-08', 'Déjà fait'));
         $monday = $this->sessions->ofOccurrence(SlotId::fromString('slot-mon'), new DateTimeImmutable('2026-06-08'));
+        self::assertNotNull($monday);
         $monday->activities[1]->markDone();
 
         $this->runCloseAt('2026-06-08 10:30:00');
@@ -63,6 +64,7 @@ final class CloseElapsedSessionsHandlerTest extends TestCase
         $this->runCloseAt('2026-06-08 10:35:00');
 
         $wednesday = $this->sessions->ofOccurrence(SlotId::fromString('slot-wed'), new DateTimeImmutable('2026-06-10'));
+        self::assertNotNull($wednesday);
         self::assertSame(1, $wednesday->activityCount(), 'A second run must not duplicate the carried activity.');
     }
 
@@ -92,6 +94,7 @@ final class CloseElapsedSessionsHandlerTest extends TestCase
         $this->runCloseAt('2026-06-08 10:30:00');
 
         $session = $this->sessions->ofOccurrence(SlotId::fromString('slot-last'), new DateTimeImmutable('2026-06-08'));
+        self::assertNotNull($session);
         self::assertTrue($session->isClosed());
         self::assertSame(1, $session->activityCount(), 'With nowhere to carry, the activity stays as history.');
     }

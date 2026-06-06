@@ -62,7 +62,7 @@ final class CalendarController extends AbstractController
     ], methods: ['GET'])]
     public function day(string $date): Response
     {
-        $selected = DateTimeImmutable::createFromFormat('!Y-m-d', $date) ?: new DateTimeImmutable('today');
+        $selected = $this->selectedDate($date);
         $today = new DateTimeImmutable('today');
 
         /** @var DayView $day */
@@ -95,11 +95,11 @@ final class CalendarController extends AbstractController
         try {
             /** @var SessionDetailView $detail */
             $detail = $this->handle(new GetSessionDetail($slotId, $date));
-        } catch (SlotNotScheduled) {
-            throw $this->createNotFoundException();
+        } catch (SlotNotScheduled $e) {
+            throw $this->createNotFoundException(previous: $e);
         }
 
-        $selected = DateTimeImmutable::createFromFormat('!Y-m-d', $date) ?: new DateTimeImmutable('today');
+        $selected = $this->selectedDate($date);
 
         $uploadForm = $this->createForm(AttachDocumentType::class, null, [
             'action' => $this->generateUrl('app_session_document_add', [
@@ -151,14 +151,15 @@ final class CalendarController extends AbstractController
                 if (! $file->isValid()) {
                     continue;
                 }
-                if ($file->getSize() > self::MAX_UPLOAD_BYTES) {
+                $size = (int) $file->getSize();
+                if ($size > self::MAX_UPLOAD_BYTES) {
                     continue;
                 }
                 $this->commandBus->dispatch(new AttachDocumentToSession(
                     $slotId,
                     $date,
                     $file->getClientOriginalName(),
-                    (int) $file->getSize(),
+                    $size,
                     $file->getClientMimeType(),
                     $file->getPathname(),
                 ));
@@ -199,8 +200,8 @@ final class CalendarController extends AbstractController
         try {
             /** @var SessionDetailView $detail */
             $detail = $this->handle(new GetSessionDetail($slotId, $date));
-        } catch (SlotNotScheduled) {
-            throw $this->createNotFoundException();
+        } catch (SlotNotScheduled $e) {
+            throw $this->createNotFoundException(previous: $e);
         }
 
         $document = null;
@@ -221,5 +222,12 @@ final class CalendarController extends AbstractController
         $response->setContentDisposition(HeaderUtils::DISPOSITION_ATTACHMENT, $document->name);
 
         return $response;
+    }
+
+    private function selectedDate(string $date): DateTimeImmutable
+    {
+        $parsed = DateTimeImmutable::createFromFormat('!Y-m-d', $date);
+
+        return $parsed instanceof DateTimeImmutable ? $parsed : new DateTimeImmutable('today');
     }
 }

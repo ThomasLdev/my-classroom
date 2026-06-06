@@ -28,6 +28,8 @@ trait StringIdentity
 
     public function equals(self $other): bool
     {
-        return $this::class === $other::class && $this->value === $other->value;
+        // The parameter type already guarantees the same final identifier class,
+        // so only the underlying value needs comparing.
+        return $this->value === $other->value;
     }
 }

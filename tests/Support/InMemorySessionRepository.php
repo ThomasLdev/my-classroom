@@ -6,6 +6,7 @@ namespace App\Tests\Support;
 
 use App\Shared\Domain\Identifier\ClassroomId;
 use App\Shared\Domain\Identifier\SlotId;
+use App\Teaching\Domain\Model\Session\Activity;
 use App\Teaching\Domain\Model\Session\Session;
 use App\Teaching\Domain\Model\Session\SessionId;
 use App\Teaching\Domain\Repository\SessionRepository;
@@ -60,12 +61,12 @@ final class InMemorySessionRepository implements SessionRepository
             if ($session->isClosed() || $session->endsAt() > $now) {
                 return false;
             }
-            return array_any($session->activities, fn ($activity) => $activity->isPlanned());
+            return array_any($session->activities, static fn (Activity $activity): bool => $activity->isPlanned());
         });
 
         usort($list, static fn (Session $a, Session $b): int => $a->endsAt() <=> $b->endsAt());
 
-        return array_values($list);
+        return $list;
     }
 
     /**

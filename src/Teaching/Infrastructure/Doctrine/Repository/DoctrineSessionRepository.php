@@ -51,6 +51,7 @@ final readonly class DoctrineSessionRepository implements SessionRepository
 
     public function mostRecentUncheckedHomework(ClassroomId $classroomId, DateTimeImmutable $before): ?Session
     {
+        /** @var SessionEntity|null $entity */
         $entity = $this->entities->createQueryBuilder('s')
             ->andWhere('s.classroomId = :classroom')
             ->andWhere('s.date < :before')
@@ -78,6 +79,7 @@ final readonly class DoctrineSessionRepository implements SessionRepository
     public function elapsedOpenWithPlannedActivities(DateTimeImmutable $now): array
     {
         // Elapsed (date + end minute <= now) is computed, so it is filtered in PHP after a narrow DB pre-filter.
+        /** @var list<SessionEntity> $candidates */
         $candidates = $this->entities->createQueryBuilder('s')
             ->innerJoin('s.activities', 'a')
             ->andWhere('s.closedAt IS NULL')

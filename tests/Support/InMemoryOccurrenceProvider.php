@@ -7,7 +7,7 @@ namespace App\Tests\Support;
 use App\Shared\Domain\Identifier\ClassroomId;
 use App\Shared\Domain\Identifier\SlotId;
 use App\Shared\Domain\Occurrence;
-use App\Teaching\Domain\Port\OccurrenceProvider;
+use App\Shared\Domain\Port\OccurrenceProvider;
 use DateTimeImmutable;
 
 final class InMemoryOccurrenceProvider implements OccurrenceProvider
@@ -34,7 +34,7 @@ final class InMemoryOccurrenceProvider implements OccurrenceProvider
             static fn (Occurrence $a, Occurrence $b): int => $a->timeRange->startMinute <=> $b->timeRange->startMinute,
         );
 
-        return array_values($matches);
+        return $matches;
     }
 
     public function resolve(SlotId $slotId, DateTimeImmutable $date): ?Occurrence

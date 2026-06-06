@@ -11,8 +11,8 @@ use App\Scheduling\Infrastructure\Doctrine\Entity\TimetableSlotEntity;
 use App\Shared\Domain\Identifier\ClassroomId;
 use App\Shared\Domain\Identifier\SlotId;
 use App\Shared\Domain\Occurrence;
+use App\Shared\Domain\Port\OccurrenceProvider;
 use App\Shared\Domain\TimeRange;
-use App\Teaching\Domain\Port\OccurrenceProvider;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AsAlias;
@@ -59,6 +59,7 @@ final class DoctrineOccurrenceProvider implements OccurrenceProvider
      */
     private function fetchSlots(): array
     {
+        /** @var list<TimetableSlotEntity> $rows */
         $rows = $this->em->getRepository(TimetableSlotEntity::class)
             ->createQueryBuilder('s')
             ->addSelect('c')

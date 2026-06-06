@@ -37,11 +37,11 @@ final readonly class SessionDetailViewFactory
             start: $occurrence->timeRange->startLabel(),
             end: $occurrence->timeRange->endLabel(),
             materialized: $session instanceof Session,
-            activities: array_values($activities),
+            activities: $activities,
             note: $session?->note,
             homework: $session?->homework,
             previousHomework: $this->previousHomework($previousHomework),
-            documents: array_values($documents),
+            documents: $documents,
         );
     }
 
