@@ -8,6 +8,8 @@ use App\Teaching\Application\Command\AddActivityToSession\AddActivityToSession;
 use App\Teaching\Application\Command\MarkActivityDone\MarkActivityDone;
 use App\Teaching\Application\Command\MarkActivityNotDone\MarkActivityNotDone;
 use App\Teaching\Application\Command\RemoveActivityFromSession\RemoveActivityFromSession;
+use App\Teaching\Application\Command\SetHomeworkChecked\SetHomeworkChecked;
+use App\Teaching\Application\Command\SetSessionHomework\SetSessionHomework;
 use App\Teaching\Application\Command\SetSessionNote\SetSessionNote;
 use App\Teaching\Application\Query\GetSessionDetail\GetSessionDetail;
 use App\Teaching\Application\Query\GetSessionDetail\SessionDetailView;
@@ -40,6 +42,9 @@ final class SessionBoard
     #[LiveProp(writable: true, onUpdated: 'onNoteUpdated')]
     public string $note = '';
 
+    #[LiveProp(writable: true, onUpdated: 'onHomeworkUpdated')]
+    public string $homework = '';
+
     private readonly MessageBusInterface $commandBus;
 
     private ?SessionDetailView $detail = null;
@@ -57,6 +62,7 @@ final class SessionBoard
         $this->slotId = $slotId;
         $this->date = $date;
         $this->note = $this->getDetail()->note ?? '';
+        $this->homework = $this->getDetail()->homework ?? '';
     }
 
     public function getDetail(): SessionDetailView
@@ -73,6 +79,24 @@ final class SessionBoard
         if ((trim($previousValue) === '') !== (trim($this->note) === '')) {
             $this->dispatchBrowserEvent('session:changed');
         }
+    }
+
+    public function onHomeworkUpdated(): void
+    {
+        $this->commandBus->dispatch(new SetSessionHomework($this->slotId, $this->date, $this->homework));
+        $this->detail = null;
+    }
+
+    #[LiveAction]
+    public function verifyHomework(): void
+    {
+        $previous = $this->getDetail()->previousHomework;
+        if ($previous === null) {
+            return;
+        }
+
+        $this->commandBus->dispatch(new SetHomeworkChecked($previous->slotId, $previous->date, true));
+        $this->detail = null;
     }
 
     #[LiveAction]

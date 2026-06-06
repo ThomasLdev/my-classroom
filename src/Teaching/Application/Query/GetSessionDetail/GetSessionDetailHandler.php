@@ -27,6 +27,10 @@ final readonly class GetSessionDetailHandler
         $occurrence = $this->occurrences->resolve($slotId, $date)
             ?? throw SlotNotScheduled::for($query->slotId, $query->date);
 
-        return $this->viewFactory->create($occurrence, $this->sessions->ofOccurrence($slotId, $date));
+        return $this->viewFactory->create(
+            $occurrence,
+            $this->sessions->ofOccurrence($slotId, $date),
+            $this->sessions->mostRecentUncheckedHomework($occurrence->classroomId, $date),
+        );
     }
 }

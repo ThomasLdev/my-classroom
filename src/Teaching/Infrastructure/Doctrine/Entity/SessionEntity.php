@@ -42,6 +42,12 @@ class SessionEntity
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     public ?string $note = null;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    public ?string $homework = null;
+
+    #[ORM\Column(name: 'homework_checked', type: Types::BOOLEAN, options: ['default' => false])]
+    public bool $homeworkChecked = false;
+
     /** @var Collection<int, ActivityEntity> */
     #[ORM\OneToMany(
         targetEntity: ActivityEntity::class,

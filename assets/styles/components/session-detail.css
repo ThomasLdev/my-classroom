@@ -114,3 +114,49 @@
 
   &.is-over { background: var(--clay-soft); border-color: var(--clay); color: var(--ink); }
 }
+
+/* Homework recall: last session's homework, surfaced to be ticked off. */
+.homework-recall {
+  display: flex;
+  align-items: flex-start;
+  gap: .75rem;
+  margin-block-end: .75rem;
+  padding: .8125rem .875rem;
+  background: var(--clay-soft);
+  border: 1px solid color-mix(in oklab, var(--clay), white 50%);
+  border-radius: var(--r-md);
+
+  & .homework-recall__check {
+    flex: none;
+    inline-size: 24px;
+    block-size: 24px;
+    display: grid;
+    place-items: center;
+    border: 1.5px solid var(--clay);
+    border-radius: 7px;
+    background: var(--surface);
+    color: var(--clay);
+    transition: background .15s var(--ease), color .15s var(--ease);
+  }
+  & .homework-recall__check:hover { background: var(--clay); color: #fff; }
+  & .homework-recall__check-icon { inline-size: 14px; block-size: 14px; }
+
+  & .homework-recall__body { flex: 1; min-inline-size: 0; }
+
+  & .homework-recall__head {
+    display: flex;
+    align-items: center;
+    gap: .375rem;
+    margin-block-end: .25rem;
+    font-size: .75rem;
+    font-weight: 700;
+    color: color-mix(in oklab, var(--clay), black 28%);
+  }
+  & .homework-recall__head-icon { inline-size: 14px; block-size: 14px; }
+
+  & .homework-recall__text {
+    font-size: .875rem;
+    color: var(--ink);
+    white-space: pre-wrap;
+  }
+}

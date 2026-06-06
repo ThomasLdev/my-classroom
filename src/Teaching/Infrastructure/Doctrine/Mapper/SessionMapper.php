@@ -28,6 +28,8 @@ final class SessionMapper
             'closedAt' => $entity->closedAt?->format(\DateTimeInterface::ATOM),
             'cancelled' => $entity->cancelled,
             'note' => $entity->note,
+            'homework' => $entity->homework,
+            'homeworkChecked' => $entity->homeworkChecked,
             'activities' => array_map(
                 static fn (ActivityEntity $a): array => [
                     'id' => $a->id,
@@ -63,6 +65,8 @@ final class SessionMapper
         $entity->closedAt = $state['closedAt'] !== null ? new \DateTimeImmutable($state['closedAt']) : null;
         $entity->cancelled = $state['cancelled'];
         $entity->note = $state['note'];
+        $entity->homework = $state['homework'];
+        $entity->homeworkChecked = $state['homeworkChecked'];
 
         $this->reconcileActivities($state['activities'], $entity);
         $this->reconcileDocuments($state['documents'], $entity);

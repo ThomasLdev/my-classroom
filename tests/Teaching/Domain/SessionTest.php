@@ -119,6 +119,42 @@ final class SessionTest extends TestCase
         self::assertNull($session->note);
     }
 
+    public function testHomeworkIsTrimmedAndClearingItResetsTheCheck(): void
+    {
+        $session = $this->materialize();
+
+        $session->setHomework('  Exercices 4 et 5 p.32  ');
+        self::assertSame('Exercices 4 et 5 p.32', $session->homework);
+
+        $session->setHomeworkChecked(true);
+        self::assertTrue($session->homeworkChecked);
+
+        // Clearing the homework also drops its verified flag.
+        $session->setHomework('   ');
+        self::assertNull($session->homework);
+        self::assertFalse($session->homeworkChecked);
+    }
+
+    public function testHomeworkCannotBeCheckedWithoutHomework(): void
+    {
+        $session = $this->materialize();
+
+        $session->setHomeworkChecked(true);
+        self::assertFalse($session->homeworkChecked);
+    }
+
+    public function testStateRoundTripPreservesHomework(): void
+    {
+        $session = $this->materialize();
+        $session->setHomework('Lire le chapitre 7');
+        $session->setHomeworkChecked(true);
+
+        $restored = Session::fromState($session->toState());
+
+        self::assertSame('Lire le chapitre 7', $restored->homework);
+        self::assertTrue($restored->homeworkChecked);
+    }
+
     public function testAttachingAndRemovingDocuments(): void
     {
         $session = $this->materialize();

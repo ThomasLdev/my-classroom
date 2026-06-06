@@ -13,7 +13,7 @@
         {% if total > 0 %}
             <ul class="act-list">
                 {% for a in detail.activities %}
-                    <li class="act-swipe" data-controller="swipe-delete"
+                    <li class="act-swipe" id="act-{{ a.id }}" data-controller="swipe-delete"
                         data-action="pointerdown->swipe-delete#start pointermove->swipe-delete#move pointerup->swipe-delete#end pointercancel->swipe-delete#end">
                         <span class="act-swipe__action" aria-hidden="true">
                             <twig:ux:icon name="lucide:trash-2" class="act-swipe__action-icon" />
@@ -57,6 +57,40 @@
         <textarea class="notearea" data-model="debounce(600)|note"
                   placeholder="Ce qui a marché, les élèves à revoir, les points à reprendre la prochaine fois…">{{ note }}</textarea>
         {% if note|trim is not empty %}
+            <p class="note-saved">
+                <twig:ux:icon name="lucide:circle-check" class="note-saved__icon" /> Enregistré automatiquement
+            </p>
+        {% endif %}
+    </section>
+
+    <section class="section">
+        <div class="section__head">
+            <twig:ux:icon name="lucide:book-open" class="section__icon" />
+            <h2 class="section__title">Devoirs</h2>
+        </div>
+
+        {% set previousHomework = detail.previousHomework %}
+        {% if previousHomework %}
+            <div class="homework-recall">
+                <button type="button" class="homework-recall__check"
+                        data-action="live#action"
+                        data-live-action-param="verifyHomework"
+                        aria-label="Marquer les devoirs comme vérifiés">
+                    <twig:ux:icon name="lucide:check" class="homework-recall__check-icon" />
+                </button>
+                <div class="homework-recall__body">
+                    <p class="homework-recall__head">
+                        <twig:ux:icon name="lucide:rotate-ccw" class="homework-recall__head-icon" />
+                        Devoirs de la séance du {{ previousHomework.dateLabel }} — à vérifier
+                    </p>
+                    <p class="homework-recall__text">{{ previousHomework.text }}</p>
+                </div>
+            </div>
+        {% endif %}
+
+        <textarea class="notearea" data-model="debounce(600)|homework"
+                  placeholder="Devoirs donnés pour la prochaine séance…">{{ homework }}</textarea>
+        {% if homework|trim is not empty %}
             <p class="note-saved">
                 <twig:ux:icon name="lucide:circle-check" class="note-saved__icon" /> Enregistré automatiquement
             </p>

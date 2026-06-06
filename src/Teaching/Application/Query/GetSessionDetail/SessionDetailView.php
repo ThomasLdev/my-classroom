@@ -21,6 +21,8 @@ final readonly class SessionDetailView
         public bool $materialized,
         public array $activities,
         public ?string $note,
+        public ?string $homework,
+        public ?PreviousHomeworkView $previousHomework,
         public array $documents,
     ) {
     }

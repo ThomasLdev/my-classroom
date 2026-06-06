@@ -81,7 +81,9 @@ html:has(.sheet[open]) { overflow: hidden; }
     margin: auto;
     inline-size: min(34rem, 100vw - 3rem);
     max-inline-size: none;
-    max-block-size: 85dvh;
+    /* Fixed height (not content-sized): the body scrolls, so adding/removing
+       activities no longer resizes and shifts the centered modal. */
+    block-size: min(40rem, 85dvh);
     border-radius: var(--r-xl);
     padding-block-start: 1.25rem;
   }

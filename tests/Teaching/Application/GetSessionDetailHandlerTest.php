@@ -8,6 +8,8 @@ use App\Teaching\Application\Command\AddActivityToSession\AddActivityToSession;
 use App\Teaching\Application\Command\AddActivityToSession\AddActivityToSessionHandler;
 use App\Teaching\Application\Command\AttachDocumentToSession\AttachDocumentToSession;
 use App\Teaching\Application\Command\AttachDocumentToSession\AttachDocumentToSessionHandler;
+use App\Teaching\Application\Command\SetSessionHomework\SetSessionHomework;
+use App\Teaching\Application\Command\SetSessionHomework\SetSessionHomeworkHandler;
 use App\Teaching\Application\Command\SetSessionNote\SetSessionNote;
 use App\Teaching\Application\Command\SetSessionNote\SetSessionNoteHandler;
 use App\Teaching\Application\Query\GetSessionDetail\ActivityViewFactory;
@@ -38,6 +40,27 @@ final class GetSessionDetailHandlerTest extends TestCase
             $this->occurrences,
             new SessionDetailViewFactory(new ActivityViewFactory(), new DocumentViewFactory()),
         );
+    }
+
+    public function testItRecallsTheUncheckedHomeworkOfThePreviousSessionOfTheSameClass(): void
+    {
+        // Two meetings of class-1: homework given on the 8th, recalled on the 10th.
+        $this->occurrences->add(OccurrenceMother::create('slot-1', 'class-1', '2026-06-08', '09:00', '10:00'));
+        $this->occurrences->add(OccurrenceMother::create('slot-2', 'class-1', '2026-06-10', '09:00', '10:00'));
+
+        $setHomework = new SetSessionHomeworkHandler($this->sessions, $this->occurrences, new SequentialIdGenerator('hw'));
+        $setHomework(new SetSessionHomework('slot-1', '2026-06-08', 'Exercices 4 et 5'));
+
+        $view = ($this->handler)(new GetSessionDetail('slot-2', '2026-06-10'));
+
+        self::assertNotNull($view->previousHomework);
+        self::assertSame('Exercices 4 et 5', $view->previousHomework->text);
+        self::assertSame('slot-1', $view->previousHomework->slotId);
+        self::assertSame('2026-06-08', $view->previousHomework->date);
+
+        // Earlier session itself has no "previous" homework to recall.
+        $first = ($this->handler)(new GetSessionDetail('slot-1', '2026-06-08'));
+        self::assertNull($first->previousHomework);
     }
 
     public function testItReturnsTheMaterialisedSessionWithItsActivities(): void

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Teaching\Infrastructure\Doctrine\Repository;
 
+use App\Shared\Domain\Identifier\ClassroomId;
 use App\Shared\Domain\Identifier\SlotId;
 use App\Teaching\Domain\Model\Session\ActivityStatus;
 use App\Teaching\Domain\Model\Session\Session;
@@ -41,6 +42,23 @@ final class DoctrineSessionRepository implements SessionRepository
             'slotId' => (string) $slotId,
             'date' => $date->setTime(0, 0),
         ]);
+
+        return $entity !== null ? $this->mapper->toDomain($entity) : null;
+    }
+
+    public function mostRecentUncheckedHomework(ClassroomId $classroomId, \DateTimeImmutable $before): ?Session
+    {
+        $entity = $this->entities->createQueryBuilder('s')
+            ->andWhere('s.classroomId = :classroom')
+            ->andWhere('s.date < :before')
+            ->andWhere('s.homework IS NOT NULL')
+            ->andWhere('s.homeworkChecked = false')
+            ->setParameter('classroom', (string) $classroomId)
+            ->setParameter('before', $before->setTime(0, 0))
+            ->orderBy('s.date', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
 
         return $entity !== null ? $this->mapper->toDomain($entity) : null;
     }

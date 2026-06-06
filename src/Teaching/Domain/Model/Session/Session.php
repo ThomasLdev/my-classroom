@@ -26,6 +26,8 @@ use App\Teaching\Domain\Exception\DocumentNotFound;
  *     closedAt: string|null,
  *     cancelled: bool,
  *     note: string|null,
+ *     homework: string|null,
+ *     homeworkChecked: bool,
  *     activities: list<ActivityStateArray>,
  *     documents: list<DocumentStateArray>,
  * }
@@ -39,6 +41,11 @@ final class Session
     public private(set) array $documents = [];
 
     public private(set) ?string $note = null;
+
+    public private(set) ?string $homework = null;
+
+    /** Whether the teacher has verified this session's homework (ticked in the next session). */
+    public private(set) bool $homeworkChecked = false;
 
     public private(set) ?\DateTimeImmutable $closedAt = null;
 
@@ -88,6 +95,8 @@ final class Session
             $state['documents'],
         ));
         $session->note = $state['note'];
+        $session->homework = $state['homework'];
+        $session->homeworkChecked = $state['homeworkChecked'];
         $session->closedAt = $state['closedAt'] !== null ? new \DateTimeImmutable($state['closedAt']) : null;
         $session->cancelled = $state['cancelled'];
 
@@ -109,6 +118,8 @@ final class Session
             'closedAt' => $this->closedAt?->format(\DateTimeInterface::ATOM),
             'cancelled' => $this->cancelled,
             'note' => $this->note,
+            'homework' => $this->homework,
+            'homeworkChecked' => $this->homeworkChecked,
             'activities' => array_map(
                 static fn (Activity $activity): array => $activity->toState(),
                 $this->activities,
@@ -132,6 +143,22 @@ final class Session
     {
         $note = $note !== null ? trim($note) : null;
         $this->note = ($note === null || $note === '') ? null : $note;
+    }
+
+    public function setHomework(?string $homework): void
+    {
+        $homework = $homework !== null ? trim($homework) : null;
+        $this->homework = ($homework === null || $homework === '') ? null : $homework;
+
+        if ($this->homework === null) {
+            $this->homeworkChecked = false;
+        }
+    }
+
+    public function setHomeworkChecked(bool $checked): void
+    {
+        // Only meaningful once homework exists.
+        $this->homeworkChecked = $this->homework !== null && $checked;
     }
 
     public function attachDocument(DocumentId $id, string $name, int $size, string $contentType): AttachedDocument
