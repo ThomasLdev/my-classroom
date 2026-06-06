@@ -1,39 +1,39 @@
 .dayhead {
-  display: flex;
-  align-items: flex-end;
-  gap: .875rem;
-  padding: .25rem .125rem .125rem;
-  view-transition-name: dayhead;
-
-  & .dayhead__dow {
-    font-family: var(--serif);
-    font-size: clamp(1.75rem, 6vw, 2.5rem);
-    line-height: .98;
-    white-space: nowrap;
-  }
-
-  & .dayhead__sub {
-    font-size: .8125rem;
-    color: var(--ink-2);
-    margin-top: .1875rem;
-    font-weight: 500;
-  }
-
-  & .dayhead__today {
-    align-self: center;
-    font-size: .625rem;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    font-weight: 700;
-    color: var(--clay);
-    border: 1px solid var(--clay);
-    border-radius: 999px;
-    padding: .1875rem .5rem;
-  }
-
-  & .dayhead__nav {
-    margin-inline-start: auto;
     display: flex;
-    gap: .5rem;
-  }
+    align-items: flex-end;
+    gap: 0.875rem;
+    padding: 0.25rem 0.125rem 0.125rem;
+    view-transition-name: dayhead;
+
+    & .dayhead__dow {
+        font-family: var(--serif);
+        font-size: clamp(1.75rem, 6vw, 2.5rem);
+        line-height: 0.98;
+        white-space: nowrap;
+    }
+
+    & .dayhead__sub {
+        font-size: 0.8125rem;
+        color: var(--ink-2);
+        margin-top: 0.1875rem;
+        font-weight: 500;
+    }
+
+    & .dayhead__today {
+        align-self: center;
+        font-size: 0.625rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        font-weight: 700;
+        color: var(--clay);
+        border: 1px solid var(--clay);
+        border-radius: 999px;
+        padding: 0.1875rem 0.5rem;
+    }
+
+    & .dayhead__nav {
+        margin-inline-start: auto;
+        display: flex;
+        gap: 0.5rem;
+    }
 }

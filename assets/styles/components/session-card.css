@@ -1,121 +1,142 @@
 .session-card {
-  /* Neutral default; per-class colours come from the user later (session-card--kN). */
-  --c-accent: var(--ink-2);
-  position: relative;
-  display: block;
-  padding: var(--card-padding);
-  background: var(--surface);
-  border: 1px solid var(--hairline-2);
-  border-radius: var(--r-lg);
-  overflow: hidden;
-  transition: box-shadow .18s var(--ease);
-
-  &:hover { box-shadow: var(--shadow-card); }
-
-  & .session-card__bar {
-    position: absolute;
-    inset-block: 0;
-    inset-inline-start: 0;
-    inline-size: 5px;
-    background: var(--c-accent, var(--line-strong));
-  }
-
-  & .session-card__top {
-    display: flex;
-    align-items: center;
-    gap: .625rem;
-    margin-bottom: .5625rem;
-  }
-
-  & .session-card__time {
-    margin-inline-start: auto;
-    font-size: .8125rem;
-    font-weight: 600;
-    color: var(--ink-2);
-    white-space: nowrap;
-  }
-
-  & .session-card__meta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: .5rem;
-    font-size: .8125rem;
-    font-weight: 500;
-    color: var(--ink-2);
-  }
-  & .session-card__subject { font-weight: 600; }
-  & .session-card__room {
+    /* Neutral default; per-class colours come from the user later (session-card--kN). */
+    --c-accent: var(--ink-2);
     position: relative;
-    padding-inline-start: .625rem;
-    color: var(--ink-3);
-  }
-  & .session-card__room::before {
-    content: "";
-    position: absolute;
-    inset-inline-start: 0;
-    inset-block: 0;
-    margin-block: auto;
-    inline-size: 3px;
-    block-size: 3px;
-    border-radius: 50%;
-    background: var(--ink-3);
-  }
-
-  & .session-card__progress {
-    display: flex;
-    align-items: center;
-    gap: .5rem;
-    margin-top: .6875rem;
-    font-size: .75rem;
-    font-weight: 600;
-    color: var(--ink-3);
-  }
-
-  & .session-card__progressbar {
-    flex: 1;
-    block-size: 5px;
-    border-radius: 999px;
-    background: var(--hairline);
-    overflow: hidden;
-  }
-  & .session-card__progressbar-fill {
     display: block;
-    block-size: 100%;
-    inline-size: var(--fill, 0);
-    border-radius: 999px;
-    background: var(--c-accent, var(--ink));
-    transition: inline-size .45s var(--ease);
-  }
+    padding: var(--card-padding);
+    background: var(--surface);
+    border: 1px solid var(--hairline-2);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    transition: box-shadow 0.18s var(--ease);
 
-  & .session-card__empty {
-    margin-top: .625rem;
-    font-size: .8125rem;
-    color: var(--ink-3);
-  }
+    &:hover {
+        box-shadow: var(--shadow-card);
+    }
 
-  & .session-card__flag {
-    margin-top: .625rem;
-    font-size: .8125rem;
-    font-weight: 600;
-    color: var(--status-error);
-  }
+    & .session-card__bar {
+        position: absolute;
+        inset-block: 0;
+        inset-inline-start: 0;
+        inline-size: 5px;
+        background: var(--c-accent, var(--line-strong));
+    }
 
-  & .session-card__indicators {
-    display: inline-flex;
-    align-items: center;
-    gap: .625rem;
-    font-size: .75rem;
-    font-weight: 600;
-    color: var(--ink-3);
-  }
-  & .session-card__indicator { display: inline-flex; align-items: center; gap: .25rem; }
-  & .session-card__indicator-icon { inline-size: 14px; block-size: 14px; }
+    & .session-card__top {
+        display: flex;
+        align-items: center;
+        gap: 0.625rem;
+        margin-bottom: 0.5625rem;
+    }
 
-  &.session-card--k1 { --c-accent: var(--k1-accent); }
-  &.session-card--k2 { --c-accent: var(--k2-accent); }
-  &.session-card--k3 { --c-accent: var(--k3-accent); }
-  &.session-card--k4 { --c-accent: var(--k4-accent); }
+    & .session-card__time {
+        margin-inline-start: auto;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: var(--ink-2);
+        white-space: nowrap;
+    }
 
-  &.session-card--cancelled { opacity: .6; }
+    & .session-card__meta {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.8125rem;
+        font-weight: 500;
+        color: var(--ink-2);
+    }
+    & .session-card__subject {
+        font-weight: 600;
+    }
+    & .session-card__room {
+        position: relative;
+        padding-inline-start: 0.625rem;
+        color: var(--ink-3);
+    }
+    & .session-card__room::before {
+        content: "";
+        position: absolute;
+        inset-inline-start: 0;
+        inset-block: 0;
+        margin-block: auto;
+        inline-size: 3px;
+        block-size: 3px;
+        border-radius: 50%;
+        background: var(--ink-3);
+    }
+
+    & .session-card__progress {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 0.6875rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--ink-3);
+    }
+
+    & .session-card__progressbar {
+        flex: 1;
+        block-size: 5px;
+        border-radius: 999px;
+        background: var(--hairline);
+        overflow: hidden;
+    }
+    & .session-card__progressbar-fill {
+        display: block;
+        block-size: 100%;
+        inline-size: var(--fill, 0);
+        border-radius: 999px;
+        background: var(--c-accent, var(--ink));
+        transition: inline-size 0.45s var(--ease);
+    }
+
+    & .session-card__empty {
+        margin-top: 0.625rem;
+        font-size: 0.8125rem;
+        color: var(--ink-3);
+    }
+
+    & .session-card__flag {
+        margin-top: 0.625rem;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: var(--status-error);
+    }
+
+    & .session-card__indicators {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.625rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--ink-3);
+    }
+    & .session-card__indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+    & .session-card__indicator-icon {
+        inline-size: 14px;
+        block-size: 14px;
+    }
+
+    &.session-card--k1 {
+        --c-accent: var(--k1-accent);
+    }
+    &.session-card--k2 {
+        --c-accent: var(--k2-accent);
+    }
+    &.session-card--k3 {
+        --c-accent: var(--k3-accent);
+    }
+    &.session-card--k4 {
+        --c-accent: var(--k4-accent);
+    }
+
+    &.session-card--cancelled {
+        opacity: 0.6;
+    }
 }

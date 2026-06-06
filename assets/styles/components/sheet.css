@@ -1,135 +1,171 @@
 .sheet {
-  /* NO `display` here: a closed <dialog> must keep its native display:none. */
-  margin: auto auto 0;
-  inline-size: 100%;
-  max-inline-size: var(--content-max-inline-size);
-  max-block-size: 92dvh;
-  flex-direction: column;
-  padding: 0 1rem calc(1.25rem + env(safe-area-inset-bottom));
-  border: none;
-  border-radius: var(--r-xl) var(--r-xl) 0 0;
-  background: var(--surface);
-  box-shadow: var(--shadow-pop);
-  overflow: hidden;
+    /* NO `display` here: a closed <dialog> must keep its native display:none. */
+    margin: auto auto 0;
+    inline-size: 100%;
+    max-inline-size: var(--content-max-inline-size);
+    max-block-size: 92dvh;
+    flex-direction: column;
+    padding: 0 1rem calc(1.25rem + env(safe-area-inset-bottom));
+    border: none;
+    border-radius: var(--r-xl) var(--r-xl) 0 0;
+    background: var(--surface);
+    box-shadow: var(--shadow-pop);
+    overflow: hidden;
 
-  &::backdrop { background: var(--overlay); }
+    &::backdrop {
+        background: var(--overlay);
+    }
 
-  & .sheet__handle {
-    flex: none;
-    display: grid;
-    place-items: center;
-    padding-block: .5rem .375rem;
-    touch-action: none;
-    cursor: grab;
-  }
-  & .sheet__handle:active { cursor: grabbing; }
+    & .sheet__handle {
+        flex: none;
+        display: grid;
+        place-items: center;
+        padding-block: 0.5rem 0.375rem;
+        touch-action: none;
+        cursor: grab;
+    }
+    & .sheet__handle:active {
+        cursor: grabbing;
+    }
 
-  & .sheet__grip {
-    inline-size: 38px;
-    block-size: 4px;
-    border-radius: 999px;
-    background: var(--line-strong);
-  }
+    & .sheet__grip {
+        inline-size: 38px;
+        block-size: 4px;
+        border-radius: 999px;
+        background: var(--line-strong);
+    }
 
-  & .sheet__close {
-    position: absolute;
-    inset-block-start: .625rem;
-    inset-inline-end: .75rem;
-    inline-size: 44px;
-    block-size: 44px;
-    display: grid;
-    place-items: center;
-    border-radius: 50%;
-    color: var(--ink-2);
-    background: var(--surface-2);
-    /* Above the sticky hero, otherwise the header would paint over it. */
-    z-index: 2;
-  }
-  & .sheet__close-icon { inline-size: 18px; block-size: 18px; }
+    & .sheet__close {
+        position: absolute;
+        inset-block-start: 0.625rem;
+        inset-inline-end: 0.75rem;
+        inline-size: 44px;
+        block-size: 44px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        color: var(--ink-2);
+        background: var(--surface-2);
+        /* Above the sticky hero, otherwise the header would paint over it. */
+        z-index: 2;
+    }
+    & .sheet__close-icon {
+        inline-size: 18px;
+        block-size: 18px;
+    }
 
-  & .sheet__body {
-    flex: 1;
-    min-block-size: 0;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-  }
+    & .sheet__body {
+        flex: 1;
+        min-block-size: 0;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
 }
 
 .sheet[open] {
-  display: flex;
+    display: flex;
 }
 
-.sheet .detail__back { display: none; }
+.sheet .detail__back {
+    display: none;
+}
 
 /* Fixed header: the hero stays pinned while the sheet body scrolls under it,
    and doubles as the drag grip (the small handle alone is too easy to miss). */
 .sheet .detail__hero {
-  position: sticky;
-  inset-block-start: 0;
-  z-index: 1;
-  background: var(--surface);
-  touch-action: none;
-  cursor: grab;
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 1;
+    background: var(--surface);
+    touch-action: none;
+    cursor: grab;
 }
-.sheet .detail__hero:active { cursor: grabbing; }
+.sheet .detail__hero:active {
+    cursor: grabbing;
+}
 
-html:has(.sheet[open]) { overflow: hidden; }
+html:has(.sheet[open]) {
+    overflow: hidden;
+}
 
 /* Desktop / tablet: centered modal, no drag handle. */
 @media (min-width: 720px) {
-  .sheet {
-    margin: auto;
-    inline-size: min(34rem, 100vw - 3rem);
-    max-inline-size: none;
-    /* Fixed height (not content-sized): the body scrolls, so adding/removing
+    .sheet {
+        margin: auto;
+        inline-size: min(34rem, 100vw - 3rem);
+        max-inline-size: none;
+        /* Fixed height (not content-sized): the body scrolls, so adding/removing
        activities no longer resizes and shifts the centered modal. */
-    block-size: min(40rem, 85dvh);
-    border-radius: var(--r-xl);
-    padding-block-start: 1.25rem;
-  }
-  .sheet .sheet__handle { display: none; }
-  /* Centered modal: the header isn't a drag grip here. */
-  .sheet .detail__hero { cursor: auto; touch-action: auto; }
+        block-size: min(40rem, 85dvh);
+        border-radius: var(--r-xl);
+        padding-block-start: 1.25rem;
+    }
+    .sheet .sheet__handle {
+        display: none;
+    }
+    /* Centered modal: the header isn't a drag grip here. */
+    .sheet .detail__hero {
+        cursor: auto;
+        touch-action: auto;
+    }
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .sheet {
-    translate: 0 100%;
-    transition:
-      translate .3s var(--ease),
-      height .25s var(--ease),
-      overlay .3s allow-discrete,
-      display .3s allow-discrete;
-  }
-  .sheet[open] { translate: 0 0; }
-  @starting-style {
-    .sheet[open] { translate: 0 100%; }
-  }
+    .sheet {
+        translate: 0 100%;
+        transition:
+            translate 0.3s var(--ease),
+            height 0.25s var(--ease),
+            overlay 0.3s allow-discrete,
+            display 0.3s allow-discrete;
+    }
+    .sheet[open] {
+        translate: 0 0;
+    }
+    @starting-style {
+        .sheet[open] {
+            translate: 0 100%;
+        }
+    }
 
-  .sheet::backdrop {
-    opacity: 0;
-    transition: opacity .3s, overlay .3s allow-discrete, display .3s allow-discrete;
-  }
-  .sheet[open]::backdrop { opacity: 1; }
-  @starting-style {
-    .sheet[open]::backdrop { opacity: 0; }
-  }
+    .sheet::backdrop {
+        opacity: 0;
+        transition:
+            opacity 0.3s,
+            overlay 0.3s allow-discrete,
+            display 0.3s allow-discrete;
+    }
+    .sheet[open]::backdrop {
+        opacity: 1;
+    }
+    @starting-style {
+        .sheet[open]::backdrop {
+            opacity: 0;
+        }
+    }
 }
 
 /* Modal entry on larger screens: fade + scale, no slide. */
 @media (prefers-reduced-motion: no-preference) and (min-width: 720px) {
-  .sheet {
-    translate: none;
-    opacity: 0;
-    scale: .96;
-    transition:
-      opacity .2s var(--ease),
-      scale .2s var(--ease),
-      overlay .2s allow-discrete,
-      display .2s allow-discrete;
-  }
-  .sheet[open] { opacity: 1; scale: 1; }
-  @starting-style {
-    .sheet[open] { translate: none; opacity: 0; scale: .96; }
-  }
+    .sheet {
+        translate: none;
+        opacity: 0;
+        scale: 0.96;
+        transition:
+            opacity 0.2s var(--ease),
+            scale 0.2s var(--ease),
+            overlay 0.2s allow-discrete,
+            display 0.2s allow-discrete;
+    }
+    .sheet[open] {
+        opacity: 1;
+        scale: 1;
+    }
+    @starting-style {
+        .sheet[open] {
+            translate: none;
+            opacity: 0;
+            scale: 0.96;
+        }
+    }
 }

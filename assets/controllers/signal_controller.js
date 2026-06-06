@@ -1,4 +1,4 @@
-import { Controller } from '@hotwired/stimulus';
+import { Controller } from "@hotwired/stimulus";
 
 /* Fires a one-shot window event on connect. Used to bridge a server-side change
    (e.g. a document upload handled by a Turbo form) back to listeners like the

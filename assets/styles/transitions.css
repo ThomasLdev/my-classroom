@@ -1,44 +1,72 @@
 /* Slide direction comes from data-transition, set on <html> by transition_controller. */
 @media (prefers-reduced-motion: no-preference) {
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation: none;
-  }
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+        animation: none;
+    }
 
-  ::view-transition-old(dayhead),
-  ::view-transition-new(dayhead),
-  ::view-transition-old(weekstrip),
-  ::view-transition-new(weekstrip) {
-    animation-duration: .2s;
-    animation-timing-function: var(--ease);
-  }
+    ::view-transition-old(dayhead),
+    ::view-transition-new(dayhead),
+    ::view-transition-old(weekstrip),
+    ::view-transition-new(weekstrip) {
+        animation-duration: 0.2s;
+        animation-timing-function: var(--ease);
+    }
 
-  ::view-transition-old(day-content),
-  ::view-transition-new(day-content) {
-    animation-duration: .3s;
-    animation-timing-function: var(--ease);
-  }
+    ::view-transition-old(day-content),
+    ::view-transition-new(day-content) {
+        animation-duration: 0.3s;
+        animation-timing-function: var(--ease);
+    }
 
-  /* Only the pill glides between columns (the morph is the default group animation,
+    /* Only the pill glides between columns (the morph is the default group animation,
      just retimed). The dark day number isn't named, so it stays in the weekstrip group
      and simply activates in place on the destination day via its cross-fade. */
-  ::view-transition-group(weekstrip-pill) {
-    animation-duration: .28s;
-    animation-timing-function: var(--ease);
-    z-index: 1; /* under the strip content so it never masks labels while sliding */
-  }
-  ::view-transition-group(weekstrip) { z-index: 2; }
+    ::view-transition-group(weekstrip-pill) {
+        animation-duration: 0.28s;
+        animation-timing-function: var(--ease);
+        z-index: 1; /* under the strip content so it never masks labels while sliding */
+    }
+    ::view-transition-group(weekstrip) {
+        z-index: 2;
+    }
 
-  /* Clip the slide to the column so the card disappears at its edge, not across the screen. */
-  ::view-transition-group(day-content) { overflow: clip; }
+    /* Clip the slide to the column so the card disappears at its edge, not across the screen. */
+    ::view-transition-group(day-content) {
+        overflow: clip;
+    }
 
-  html[data-transition="next"]::view-transition-old(day-content) { animation-name: vt-out-left; }
-  html[data-transition="next"]::view-transition-new(day-content) { animation-name: vt-in-right; }
-  html[data-transition="prev"]::view-transition-old(day-content) { animation-name: vt-out-right; }
-  html[data-transition="prev"]::view-transition-new(day-content) { animation-name: vt-in-left; }
+    html[data-transition="next"]::view-transition-old(day-content) {
+        animation-name: vt-out-left;
+    }
+    html[data-transition="next"]::view-transition-new(day-content) {
+        animation-name: vt-in-right;
+    }
+    html[data-transition="prev"]::view-transition-old(day-content) {
+        animation-name: vt-out-right;
+    }
+    html[data-transition="prev"]::view-transition-new(day-content) {
+        animation-name: vt-in-left;
+    }
 
-  @keyframes vt-out-left  { to   { transform: translateX(-100%); } }
-  @keyframes vt-in-right  { from { transform: translateX(100%); } }
-  @keyframes vt-out-right { to   { transform: translateX(100%); } }
-  @keyframes vt-in-left   { from { transform: translateX(-100%); } }
+    @keyframes vt-out-left {
+        to {
+            transform: translateX(-100%);
+        }
+    }
+    @keyframes vt-in-right {
+        from {
+            transform: translateX(100%);
+        }
+    }
+    @keyframes vt-out-right {
+        to {
+            transform: translateX(100%);
+        }
+    }
+    @keyframes vt-in-left {
+        from {
+            transform: translateX(-100%);
+        }
+    }
 }

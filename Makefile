@@ -12,7 +12,8 @@ SYMFONY  = $(PHP) bin/console
 # Misc
 .DEFAULT_GOAL = help
 .PHONY        : help build up start down logs sh composer vendor sf cc test
-.PHONY        : ecs ecs-fix rector rector-fix phpstan test-unit test-functional test-db qa
+.PHONY        : ecs ecs-fix rector rector-fix phpstan test-unit test-functional test-db qa qa-front qa-full
+.PHONY        : biome biome-fix test-e2e
 
 ## —— 🎵 🐳 The Symfony Docker Makefile 🐳 🎵 ——————————————————————————————————
 help: ## Outputs this help screen
@@ -73,6 +74,20 @@ phpstan: ## Run static analysis (PHPStan level max + PHPat); warms the container
 
 qa: ## Run the whole quality suite in CI order: ECS → Rector → PHPStan → DB → tests
 qa: ecs rector phpstan test-db test
+
+qa-front: biome test-e2e
+
+qa-full: qa qa-front
+
+## —— Front 🎨 —————————————————————————————————————————————————————————————————
+biome: ## Lint the front-end with Biome (read-only)
+	@$(DOCKER_COMP) run --rm biome ci assets
+
+biome-fix: ## Format and fix the front-end with Biome
+	@$(DOCKER_COMP) run --rm biome check --write assets
+
+test-e2e: ## Run Playwright E2E tests (starts the stack if needed)
+	@$(DOCKER_COMP) run --rm playwright
 
 
 ## —— Composer 🧙 ——————————————————————————————————————————————————————————————

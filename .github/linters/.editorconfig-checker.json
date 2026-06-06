@@ -1,0 +1,6 @@
+{
+  "_comment": "editorconfig-checker config for super-linter (auto-discovered at .github/linters/.editorconfig-checker.json). Disables only the naive 'indent must be a multiple of N' check, which fights prose-aligned comment continuations and reference snippets. indent_style (tabs vs spaces), trailing whitespace and final-newline stay enforced.",
+  "Disable": {
+    "IndentSize": true
+  }
+}

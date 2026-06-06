@@ -1,22 +1,24 @@
-import { Controller } from '@hotwired/stimulus';
+import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
     connect() {
         this.onBeforeVisit = this.onBeforeVisit.bind(this);
-        document.addEventListener('turbo:before-visit', this.onBeforeVisit);
+        document.addEventListener("turbo:before-visit", this.onBeforeVisit);
     }
 
     disconnect() {
-        document.removeEventListener('turbo:before-visit', this.onBeforeVisit);
+        document.removeEventListener("turbo:before-visit", this.onBeforeVisit);
     }
 
     onBeforeVisit(event) {
         const current = this.dateIn(window.location.pathname);
-        const target = this.dateIn(new URL(event.detail.url, window.location.origin).pathname);
+        const target = this.dateIn(
+            new URL(event.detail.url, window.location.origin).pathname,
+        );
         const root = document.documentElement;
 
         if (current && target && target !== current) {
-            root.dataset.transition = target > current ? 'next' : 'prev';
+            root.dataset.transition = target > current ? "next" : "prev";
         } else {
             delete root.dataset.transition;
         }

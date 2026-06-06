@@ -1,0 +1,12 @@
+{
+  "name": "my-classroom-e2e",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Playwright end-to-end tests (scoped to E2E; not a front build).",
+  "scripts": {
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.60.0"
+  }
+}
