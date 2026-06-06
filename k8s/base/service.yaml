@@ -11,5 +11,5 @@ spec:
     - name: http
       port: 80
       targetPort: 80
-      # tinie-bakerie holds 30080; my-classroom is reachable at <pi-ip>:30081.
-      nodePort: 30081
+      # 30080=tinie-bakerie, 30081=poke-game; my-classroom uses 30082.
+      nodePort: 30082
