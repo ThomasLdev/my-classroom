@@ -7,4 +7,4 @@ resources:
 # The marker comment tells the automation which line to update — do not remove it.
 images:
   - name: ghcr.io/thomasldev/my-classroom
-    newTag: 20260606085226-a259a4c # {"$imagepolicy": "flux-system:my-classroom-staging:tag"}
+    newTag: 20260606092358-2503125 # {"$imagepolicy": "flux-system:my-classroom-staging:tag"}
