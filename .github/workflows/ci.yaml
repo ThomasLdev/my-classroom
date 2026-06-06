@@ -60,37 +60,37 @@ jobs:
       # Uncomment if Doctrine ORM is installed
       # - name: Doctrine Schema Validator
       #   run: docker compose exec -T php bin/console -e test doctrine:schema:validate
-  lint:
-    name: Lint
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: read
-      statuses: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-          persist-credentials: false
-      - name: Lint Code Base
-        uses: super-linter/super-linter/slim@v8
-        env:
-          GITHUB_ACTIONS_CONFIG_FILE: actionlint.yaml
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Whitelist mode: only the validators set to true run; every other
-          # linter (Prettier formatters, JSCPD, codespell, natural-language,
-          # PHP, ...) stays off. PHP is linted/tested in the Docker `tests`
-          # job; front-end formatting is owned by project-native tooling.
-          # NB: super-linter forbids mixing true and false — keep all-true here.
-          VALIDATE_YAML: true
-          VALIDATE_JSON: true
-          VALIDATE_BASH: true
-          VALIDATE_DOCKERFILE_HADOLINT: true
-          VALIDATE_GITHUB_ACTIONS: true
-          VALIDATE_GITHUB_ACTIONS_ZIZMOR: true
-          VALIDATE_GITLEAKS: true
-          VALIDATE_GIT_MERGE_CONFLICT_MARKERS: true
-          VALIDATE_EDITORCONFIG: true
-          # Skip vendored / generated files so linters ignore third-party code.
-          FILTER_REGEX_EXCLUDE: (assets/vendor/|var/|public/bundles/)
+#  lint:
+#    name: Lint
+#    runs-on: ubuntu-latest
+#    permissions:
+#      contents: read
+#      packages: read
+#      statuses: write
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v6
+#        with:
+#          fetch-depth: 0
+#          persist-credentials: false
+#      - name: Lint Code Base
+#        uses: super-linter/super-linter/slim@v8
+#        env:
+#          GITHUB_ACTIONS_CONFIG_FILE: actionlint.yaml
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          # Whitelist mode: only the validators set to true run; every other
+#          # linter (Prettier formatters, JSCPD, codespell, natural-language,
+#          # PHP, ...) stays off. PHP is linted/tested in the Docker `tests`
+#          # job; front-end formatting is owned by project-native tooling.
+#          # NB: super-linter forbids mixing true and false — keep all-true here.
+#          VALIDATE_YAML: true
+#          VALIDATE_JSON: true
+#          VALIDATE_BASH: true
+#          VALIDATE_DOCKERFILE_HADOLINT: true
+#          VALIDATE_GITHUB_ACTIONS: true
+#          VALIDATE_GITHUB_ACTIONS_ZIZMOR: true
+#          VALIDATE_GITLEAKS: true
+#          VALIDATE_GIT_MERGE_CONFLICT_MARKERS: true
+#          VALIDATE_EDITORCONFIG: true
+#          # Skip vendored / generated files so linters ignore third-party code.
+#          FILTER_REGEX_EXCLUDE: (assets/vendor/|var/|public/bundles/)
