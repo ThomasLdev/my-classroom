@@ -10,3 +10,4 @@ resources:
   - externalsecret-ghcr.yaml
   - deployment.yaml
   - service.yaml
+  - ingress.yaml

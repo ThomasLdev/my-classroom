@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-classroom
+  namespace: my-classroom
+  annotations:
+    # cert-manager ingress-shim auto-creates a Certificate from the selfsigned
+    # ClusterIssuer and stores it in the secret named in spec.tls.secretName.
+    # Self-signed → mobile browsers still warn once, but HTTPS is now served on
+    # 443 (fixes "can't establish secure connection" from HTTPS-first mobiles).
+    cert-manager.io/cluster-issuer: selfsigned
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        # sslip.io resolves <anything>.192.168.1.200.sslip.io -> 192.168.1.200,
+        # so no local DNS entry is needed. Mobile must be on the same LAN.
+        - my-classroom.192.168.1.200.sslip.io
+      secretName: my-classroom-tls
+  rules:
+    - host: my-classroom.192.168.1.200.sslip.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: my-classroom
+                port:
+                  number: 80

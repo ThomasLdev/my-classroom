@@ -92,7 +92,7 @@ spec:
             # Used only for URL generation outside an HTTP request (CLI);
             # in-request URLs use the real Host. Point it at the NodePort URL.
             - name: DEFAULT_URI
-              value: "http://localhost:30082"
+              value: "https://my-classroom.192.168.1.200.sslip.io"
             - name: TRUSTED_PROXIES
               value: "127.0.0.0/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
             - name: TRUSTED_HOSTS
