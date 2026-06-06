@@ -48,13 +48,25 @@ jobs:
       # Unit suite needs no database; runs in the image built above (fail fast before E2E).
       - name: Unit tests (PHPUnit)
         run: docker compose exec -T -e APP_ENV=test php bin/phpunit --testsuite unit
+      # The homepage redirects to a DB-backed calendar view, so E2E needs a
+      # migrated schema (the running app uses APP_ENV=dev / the default database).
+      - name: Prepare database (for E2E)
+        run: docker compose exec -T php bin/console doctrine:migrations:migrate --no-interaction
       # Isolated step — reuses the image built above; the playwright service
       # reaches the already-running php service over the compose network.
       - name: E2E tests (Playwright)
         run: docker compose run --rm playwright
-      # The functional suite needs a database. Add a dedicated DB-backed step here
-      # (same image-reuse pattern) when it's needed, e.g.:
-      #   docker compose exec -T -e APP_ENV=test php bin/console doctrine:migrations:migrate -n
+      - name: Upload Playwright report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            tests/e2e/playwright-report/
+            tests/e2e/test-results/
+          retention-days: 7
+      # The functional PHPUnit suite also needs a database; add it here later
+      # (DB is already migrated above), e.g.:
       #   docker compose exec -T -e APP_ENV=test php bin/phpunit --testsuite functional
 
   front-lint:

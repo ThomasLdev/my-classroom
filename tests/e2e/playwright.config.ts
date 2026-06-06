@@ -6,7 +6,10 @@ export default defineConfig({
   testDir: './tests',
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
-  reporter: process.env.CI ? 'line' : 'list',
+  // In CI also emit an HTML report (uploaded as an artifact) alongside line output.
+  reporter: process.env.CI
+    ? [['line'], ['html', { open: 'never' }]]
+    : 'list',
   use: {
     baseURL: process.env.PLAYWRIGHT_BASE_URL ?? 'http://php',
     trace: 'on-first-retry',
