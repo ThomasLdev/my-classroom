@@ -13,7 +13,7 @@ final class SessionViewFactory
     {
         return new SessionView(
             slotId: (string) $occurrence->slotId,
-            sessionId: $session !== null ? (string) $session->id : null,
+            sessionId: $session instanceof Session ? (string) $session->id : null,
             classroomName: $occurrence->classroomName,
             subject: $occurrence->subject,
             room: $occurrence->room,
@@ -24,7 +24,7 @@ final class SessionViewFactory
             documentCount: $session?->documentCount() ?? 0,
             hasNote: $session?->note !== null,
             cancelled: $session?->cancelled ?? false,
-            materialized: $session !== null,
+            materialized: $session instanceof Session,
         );
     }
 }

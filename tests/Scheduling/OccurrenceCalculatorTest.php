@@ -10,6 +10,7 @@ use App\Scheduling\Domain\ScheduledSlot;
 use App\Shared\Domain\Identifier\ClassroomId;
 use App\Shared\Domain\Identifier\SlotId;
 use App\Shared\Domain\TimeRange;
+use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 
 final class OccurrenceCalculatorTest extends TestCase
@@ -30,7 +31,7 @@ final class OccurrenceCalculatorTest extends TestCase
         ];
 
         // 2026-06-08 is a Monday.
-        $occurrences = $this->calculator->forDay($slots, new \DateTimeImmutable('2026-06-08'));
+        $occurrences = $this->calculator->forDay($slots, new DateTimeImmutable('2026-06-08'));
 
         self::assertCount(2, $occurrences);
         self::assertSame('08:00', $occurrences[0]->timeRange->startLabel());
@@ -41,11 +42,11 @@ final class OccurrenceCalculatorTest extends TestCase
     {
         $slots = [$this->slot('slot-1', 'class-1', DayOfWeek::Monday, '09:00', '10:00')];
 
-        $found = $this->calculator->resolve($slots, SlotId::fromString('slot-1'), new \DateTimeImmutable('2026-06-08'));
+        $found = $this->calculator->resolve($slots, SlotId::fromString('slot-1'), new DateTimeImmutable('2026-06-08'));
         self::assertNotNull($found);
 
         // 2026-06-09 is a Tuesday -> the Monday slot does not occur.
-        $missing = $this->calculator->resolve($slots, SlotId::fromString('slot-1'), new \DateTimeImmutable('2026-06-09'));
+        $missing = $this->calculator->resolve($slots, SlotId::fromString('slot-1'), new DateTimeImmutable('2026-06-09'));
         self::assertNull($missing);
     }
 
@@ -60,7 +61,7 @@ final class OccurrenceCalculatorTest extends TestCase
         $next = $this->calculator->nextAfter(
             $slots,
             ClassroomId::fromString('class-1'),
-            new \DateTimeImmutable('2026-06-08 10:00:00'),
+            new DateTimeImmutable('2026-06-08 10:00:00'),
         );
 
         self::assertNotNull($next);

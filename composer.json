@@ -39,6 +39,7 @@
     "config": {
         "allow-plugins": {
             "php-http/discovery": true,
+            "phpstan/extension-installer": true,
             "symfony/flex": true,
             "symfony/runtime": true
         },
@@ -78,6 +79,18 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "ecs": "ecs check",
+        "ecs:fix": "ecs check --fix",
+        "rector": "rector process --dry-run",
+        "rector:fix": "rector process",
+        "phpstan": "phpstan analyse --memory-limit=512M",
+        "test": "phpunit",
+        "qa": [
+            "@ecs",
+            "@rector",
+            "@phpstan",
+            "@test"
         ]
     },
     "conflict": {
@@ -92,12 +105,25 @@
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^4.3",
+        "ergebnis/phpstan-rules": "^2.13",
+        "phpat/phpat": "^0.12.4",
+        "phpstan/extension-installer": "^1.4",
+        "phpstan/phpstan": "^2.2",
+        "phpstan/phpstan-deprecation-rules": "^2.0",
+        "phpstan/phpstan-doctrine": "^2.0",
+        "phpstan/phpstan-strict-rules": "^2.0",
+        "phpstan/phpstan-symfony": "^2.0",
         "phpunit/phpunit": "^13.2",
+        "rector/rector": "^2.0",
+        "shipmonk/phpstan-rules": "^4.4",
+        "spaze/phpstan-disallowed-calls": "^4.12",
         "symfony/browser-kit": "8.1.*",
         "symfony/css-selector": "8.1.*",
         "symfony/maker-bundle": "^1.67",
         "symfony/stopwatch": "8.1.*",
         "symfony/web-profiler-bundle": "8.1.*",
+        "symplify/easy-coding-standard": "^12.5",
+        "tomasvotruba/cognitive-complexity": "^1.1",
         "zenstruck/foundry": "^2.10"
     }
 }

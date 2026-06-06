@@ -13,6 +13,7 @@ use App\Shared\Domain\Identifier\SlotId;
 use App\Shared\Domain\Occurrence;
 use App\Shared\Domain\TimeRange;
 use App\Teaching\Domain\Port\OccurrenceProvider;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AsAlias;
 
@@ -30,17 +31,17 @@ final class DoctrineOccurrenceProvider implements OccurrenceProvider
     ) {
     }
 
-    public function forDay(\DateTimeImmutable $date): array
+    public function forDay(DateTimeImmutable $date): array
     {
         return $this->calculator->forDay($this->loadSlots(), $date);
     }
 
-    public function resolve(SlotId $slotId, \DateTimeImmutable $date): ?Occurrence
+    public function resolve(SlotId $slotId, DateTimeImmutable $date): ?Occurrence
     {
         return $this->calculator->resolve($this->loadSlots(), $slotId, $date);
     }
 
-    public function nextAfter(ClassroomId $classroomId, \DateTimeImmutable $after): ?Occurrence
+    public function nextAfter(ClassroomId $classroomId, DateTimeImmutable $after): ?Occurrence
     {
         return $this->calculator->nextAfter($this->loadSlots(), $classroomId, $after);
     }

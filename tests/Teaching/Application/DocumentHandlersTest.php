@@ -18,7 +18,9 @@ use PHPUnit\Framework\TestCase;
 final class DocumentHandlersTest extends TestCase
 {
     private InMemorySessionRepository $sessions;
+
     private InMemoryDocumentStorage $storage;
+
     private InMemoryOccurrenceProvider $occurrences;
 
     protected function setUp(): void

@@ -14,12 +14,15 @@ use App\Tests\Support\InMemoryOccurrenceProvider;
 use App\Tests\Support\InMemorySessionRepository;
 use App\Tests\Support\OccurrenceMother;
 use App\Tests\Support\SequentialIdGenerator;
+use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 
 final class CloseElapsedSessionsHandlerTest extends TestCase
 {
     private InMemorySessionRepository $sessions;
+
     private InMemoryOccurrenceProvider $occurrences;
+
     private AddActivityToSessionHandler $add;
 
     protected function setUp(): void
@@ -36,14 +39,14 @@ final class CloseElapsedSessionsHandlerTest extends TestCase
 
         ($this->add)(new AddActivityToSession('slot-mon', '2026-06-08', 'À finir'));
         ($this->add)(new AddActivityToSession('slot-mon', '2026-06-08', 'Déjà fait'));
-        $monday = $this->sessions->ofOccurrence(SlotId::fromString('slot-mon'), new \DateTimeImmutable('2026-06-08'));
+        $monday = $this->sessions->ofOccurrence(SlotId::fromString('slot-mon'), new DateTimeImmutable('2026-06-08'));
         $monday->activities[1]->markDone();
 
         $this->runCloseAt('2026-06-08 10:30:00');
 
         self::assertTrue($monday->isClosed());
 
-        $wednesday = $this->sessions->ofOccurrence(SlotId::fromString('slot-wed'), new \DateTimeImmutable('2026-06-10'));
+        $wednesday = $this->sessions->ofOccurrence(SlotId::fromString('slot-wed'), new DateTimeImmutable('2026-06-10'));
         self::assertNotNull($wednesday, 'The next occurrence has been materialised by the carry-over.');
         self::assertSame(1, $wednesday->activityCount(), 'Only the unfinished activity is carried.');
         self::assertSame('À finir', $wednesday->activities[0]->title);
@@ -59,7 +62,7 @@ final class CloseElapsedSessionsHandlerTest extends TestCase
         $this->runCloseAt('2026-06-08 10:30:00');
         $this->runCloseAt('2026-06-08 10:35:00');
 
-        $wednesday = $this->sessions->ofOccurrence(SlotId::fromString('slot-wed'), new \DateTimeImmutable('2026-06-10'));
+        $wednesday = $this->sessions->ofOccurrence(SlotId::fromString('slot-wed'), new DateTimeImmutable('2026-06-10'));
         self::assertSame(1, $wednesday->activityCount(), 'A second run must not duplicate the carried activity.');
     }
 
@@ -76,7 +79,7 @@ final class CloseElapsedSessionsHandlerTest extends TestCase
         $this->runCloseAt('2026-06-08 12:30:00');
 
         // 9h -> 10h, then 10h (its own + carried) -> 11h. The 11h slot ends up with both.
-        $eleven = $this->sessions->ofOccurrence(SlotId::fromString('slot-11'), new \DateTimeImmutable('2026-06-08'));
+        $eleven = $this->sessions->ofOccurrence(SlotId::fromString('slot-11'), new DateTimeImmutable('2026-06-08'));
         self::assertNotNull($eleven);
         self::assertSame(2, $eleven->activityCount());
     }
@@ -88,7 +91,7 @@ final class CloseElapsedSessionsHandlerTest extends TestCase
 
         $this->runCloseAt('2026-06-08 10:30:00');
 
-        $session = $this->sessions->ofOccurrence(SlotId::fromString('slot-last'), new \DateTimeImmutable('2026-06-08'));
+        $session = $this->sessions->ofOccurrence(SlotId::fromString('slot-last'), new DateTimeImmutable('2026-06-08'));
         self::assertTrue($session->isClosed());
         self::assertSame(1, $session->activityCount(), 'With nowhere to carry, the activity stays as history.');
     }

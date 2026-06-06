@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Teaching\Infrastructure;
 
 use App\Teaching\Infrastructure\Http\CalendarPresenter;
+use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 
 final class CalendarPresenterTest extends TestCase
@@ -20,8 +21,8 @@ final class CalendarPresenterTest extends TestCase
     {
         // 2026-06-08 is a Monday.
         $header = $this->presenter->header(
-            new \DateTimeImmutable('2026-06-08'),
-            new \DateTimeImmutable('2026-06-08'),
+            new DateTimeImmutable('2026-06-08'),
+            new DateTimeImmutable('2026-06-08'),
         );
 
         self::assertSame('Lundi', $header['dow']);
@@ -34,8 +35,8 @@ final class CalendarPresenterTest extends TestCase
     public function testHeaderIsTodayIsFalseOnAnotherDay(): void
     {
         $header = $this->presenter->header(
-            new \DateTimeImmutable('2026-06-08'),
-            new \DateTimeImmutable('2026-06-09'),
+            new DateTimeImmutable('2026-06-08'),
+            new DateTimeImmutable('2026-06-09'),
         );
 
         self::assertFalse($header['isToday']);
@@ -45,8 +46,8 @@ final class CalendarPresenterTest extends TestCase
     {
         // Selected a Wednesday, "today" a Friday of the same week.
         $week = $this->presenter->week(
-            new \DateTimeImmutable('2026-06-10'),
-            new \DateTimeImmutable('2026-06-12'),
+            new DateTimeImmutable('2026-06-10'),
+            new DateTimeImmutable('2026-06-12'),
             [],
         );
 
@@ -68,11 +69,17 @@ final class CalendarPresenterTest extends TestCase
     public function testWeekMergesDotsByDate(): void
     {
         $week = $this->presenter->week(
-            new \DateTimeImmutable('2026-06-08'),
-            new \DateTimeImmutable('2026-06-08'),
+            new DateTimeImmutable('2026-06-08'),
+            new DateTimeImmutable('2026-06-08'),
             [
-                '2026-06-08' => ['count' => 2, 'hasEvent' => false],
-                '2026-06-09' => ['count' => 0, 'hasEvent' => true],
+                '2026-06-08' => [
+                    'count' => 2,
+                    'hasEvent' => false,
+                ],
+                '2026-06-09' => [
+                    'count' => 0,
+                    'hasEvent' => true,
+                ],
             ],
         );
 

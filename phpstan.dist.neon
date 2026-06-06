@@ -1,0 +1,53 @@
+includes:
+    # Pre-existing violations frozen so CI is green now; burn the list down over
+    # time. NB: it also holds one architecture violation (Scheduling ->
+    # Teaching\Domain\Port) kept here on purpose until the context is refactored.
+    - phpstan-baseline.neon
+    # Curated disallowed-call lists shipped by spaze/phpstan-disallowed-calls.
+    - vendor/spaze/phpstan-disallowed-calls/disallowed-dangerous-calls.neon
+    - vendor/spaze/phpstan-disallowed-calls/disallowed-execution-calls.neon
+    - vendor/spaze/phpstan-disallowed-calls/disallowed-insecure-calls.neon
+    - vendor/spaze/phpstan-disallowed-calls/disallowed-loose-calls.neon
+
+parameters:
+    level: max
+    paths:
+        - src
+        - tests
+    symfony:
+        containerXmlPath: var/cache/dev/App_KernelDevDebugContainer.xml
+    # ergebnis ships many opinionated rules enabled by default. We keep the
+    # high-signal ones (final, declareStrictTypes, noErrorSuppression, noEval...)
+    # and disable the dogmatic ones that fight modern PHP idioms.
+    ergebnis:
+        noNamedArgument:
+            enabled: false
+        noNullableReturnTypeDeclaration:
+            enabled: false
+        noParameterWithNullableTypeDeclaration:
+            enabled: false
+        noExtends:
+            enabled: false
+        noConstructorParameterWithDefaultValue:
+            enabled: false
+        noParameterWithNullDefaultValue:
+            enabled: false
+        noIsset:
+            enabled: false
+    disallowedFunctionCalls:
+        -
+            function: 'dump()'
+            message: 'remove debug output or use the logger'
+        -
+            function: 'dd()'
+            message: 'remove debug output or use the logger'
+        -
+            function: 'var_dump()'
+            message: 'remove debug output or use the logger'
+
+services:
+    # PHPat architecture rules — discovered via the phpat.test tag.
+    -
+        class: App\Tests\Architecture\HexagonalArchitectureTest
+        tags:
+            - phpat.test

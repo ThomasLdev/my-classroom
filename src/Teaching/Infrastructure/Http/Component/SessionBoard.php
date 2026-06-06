@@ -12,6 +12,7 @@ use App\Teaching\Application\Command\SetHomeworkChecked\SetHomeworkChecked;
 use App\Teaching\Application\Command\SetSessionHomework\SetSessionHomework;
 use App\Teaching\Application\Command\SetSessionNote\SetSessionNote;
 use App\Teaching\Application\Query\GetSessionDetail\GetSessionDetail;
+use App\Teaching\Application\Query\GetSessionDetail\PreviousHomeworkView;
 use App\Teaching\Application\Query\GetSessionDetail\SessionDetailView;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Messenger\HandleTrait;
@@ -45,16 +46,15 @@ final class SessionBoard
     #[LiveProp(writable: true, onUpdated: 'onHomeworkUpdated')]
     public string $homework = '';
 
-    private readonly MessageBusInterface $commandBus;
-
     private ?SessionDetailView $detail = null;
 
     public function __construct(
-        #[Autowire(service: 'query.bus')] MessageBusInterface $queryBus,
-        #[Autowire(service: 'command.bus')] MessageBusInterface $commandBus,
+        #[Autowire(service: 'query.bus')]
+        MessageBusInterface $queryBus,
+        #[Autowire(service: 'command.bus')]
+        private readonly MessageBusInterface $commandBus,
     ) {
         $this->messageBus = $queryBus;
-        $this->commandBus = $commandBus;
     }
 
     public function mount(string $slotId, string $date): void
@@ -91,7 +91,7 @@ final class SessionBoard
     public function verifyHomework(): void
     {
         $previous = $this->getDetail()->previousHomework;
-        if ($previous === null) {
+        if (! $previous instanceof PreviousHomeworkView) {
             return;
         }
 

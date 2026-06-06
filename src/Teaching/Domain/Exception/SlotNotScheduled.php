@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Teaching\Domain\Exception;
 
-final class SlotNotScheduled extends \DomainException
+use DomainException;
+
+final class SlotNotScheduled extends DomainException
 {
     public static function for(string $slotId, string $date): self
     {

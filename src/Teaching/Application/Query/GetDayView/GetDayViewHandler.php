@@ -7,6 +7,8 @@ namespace App\Teaching\Application\Query\GetDayView;
 use App\Teaching\Application\Port\CalendarEventProvider;
 use App\Teaching\Domain\Port\OccurrenceProvider;
 use App\Teaching\Domain\Repository\SessionRepository;
+use DateTimeImmutable;
+use InvalidArgumentException;
 
 final readonly class GetDayViewHandler
 {
@@ -20,7 +22,7 @@ final readonly class GetDayViewHandler
 
     public function __invoke(GetDayView $query): DayView
     {
-        $date = self::parseDate($query->date);
+        $date = $this->parseDate($query->date);
 
         $sessionViews = [];
         foreach ($this->occurrences->forDay($date) as $occurrence) {
@@ -35,12 +37,12 @@ final readonly class GetDayViewHandler
         );
     }
 
-    private static function parseDate(string $date): \DateTimeImmutable
+    private function parseDate(string $date): DateTimeImmutable
     {
-        $parsed = \DateTimeImmutable::createFromFormat('!Y-m-d', $date);
+        $parsed = DateTimeImmutable::createFromFormat('!Y-m-d', $date);
 
         if ($parsed === false) {
-            throw new \InvalidArgumentException(sprintf('Invalid date "%s", expected Y-m-d.', $date));
+            throw new InvalidArgumentException(sprintf('Invalid date "%s", expected Y-m-d.', $date));
         }
 
         return $parsed;

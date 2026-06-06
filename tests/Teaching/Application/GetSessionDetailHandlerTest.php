@@ -28,7 +28,9 @@ use PHPUnit\Framework\TestCase;
 final class GetSessionDetailHandlerTest extends TestCase
 {
     private InMemorySessionRepository $sessions;
+
     private InMemoryOccurrenceProvider $occurrences;
+
     private GetSessionDetailHandler $handler;
 
     protected function setUp(): void

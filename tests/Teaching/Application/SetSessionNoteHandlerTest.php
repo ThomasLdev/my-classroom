@@ -15,6 +15,7 @@ use PHPUnit\Framework\TestCase;
 final class SetSessionNoteHandlerTest extends TestCase
 {
     private InMemorySessionRepository $sessions;
+
     private SetSessionNoteHandler $handler;
 
     protected function setUp(): void

@@ -12,12 +12,15 @@ use App\Tests\Support\InMemoryOccurrenceProvider;
 use App\Tests\Support\InMemorySessionRepository;
 use App\Tests\Support\OccurrenceMother;
 use App\Tests\Support\SequentialIdGenerator;
+use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 
 final class AddActivityToSessionHandlerTest extends TestCase
 {
     private InMemorySessionRepository $sessions;
+
     private InMemoryOccurrenceProvider $occurrences;
+
     private AddActivityToSessionHandler $handler;
 
     protected function setUp(): void
@@ -35,11 +38,11 @@ final class AddActivityToSessionHandlerTest extends TestCase
     {
         $this->occurrences->add(OccurrenceMother::create('slot-1', 'class-1', '2026-06-08', '09:00', '10:00'));
 
-        self::assertNull($this->sessions->ofOccurrence(SlotId::fromString('slot-1'), new \DateTimeImmutable('2026-06-08')));
+        self::assertNull($this->sessions->ofOccurrence(SlotId::fromString('slot-1'), new DateTimeImmutable('2026-06-08')));
 
         ($this->handler)(new AddActivityToSession('slot-1', '2026-06-08', 'Distribuer le contrôle'));
 
-        $session = $this->sessions->ofOccurrence(SlotId::fromString('slot-1'), new \DateTimeImmutable('2026-06-08'));
+        $session = $this->sessions->ofOccurrence(SlotId::fromString('slot-1'), new DateTimeImmutable('2026-06-08'));
         self::assertNotNull($session);
         self::assertSame(1, $session->activityCount());
         self::assertSame('Distribuer le contrôle', $session->activities[0]->title);

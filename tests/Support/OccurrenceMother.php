@@ -8,6 +8,7 @@ use App\Shared\Domain\Identifier\ClassroomId;
 use App\Shared\Domain\Identifier\SlotId;
 use App\Shared\Domain\Occurrence;
 use App\Shared\Domain\TimeRange;
+use DateTimeImmutable;
 
 /**
  * Test data builder for occurrences, to keep the tests readable.
@@ -27,7 +28,7 @@ final class OccurrenceMother
         return new Occurrence(
             SlotId::fromString($slotId),
             ClassroomId::fromString($classroomId),
-            new \DateTimeImmutable($date.' 00:00:00'),
+            new DateTimeImmutable($date . ' 00:00:00'),
             TimeRange::fromLabels($start, $end),
             $classroomName,
             $subject,

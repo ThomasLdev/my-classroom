@@ -17,11 +17,13 @@ use App\Teaching\Application\Query\GetWeek\WeekView;
 use App\Teaching\Domain\Exception\SlotNotScheduled;
 use App\Teaching\Infrastructure\Http\Form\AttachDocumentType;
 use App\Teaching\Infrastructure\Http\Form\DeleteDocumentType;
+use DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\HeaderUtils;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\HandleTrait;
@@ -37,8 +39,10 @@ final class CalendarController extends AbstractController
     private const int MAX_UPLOAD_BYTES = 15 * 1024 * 1024;
 
     public function __construct(
-        #[Autowire(service: 'query.bus')] MessageBusInterface $queryBus,
-        #[Autowire(service: 'command.bus')] private readonly MessageBusInterface $commandBus,
+        #[Autowire(service: 'query.bus')]
+        MessageBusInterface $queryBus,
+        #[Autowire(service: 'command.bus')]
+        private readonly MessageBusInterface $commandBus,
         private readonly DocumentStorage $storage,
         private readonly CalendarPresenter $presenter,
     ) {
@@ -46,18 +50,20 @@ final class CalendarController extends AbstractController
     }
 
     #[Route('/', name: 'app_home', methods: ['GET'])]
-    public function home(): Response
+    public function home(): RedirectResponse
     {
         return $this->redirectToRoute('app_calendar_day', [
-            'date' => (new \DateTimeImmutable('today'))->format('Y-m-d'),
+            'date' => new DateTimeImmutable('today')->format('Y-m-d'),
         ]);
     }
 
-    #[Route('/calendar/{date}', name: 'app_calendar_day', requirements: ['date' => '\d{4}-\d{2}-\d{2}'], methods: ['GET'])]
+    #[Route('/calendar/{date}', name: 'app_calendar_day', requirements: [
+        'date' => '\d{4}-\d{2}-\d{2}',
+    ], methods: ['GET'])]
     public function day(string $date): Response
     {
-        $selected = \DateTimeImmutable::createFromFormat('!Y-m-d', $date) ?: new \DateTimeImmutable('today');
-        $today = new \DateTimeImmutable('today');
+        $selected = DateTimeImmutable::createFromFormat('!Y-m-d', $date) ?: new DateTimeImmutable('today');
+        $today = new DateTimeImmutable('today');
 
         /** @var DayView $day */
         $day = $this->handle(new GetDayView($selected->format('Y-m-d')));
@@ -81,7 +87,9 @@ final class CalendarController extends AbstractController
         ]);
     }
 
-    #[Route('/calendar/{date}/session/{slotId}', name: 'app_session_detail', requirements: ['date' => '\d{4}-\d{2}-\d{2}'], methods: ['GET'])]
+    #[Route('/calendar/{date}/session/{slotId}', name: 'app_session_detail', requirements: [
+        'date' => '\d{4}-\d{2}-\d{2}',
+    ], methods: ['GET'])]
     public function session(string $date, string $slotId, Request $request): Response
     {
         try {
@@ -91,24 +99,35 @@ final class CalendarController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $selected = \DateTimeImmutable::createFromFormat('!Y-m-d', $date) ?: new \DateTimeImmutable('today');
+        $selected = DateTimeImmutable::createFromFormat('!Y-m-d', $date) ?: new DateTimeImmutable('today');
 
         $uploadForm = $this->createForm(AttachDocumentType::class, null, [
-            'action' => $this->generateUrl('app_session_document_add', ['date' => $date, 'slotId' => $slotId]),
-            'attr' => ['data-turbo-frame' => 'sheet'],
+            'action' => $this->generateUrl('app_session_document_add', [
+                'date' => $date,
+                'slotId' => $slotId,
+            ]),
+            'attr' => [
+                'data-turbo-frame' => 'sheet',
+            ],
         ]);
 
         $deleteForms = [];
         foreach ($detail->documents as $document) {
             $deleteForms[$document->id] = $this->createForm(DeleteDocumentType::class, null, [
-                'action' => $this->generateUrl('app_session_document_remove', ['date' => $date, 'slotId' => $slotId, 'documentId' => $document->id]),
-                'attr' => ['data-turbo-frame' => 'sheet'],
+                'action' => $this->generateUrl('app_session_document_remove', [
+                    'date' => $date,
+                    'slotId' => $slotId,
+                    'documentId' => $document->id,
+                ]),
+                'attr' => [
+                    'data-turbo-frame' => 'sheet',
+                ],
             ])->createView();
         }
 
         return $this->render('calendar/session.html.twig', [
             'detail' => $detail,
-            'header' => $this->presenter->header($selected, new \DateTimeImmutable('today')),
+            'header' => $this->presenter->header($selected, new DateTimeImmutable('today')),
             'backDate' => $date,
             'uploadForm' => $uploadForm->createView(),
             'deleteForms' => $deleteForms,
@@ -117,8 +136,10 @@ final class CalendarController extends AbstractController
         ]);
     }
 
-    #[Route('/calendar/{date}/session/{slotId}/document', name: 'app_session_document_add', requirements: ['date' => '\d{4}-\d{2}-\d{2}'], methods: ['POST'])]
-    public function addDocument(string $date, string $slotId, Request $request): Response
+    #[Route('/calendar/{date}/session/{slotId}/document', name: 'app_session_document_add', requirements: [
+        'date' => '\d{4}-\d{2}-\d{2}',
+    ], methods: ['POST'])]
+    public function addDocument(string $date, string $slotId, Request $request): RedirectResponse
     {
         $form = $this->createForm(AttachDocumentType::class);
         $form->handleRequest($request);
@@ -127,10 +148,12 @@ final class CalendarController extends AbstractController
             /** @var list<UploadedFile> $files */
             $files = $form->get('document')->getData() ?? [];
             foreach ($files as $file) {
-                if (!$file->isValid() || $file->getSize() > self::MAX_UPLOAD_BYTES) {
+                if (! $file->isValid()) {
                     continue;
                 }
-
+                if ($file->getSize() > self::MAX_UPLOAD_BYTES) {
+                    continue;
+                }
                 $this->commandBus->dispatch(new AttachDocumentToSession(
                     $slotId,
                     $date,
@@ -142,11 +165,17 @@ final class CalendarController extends AbstractController
             }
         }
 
-        return $this->redirectToRoute('app_session_detail', ['date' => $date, 'slotId' => $slotId, 'refreshDay' => 1]);
+        return $this->redirectToRoute('app_session_detail', [
+            'date' => $date,
+            'slotId' => $slotId,
+            'refreshDay' => 1,
+        ]);
     }
 
-    #[Route('/calendar/{date}/session/{slotId}/document/{documentId}', name: 'app_session_document_remove', requirements: ['date' => '\d{4}-\d{2}-\d{2}'], methods: ['POST'])]
-    public function removeDocument(string $date, string $slotId, string $documentId, Request $request): Response
+    #[Route('/calendar/{date}/session/{slotId}/document/{documentId}', name: 'app_session_document_remove', requirements: [
+        'date' => '\d{4}-\d{2}-\d{2}',
+    ], methods: ['POST'])]
+    public function removeDocument(string $date, string $slotId, string $documentId, Request $request): RedirectResponse
     {
         $form = $this->createForm(DeleteDocumentType::class);
         $form->handleRequest($request);
@@ -155,11 +184,17 @@ final class CalendarController extends AbstractController
             $this->commandBus->dispatch(new RemoveDocumentFromSession($slotId, $date, $documentId));
         }
 
-        return $this->redirectToRoute('app_session_detail', ['date' => $date, 'slotId' => $slotId, 'refreshDay' => 1]);
+        return $this->redirectToRoute('app_session_detail', [
+            'date' => $date,
+            'slotId' => $slotId,
+            'refreshDay' => 1,
+        ]);
     }
 
-    #[Route('/calendar/{date}/session/{slotId}/document/{documentId}/download', name: 'app_session_document_download', requirements: ['date' => '\d{4}-\d{2}-\d{2}'], methods: ['GET'])]
-    public function downloadDocument(string $date, string $slotId, string $documentId): Response
+    #[Route('/calendar/{date}/session/{slotId}/document/{documentId}/download', name: 'app_session_document_download', requirements: [
+        'date' => '\d{4}-\d{2}-\d{2}',
+    ], methods: ['GET'])]
+    public function downloadDocument(string $date, string $slotId, string $documentId): BinaryFileResponse
     {
         try {
             /** @var SessionDetailView $detail */
@@ -177,7 +212,7 @@ final class CalendarController extends AbstractController
         }
 
         $path = $this->storage->locate($documentId);
-        if (!$document instanceof DocumentView || !is_file($path)) {
+        if (! $document instanceof DocumentView || ! is_file($path)) {
             throw $this->createNotFoundException();
         }
 

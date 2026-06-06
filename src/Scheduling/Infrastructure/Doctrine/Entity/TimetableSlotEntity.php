@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Scheduling\Infrastructure\Doctrine\Entity;
 
+use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -35,8 +36,8 @@ class TimetableSlotEntity
     public ?string $room = null;
 
     #[ORM\Column(name: 'valid_from', type: Types::DATE_IMMUTABLE, nullable: true)]
-    public ?\DateTimeImmutable $validFrom = null;
+    public ?DateTimeImmutable $validFrom = null;
 
     #[ORM\Column(name: 'valid_to', type: Types::DATE_IMMUTABLE, nullable: true)]
-    public ?\DateTimeImmutable $validTo = null;
+    public ?DateTimeImmutable $validTo = null;
 }

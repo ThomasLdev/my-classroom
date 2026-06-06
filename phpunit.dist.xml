@@ -20,6 +20,8 @@
     <testsuites>
         <testsuite name="Project Test Suite">
             <directory>tests</directory>
+            <!-- PHPat architecture rules run under PHPStan, not PHPUnit. -->
+            <exclude>tests/Architecture</exclude>
         </testsuite>
     </testsuites>
 

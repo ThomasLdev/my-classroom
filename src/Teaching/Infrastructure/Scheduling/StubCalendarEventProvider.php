@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Teaching\Infrastructure\Scheduling;
 
 use App\Teaching\Application\Port\CalendarEventProvider;
+use DateTimeImmutable;
 use Symfony\Component\DependencyInjection\Attribute\AsAlias;
 
 /**
@@ -13,7 +14,7 @@ use Symfony\Component\DependencyInjection\Attribute\AsAlias;
 #[AsAlias(CalendarEventProvider::class)]
 final class StubCalendarEventProvider implements CalendarEventProvider
 {
-    public function forDay(\DateTimeImmutable $date): array
+    public function forDay(DateTimeImmutable $date): array
     {
         return [];
     }

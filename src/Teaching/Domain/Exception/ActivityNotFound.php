@@ -6,8 +6,9 @@ namespace App\Teaching\Domain\Exception;
 
 use App\Teaching\Domain\Model\Session\ActivityId;
 use App\Teaching\Domain\Model\Session\SessionId;
+use DomainException;
 
-final class ActivityNotFound extends \DomainException
+final class ActivityNotFound extends DomainException
 {
     public static function inSession(SessionId $session, ActivityId $activity): self
     {

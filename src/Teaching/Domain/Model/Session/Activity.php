@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Teaching\Domain\Model\Session;
 
+use InvalidArgumentException;
+
 /**
  * @phpstan-type ActivityStateArray array{
  *     id: string,
@@ -60,7 +62,7 @@ final class Activity
             'title' => $this->title,
             'status' => $this->status->value,
             'position' => $this->position,
-            'carriedOverFrom' => $this->carriedOverFrom !== null ? (string) $this->carriedOverFrom : null,
+            'carriedOverFrom' => $this->carriedOverFrom instanceof ActivityId ? (string) $this->carriedOverFrom : null,
         ];
     }
 
@@ -83,7 +85,7 @@ final class Activity
     {
         $trimmed = trim($title);
         if ($trimmed === '') {
-            throw new \InvalidArgumentException('Activity title cannot be empty.');
+            throw new InvalidArgumentException('Activity title cannot be empty.');
         }
 
         return $trimmed;

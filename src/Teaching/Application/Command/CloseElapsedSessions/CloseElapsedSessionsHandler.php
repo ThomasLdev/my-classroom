@@ -6,6 +6,8 @@ namespace App\Teaching\Application\Command\CloseElapsedSessions;
 
 use App\Shared\Domain\Clock;
 use App\Shared\Domain\Identifier\IdGenerator;
+use App\Shared\Domain\Identifier\SlotId;
+use App\Shared\Domain\Occurrence;
 use App\Teaching\Domain\Model\Session\Activity;
 use App\Teaching\Domain\Model\Session\ActivityId;
 use App\Teaching\Domain\Model\Session\Session;
@@ -54,7 +56,7 @@ final readonly class CloseElapsedSessionsHandler
     {
         $next = $this->occurrences->nextAfter($source->classroomId, $source->endsAt());
 
-        if ($next === null) {
+        if (! $next instanceof Occurrence) {
             return; // nothing scheduled ahead; planned activities stay on the closed session as history
         }
 
@@ -76,7 +78,7 @@ final readonly class CloseElapsedSessionsHandler
     {
         $slotId = $session->slotId;
 
-        return $slotId !== null
+        return $slotId instanceof SlotId
             ? sprintf('slot:%s@%s', $slotId, $session->date->format('Y-m-d'))
             : sprintf('sid:%s', $session->id);
     }

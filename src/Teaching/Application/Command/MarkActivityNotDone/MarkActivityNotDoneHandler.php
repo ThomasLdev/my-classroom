@@ -8,6 +8,8 @@ use App\Shared\Domain\Identifier\SlotId;
 use App\Teaching\Domain\Exception\SessionNotFound;
 use App\Teaching\Domain\Model\Session\ActivityId;
 use App\Teaching\Domain\Repository\SessionRepository;
+use DateTimeImmutable;
+use InvalidArgumentException;
 
 final readonly class MarkActivityNotDoneHandler
 {
@@ -18,8 +20,8 @@ final readonly class MarkActivityNotDoneHandler
 
     public function __invoke(MarkActivityNotDone $command): void
     {
-        $date = \DateTimeImmutable::createFromFormat('!Y-m-d', $command->date)
-            ?: throw new \InvalidArgumentException(sprintf('Invalid date "%s".', $command->date));
+        $date = DateTimeImmutable::createFromFormat('!Y-m-d', $command->date)
+            ?: throw new InvalidArgumentException(sprintf('Invalid date "%s".', $command->date));
 
         $session = $this->sessions->ofOccurrence(SlotId::fromString($command->slotId), $date)
             ?? throw SessionNotFound::forOccurrence($command->slotId, $command->date);

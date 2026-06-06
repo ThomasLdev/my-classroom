@@ -12,6 +12,8 @@ use App\Teaching\Domain\Model\Session\Session;
 use App\Teaching\Domain\Model\Session\SessionId;
 use App\Teaching\Domain\Port\OccurrenceProvider;
 use App\Teaching\Domain\Repository\SessionRepository;
+use DateTimeImmutable;
+use InvalidArgumentException;
 
 // No flush here: the transaction commits at the boundary.
 final readonly class AddActivityToSessionHandler
@@ -26,11 +28,11 @@ final readonly class AddActivityToSessionHandler
     public function __invoke(AddActivityToSession $command): void
     {
         $slotId = SlotId::fromString($command->slotId);
-        $date = self::parseDate($command->date);
+        $date = $this->parseDate($command->date);
 
         $session = $this->sessions->ofOccurrence($slotId, $date);
 
-        if ($session === null) {
+        if (! $session instanceof Session) {
             $occurrence = $this->occurrences->resolve($slotId, $date)
                 ?? throw SlotNotScheduled::for($command->slotId, $command->date);
 
@@ -42,12 +44,12 @@ final readonly class AddActivityToSessionHandler
         $this->sessions->save($session);
     }
 
-    private static function parseDate(string $date): \DateTimeImmutable
+    private function parseDate(string $date): DateTimeImmutable
     {
-        $parsed = \DateTimeImmutable::createFromFormat('!Y-m-d', $date);
+        $parsed = DateTimeImmutable::createFromFormat('!Y-m-d', $date);
 
         if ($parsed === false) {
-            throw new \InvalidArgumentException(sprintf('Invalid date "%s", expected Y-m-d.', $date));
+            throw new InvalidArgumentException(sprintf('Invalid date "%s", expected Y-m-d.', $date));
         }
 
         return $parsed;

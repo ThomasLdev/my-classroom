@@ -13,13 +13,13 @@ final class DocumentViewFactory
         return new DocumentView(
             id: (string) $document->id,
             name: $document->name,
-            displayName: self::truncateName($document->name),
-            sizeLabel: self::prettySize($document->size),
+            displayName: $this->truncateName($document->name),
+            sizeLabel: $this->prettySize($document->size),
             contentType: $document->contentType,
         );
     }
 
-    private static function truncateName(string $name, int $max = 34): string
+    private function truncateName(string $name, int $max = 34): string
     {
         if (mb_strlen($name) <= $max) {
             return $name;
@@ -30,23 +30,23 @@ final class DocumentViewFactory
             $extension = mb_substr($name, $dot + 1);
             $stemLength = $max - mb_strlen($extension) - 2;
             if ($stemLength > 4) {
-                return mb_substr($name, 0, $stemLength).'….'.$extension;
+                return mb_substr($name, 0, $stemLength) . '….' . $extension;
             }
         }
 
-        return mb_substr($name, 0, $max - 1).'…';
+        return mb_substr($name, 0, $max - 1) . '…';
     }
 
-    private static function prettySize(int $bytes): string
+    private function prettySize(int $bytes): string
     {
         if ($bytes < 1024) {
-            return $bytes.' o';
+            return $bytes . ' o';
         }
 
         if ($bytes < 1_048_576) {
-            return round($bytes / 1024).' Ko';
+            return round($bytes / 1024) . ' Ko';
         }
 
-        return number_format($bytes / 1_048_576, 1, ',', ' ').' Mo';
+        return number_format($bytes / 1_048_576, 1, ',', ' ') . ' Mo';
     }
 }

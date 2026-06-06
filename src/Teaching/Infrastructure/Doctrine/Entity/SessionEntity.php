@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Teaching\Infrastructure\Doctrine\Entity;
 
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -25,7 +26,7 @@ class SessionEntity
     public ?string $slotId = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
-    public \DateTimeImmutable $date;
+    public DateTimeImmutable $date;
 
     #[ORM\Column(name: 'start_minute', type: Types::INTEGER)]
     public int $startMinute;
@@ -34,9 +35,11 @@ class SessionEntity
     public int $endMinute;
 
     #[ORM\Column(name: 'closed_at', type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    public ?\DateTimeImmutable $closedAt = null;
+    public ?DateTimeImmutable $closedAt = null;
 
-    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    #[ORM\Column(type: Types::BOOLEAN, options: [
+        'default' => false,
+    ])]
     public bool $cancelled = false;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -45,27 +48,37 @@ class SessionEntity
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     public ?string $homework = null;
 
-    #[ORM\Column(name: 'homework_checked', type: Types::BOOLEAN, options: ['default' => false])]
+    #[ORM\Column(name: 'homework_checked', type: Types::BOOLEAN, options: [
+        'default' => false,
+    ])]
     public bool $homeworkChecked = false;
 
-    /** @var Collection<int, ActivityEntity> */
+    /**
+     * @var Collection<int, ActivityEntity>
+     */
     #[ORM\OneToMany(
         targetEntity: ActivityEntity::class,
         mappedBy: 'session',
         cascade: ['persist', 'remove'],
         orphanRemoval: true,
     )]
-    #[ORM\OrderBy(['position' => 'ASC'])]
+    #[ORM\OrderBy([
+        'position' => 'ASC',
+    ])]
     public Collection $activities;
 
-    /** @var Collection<int, DocumentEntity> */
+    /**
+     * @var Collection<int, DocumentEntity>
+     */
     #[ORM\OneToMany(
         targetEntity: DocumentEntity::class,
         mappedBy: 'session',
         cascade: ['persist', 'remove'],
         orphanRemoval: true,
     )]
-    #[ORM\OrderBy(['id' => 'ASC'])]
+    #[ORM\OrderBy([
+        'id' => 'ASC',
+    ])]
     public Collection $documents;
 
     public function __construct()

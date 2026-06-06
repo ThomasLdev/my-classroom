@@ -13,6 +13,7 @@ use App\Teaching\Domain\Model\Session\DocumentId;
 use App\Teaching\Domain\Model\Session\Session;
 use App\Teaching\Domain\Model\Session\SessionId;
 use App\Teaching\Domain\Repository\SessionRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -26,12 +27,13 @@ use Symfony\Component\Uid\Uuid;
 final class DoctrineSessionRepositoryTest extends KernelTestCase
 {
     private EntityManagerInterface $em;
+
     private SessionRepository $repository;
 
     protected function setUp(): void
     {
         self::bootKernel();
-        $container = static::getContainer();
+        $container = self::getContainer();
 
         $this->em = $container->get(EntityManagerInterface::class);
         $this->repository = $container->get(SessionRepository::class);
@@ -42,6 +44,12 @@ final class DoctrineSessionRepositoryTest extends KernelTestCase
         $schemaTool->createSchema($metadata);
     }
 
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        $this->em->close();
+    }
+
     public function testItRoundTripsAnAggregateWithItsActivities(): void
     {
         $session = Session::materialize(
@@ -49,7 +57,7 @@ final class DoctrineSessionRepositoryTest extends KernelTestCase
             new Occurrence(
                 SlotId::fromString((string) Uuid::v7()),
                 ClassroomId::fromString((string) Uuid::v7()),
-                new \DateTimeImmutable('2026-06-08'),
+                new DateTimeImmutable('2026-06-08'),
                 TimeRange::fromLabels('09:00', '10:00'),
                 '5e B',
                 'Français',
@@ -86,7 +94,7 @@ final class DoctrineSessionRepositoryTest extends KernelTestCase
             new Occurrence(
                 SlotId::fromString((string) Uuid::v7()),
                 ClassroomId::fromString((string) Uuid::v7()),
-                new \DateTimeImmutable('2026-06-09'),
+                new DateTimeImmutable('2026-06-09'),
                 TimeRange::fromLabels('10:00', '11:00'),
                 '4e A',
                 'Soutien',
@@ -108,11 +116,5 @@ final class DoctrineSessionRepositoryTest extends KernelTestCase
         $again = $this->repository->ofId($session->id);
         self::assertSame(2, $again->activityCount(), 'The new activity was inserted.');
         self::assertSame(1, $again->doneCount(), 'The status change was persisted.');
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-        $this->em->close();
     }
 }

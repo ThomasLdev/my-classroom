@@ -17,6 +17,7 @@ use PHPUnit\Framework\TestCase;
 final class HomeworkHandlersTest extends TestCase
 {
     private InMemorySessionRepository $sessions;
+
     private InMemoryOccurrenceProvider $occurrences;
 
     protected function setUp(): void
