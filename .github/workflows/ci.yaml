@@ -82,3 +82,10 @@ jobs:
           VALIDATE_TRIVY: false
           VALIDATE_BIOME_FORMAT: false
           VALIDATE_BIOME_LINT: false
+          # PHP is linted and tested in the Docker `tests` job (PHP 8.5).
+          # Disable PHP linters here so super-linter's PHP 8.4 sandbox stops
+          # running `composer install`, which fails against our 8.5 lock file.
+          VALIDATE_PHP_BUILTIN: false
+          VALIDATE_PHP_PHPCS: false
+          VALIDATE_PHP_PHPSTAN: false
+          VALIDATE_PHP_PSALM: false
