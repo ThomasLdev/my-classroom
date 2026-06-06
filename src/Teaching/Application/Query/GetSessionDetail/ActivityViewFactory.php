@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Teaching\Application\Query\GetSessionDetail;
 
 use App\Teaching\Domain\Model\Session\Activity;
+use App\Teaching\Domain\Model\Session\ActivityId;
 
 final class ActivityViewFactory
 {
@@ -13,8 +14,8 @@ final class ActivityViewFactory
         return new ActivityView(
             id: (string) $activity->id,
             title: $activity->title,
-            done: !$activity->isPlanned(),
-            carriedOver: $activity->carriedOverFrom !== null,
+            done: ! $activity->isPlanned(),
+            carriedOver: $activity->carriedOverFrom instanceof ActivityId,
             position: $activity->position,
         );
     }

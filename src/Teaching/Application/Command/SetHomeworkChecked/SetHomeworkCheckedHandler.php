@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace App\Teaching\Application\Command\SetHomeworkChecked;
 
 use App\Shared\Domain\Identifier\SlotId;
+use App\Teaching\Domain\Model\Session\Session;
 use App\Teaching\Domain\Repository\SessionRepository;
+use DateTimeImmutable;
+use InvalidArgumentException;
 
 final readonly class SetHomeworkCheckedHandler
 {
@@ -18,10 +21,10 @@ final readonly class SetHomeworkCheckedHandler
     {
         $session = $this->sessions->ofOccurrence(
             SlotId::fromString($command->slotId),
-            self::parseDate($command->date),
+            $this->parseDate($command->date),
         );
 
-        if ($session === null) {
+        if (! $session instanceof Session) {
             return;
         }
 
@@ -30,12 +33,12 @@ final readonly class SetHomeworkCheckedHandler
         $this->sessions->save($session);
     }
 
-    private static function parseDate(string $date): \DateTimeImmutable
+    private function parseDate(string $date): DateTimeImmutable
     {
-        $parsed = \DateTimeImmutable::createFromFormat('!Y-m-d', $date);
+        $parsed = DateTimeImmutable::createFromFormat('!Y-m-d', $date);
 
         if ($parsed === false) {
-            throw new \InvalidArgumentException(sprintf('Invalid date "%s", expected Y-m-d.', $date));
+            throw new InvalidArgumentException(sprintf('Invalid date "%s", expected Y-m-d.', $date));
         }
 
         return $parsed;

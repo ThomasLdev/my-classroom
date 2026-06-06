@@ -12,8 +12,12 @@ final class DefaultTimetableStory extends Story
 {
     public function build(): void
     {
-        $classe5B = ClassroomFactory::createOne(['name' => '5e B']);
-        $classe4A = ClassroomFactory::createOne(['name' => '4e A']);
+        $classe5B = ClassroomFactory::createOne([
+            'name' => '5e B',
+        ]);
+        $classe4A = ClassroomFactory::createOne([
+            'name' => '4e A',
+        ]);
 
         // dayOfWeek is ISO-8601: 1=Mon
         $grid = [

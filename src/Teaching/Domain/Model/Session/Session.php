@@ -11,6 +11,8 @@ use App\Shared\Domain\Occurrence;
 use App\Shared\Domain\TimeRange;
 use App\Teaching\Domain\Exception\ActivityNotFound;
 use App\Teaching\Domain\Exception\DocumentNotFound;
+use DateTimeImmutable;
+use DateTimeInterface;
 
 /**
  * @phpstan-import-type ActivityStateArray from Activity
@@ -34,20 +36,26 @@ use App\Teaching\Domain\Exception\DocumentNotFound;
  */
 final class Session
 {
-    /** @var list<Activity> */
+    /**
+     * @var list<Activity>
+     */
     public private(set) array $activities = [];
 
-    /** @var list<AttachedDocument> */
+    /**
+     * @var list<AttachedDocument>
+     */
     public private(set) array $documents = [];
 
     public private(set) ?string $note = null;
 
     public private(set) ?string $homework = null;
 
-    /** Whether the teacher has verified this session's homework (ticked in the next session). */
+    /**
+     * Whether the teacher has verified this session's homework (ticked in the next session).
+     */
     public private(set) bool $homeworkChecked = false;
 
-    public private(set) ?\DateTimeImmutable $closedAt = null;
+    public private(set) ?DateTimeImmutable $closedAt = null;
 
     public private(set) bool $cancelled = false;
 
@@ -55,7 +63,7 @@ final class Session
         public readonly SessionId $id,
         public readonly ClassroomId $classroomId,
         public readonly ?SlotId $slotId,
-        public readonly \DateTimeImmutable $date,
+        public readonly DateTimeImmutable $date,
         public readonly TimeRange $timeRange,
     ) {
     }
@@ -82,22 +90,22 @@ final class Session
             SessionId::fromString($state['id']),
             ClassroomId::fromString($state['classroomId']),
             $state['slotId'] !== null ? SlotId::fromString($state['slotId']) : null,
-            new \DateTimeImmutable($state['date']),
+            new DateTimeImmutable($state['date']),
             new TimeRange($state['startMinute'], $state['endMinute']),
         );
 
-        $session->activities = array_values(array_map(
-            static fn (array $activity): Activity => Activity::fromState($activity),
+        $session->activities = array_map(
+            Activity::fromState(...),
             $state['activities'],
-        ));
-        $session->documents = array_values(array_map(
-            static fn (array $document): AttachedDocument => AttachedDocument::fromState($document),
+        );
+        $session->documents = array_map(
+            AttachedDocument::fromState(...),
             $state['documents'],
-        ));
+        );
         $session->note = $state['note'];
         $session->homework = $state['homework'];
         $session->homeworkChecked = $state['homeworkChecked'];
-        $session->closedAt = $state['closedAt'] !== null ? new \DateTimeImmutable($state['closedAt']) : null;
+        $session->closedAt = $state['closedAt'] !== null ? new DateTimeImmutable($state['closedAt']) : null;
         $session->cancelled = $state['cancelled'];
 
         return $session;
@@ -111,11 +119,11 @@ final class Session
         return [
             'id' => (string) $this->id,
             'classroomId' => (string) $this->classroomId,
-            'slotId' => $this->slotId !== null ? (string) $this->slotId : null,
+            'slotId' => $this->slotId instanceof SlotId ? (string) $this->slotId : null,
             'date' => $this->date->format('Y-m-d'),
             'startMinute' => $this->timeRange->startMinute,
             'endMinute' => $this->timeRange->endMinute,
-            'closedAt' => $this->closedAt?->format(\DateTimeInterface::ATOM),
+            'closedAt' => $this->closedAt?->format(DateTimeInterface::ATOM),
             'cancelled' => $this->cancelled,
             'note' => $this->note,
             'homework' => $this->homework,
@@ -175,7 +183,7 @@ final class Session
 
         $this->documents = array_values(array_filter(
             $this->documents,
-            static fn (AttachedDocument $d): bool => !$d->id->equals($id),
+            static fn (AttachedDocument $d): bool => ! $d->id->equals($id),
         ));
     }
 
@@ -199,7 +207,7 @@ final class Session
 
     public function isClosed(): bool
     {
-        return $this->closedAt !== null;
+        return $this->closedAt instanceof DateTimeImmutable;
     }
 
     /**
@@ -239,11 +247,11 @@ final class Session
 
         $this->activities = array_values(array_filter(
             $this->activities,
-            static fn (Activity $a): bool => !$a->id->equals($id),
+            static fn (Activity $a): bool => ! $a->id->equals($id),
         ));
     }
 
-    public function endsAt(): \DateTimeImmutable
+    public function endsAt(): DateTimeImmutable
     {
         return $this->timeRange->endsOn($this->date);
     }
@@ -255,7 +263,7 @@ final class Session
 
     public function doneCount(): int
     {
-        return \count(array_filter($this->activities, static fn (Activity $a): bool => !$a->isPlanned()));
+        return \count(array_filter($this->activities, static fn (Activity $a): bool => ! $a->isPlanned()));
     }
 
     private function activityWith(ActivityId $id): Activity

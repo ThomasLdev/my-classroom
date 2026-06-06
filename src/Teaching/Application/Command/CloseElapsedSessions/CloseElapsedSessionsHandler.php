@@ -6,11 +6,13 @@ namespace App\Teaching\Application\Command\CloseElapsedSessions;
 
 use App\Shared\Domain\Clock;
 use App\Shared\Domain\Identifier\IdGenerator;
+use App\Shared\Domain\Identifier\SlotId;
+use App\Shared\Domain\Occurrence;
+use App\Shared\Domain\Port\OccurrenceProvider;
 use App\Teaching\Domain\Model\Session\Activity;
 use App\Teaching\Domain\Model\Session\ActivityId;
 use App\Teaching\Domain\Model\Session\Session;
 use App\Teaching\Domain\Model\Session\SessionId;
-use App\Teaching\Domain\Port\OccurrenceProvider;
 use App\Teaching\Domain\Repository\SessionRepository;
 
 // Identity map keyed by occurrence so a later carry target is the same aggregate instance (cascade A -> B -> C in one run).
@@ -39,7 +41,10 @@ final readonly class CloseElapsedSessionsHandler
             $planned = $session->close($this->clock);
 
             if ($planned !== []) {
-                $this->carryOver($session, $planned, $identityMap);
+                $target = $this->carryOver($session, $planned, $identityMap);
+                if ($target instanceof Session) {
+                    $identityMap[$this->keyOf($target)] = $target;
+                }
             }
 
             $this->sessions->save($session);
@@ -47,15 +52,18 @@ final readonly class CloseElapsedSessionsHandler
     }
 
     /**
-     * @param list<Activity>          $planned
-     * @param array<string, Session>  $identityMap
+     * Returns the session that received the carried-over activities (or null when
+     * nothing is scheduled ahead) so the caller can keep the identity map in sync.
+     *
+     * @param list<Activity>         $planned
+     * @param array<string, Session> $identityMap
      */
-    private function carryOver(Session $source, array $planned, array &$identityMap): void
+    private function carryOver(Session $source, array $planned, array $identityMap): ?Session
     {
         $next = $this->occurrences->nextAfter($source->classroomId, $source->endsAt());
 
-        if ($next === null) {
-            return; // nothing scheduled ahead; planned activities stay on the closed session as history
+        if (! $next instanceof Occurrence) {
+            return null; // nothing scheduled ahead; planned activities stay on the closed session as history
         }
 
         $key = sprintf('slot:%s@%s', $next->slotId, $next->date->format('Y-m-d'));
@@ -68,15 +76,16 @@ final readonly class CloseElapsedSessionsHandler
             $target->receiveCarriedOver(ActivityId::fromString($this->ids->next()), $activity);
         }
 
-        $identityMap[$key] = $target;
         $this->sessions->save($target);
+
+        return $target;
     }
 
     private function keyOf(Session $session): string
     {
         $slotId = $session->slotId;
 
-        return $slotId !== null
+        return $slotId instanceof SlotId
             ? sprintf('slot:%s@%s', $slotId, $session->date->format('Y-m-d'))
             : sprintf('sid:%s', $session->id);
     }

@@ -8,7 +8,9 @@ use App\Teaching\Application\Port\DocumentStorage;
 
 final class InMemoryDocumentStorage implements DocumentStorage
 {
-    /** @var array<string, string> documentId => source path */
+    /**
+     * @var array<string, string> documentId => source path
+     */
     private array $stored = [];
 
     public function store(string $documentId, string $sourcePath): void
@@ -23,7 +25,7 @@ final class InMemoryDocumentStorage implements DocumentStorage
 
     public function locate(string $documentId): string
     {
-        return '/tmp/'.$documentId;
+        return '/tmp/' . $documentId;
     }
 
     public function has(string $documentId): bool

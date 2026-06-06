@@ -6,15 +6,19 @@ namespace App\Tests\Support;
 
 use App\Teaching\Application\Port\CalendarEventProvider;
 use App\Teaching\Application\Query\GetDayView\EventView;
+use DateTimeImmutable;
 
-final class InMemoryCalendarEventProvider implements CalendarEventProvider
+final readonly class InMemoryCalendarEventProvider implements CalendarEventProvider
 {
-    /** @param list<EventView> $events */
-    public function __construct(private array $events = [])
-    {
+    /**
+     * @param list<EventView> $events
+     */
+    public function __construct(
+        private array $events = []
+    ) {
     }
 
-    public function forDay(\DateTimeImmutable $date): array
+    public function forDay(DateTimeImmutable $date): array
     {
         return array_values(array_filter(
             $this->events,

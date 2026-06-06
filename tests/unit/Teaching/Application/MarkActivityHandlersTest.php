@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Teaching\Application;
+namespace App\Tests\Unit\Teaching\Application;
 
 use App\Shared\Domain\Identifier\SlotId;
 use App\Teaching\Application\Command\AddActivityToSession\AddActivityToSession;
@@ -12,16 +12,21 @@ use App\Teaching\Application\Command\MarkActivityDone\MarkActivityDoneHandler;
 use App\Teaching\Application\Command\MarkActivityNotDone\MarkActivityNotDone;
 use App\Teaching\Application\Command\MarkActivityNotDone\MarkActivityNotDoneHandler;
 use App\Teaching\Domain\Exception\SessionNotFound;
+use App\Teaching\Domain\Model\Session\Session;
 use App\Tests\Support\InMemoryOccurrenceProvider;
 use App\Tests\Support\InMemorySessionRepository;
 use App\Tests\Support\OccurrenceMother;
 use App\Tests\Support\SequentialIdGenerator;
+use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 final class MarkActivityHandlersTest extends TestCase
 {
     private InMemorySessionRepository $sessions;
+
     private InMemoryOccurrenceProvider $occurrences;
+
     private AddActivityToSessionHandler $add;
 
     protected function setUp(): void
@@ -52,9 +57,9 @@ final class MarkActivityHandlersTest extends TestCase
         (new MarkActivityDoneHandler($this->sessions))(new MarkActivityDone('ghost-slot', '2026-06-08', 'whatever'));
     }
 
-    private function session(): \App\Teaching\Domain\Model\Session\Session
+    private function session(): Session
     {
-        return $this->sessions->ofOccurrence(SlotId::fromString('slot-1'), new \DateTimeImmutable('2026-06-08'))
-            ?? throw new \RuntimeException('Session expected.');
+        return $this->sessions->ofOccurrence(SlotId::fromString('slot-1'), new DateTimeImmutable('2026-06-08'))
+            ?? throw new RuntimeException('Session expected.');
     }
 }

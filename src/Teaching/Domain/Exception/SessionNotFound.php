@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Teaching\Domain\Exception;
 
-final class SessionNotFound extends \DomainException
+use DomainException;
+
+final class SessionNotFound extends DomainException
 {
     public static function forOccurrence(string $slotId, string $date): self
     {

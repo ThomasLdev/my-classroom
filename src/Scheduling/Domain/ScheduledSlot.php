@@ -8,6 +8,7 @@ use App\Shared\Domain\Identifier\ClassroomId;
 use App\Shared\Domain\Identifier\SlotId;
 use App\Shared\Domain\Occurrence;
 use App\Shared\Domain\TimeRange;
+use DateTimeImmutable;
 
 final readonly class ScheduledSlot
 {
@@ -19,27 +20,23 @@ final readonly class ScheduledSlot
         public TimeRange $timeRange,
         public string $subject,
         public ?string $room = null,
-        public ?\DateTimeImmutable $validFrom = null,
-        public ?\DateTimeImmutable $validTo = null,
+        public ?DateTimeImmutable $validFrom = null,
+        public ?DateTimeImmutable $validTo = null,
     ) {
     }
 
-    public function occursOn(\DateTimeImmutable $date): bool
+    public function occursOn(DateTimeImmutable $date): bool
     {
-        if (!$this->dayOfWeek->matches($date)) {
+        if (! $this->dayOfWeek->matches($date)) {
             return false;
         }
-        if ($this->validFrom !== null && $date < $this->validFrom->setTime(0, 0)) {
+        if ($this->validFrom instanceof DateTimeImmutable && $date < $this->validFrom->setTime(0, 0)) {
             return false;
         }
-        if ($this->validTo !== null && $date > $this->validTo->setTime(0, 0)) {
-            return false;
-        }
-
-        return true;
+        return ! ($this->validTo instanceof DateTimeImmutable && $date > $this->validTo->setTime(0, 0));
     }
 
-    public function toOccurrence(\DateTimeImmutable $date): Occurrence
+    public function toOccurrence(DateTimeImmutable $date): Occurrence
     {
         return new Occurrence(
             $this->slotId,

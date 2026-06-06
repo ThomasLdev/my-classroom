@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Teaching\Application;
+namespace App\Tests\Unit\Teaching\Application;
 
 use App\Teaching\Application\Command\SetHomeworkChecked\SetHomeworkChecked;
 use App\Teaching\Application\Command\SetHomeworkChecked\SetHomeworkCheckedHandler;
@@ -17,6 +17,7 @@ use PHPUnit\Framework\TestCase;
 final class HomeworkHandlersTest extends TestCase
 {
     private InMemorySessionRepository $sessions;
+
     private InMemoryOccurrenceProvider $occurrences;
 
     protected function setUp(): void

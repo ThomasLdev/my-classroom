@@ -7,6 +7,7 @@ namespace App\Scheduling\Domain;
 use App\Shared\Domain\Identifier\ClassroomId;
 use App\Shared\Domain\Identifier\SlotId;
 use App\Shared\Domain\Occurrence;
+use DateTimeImmutable;
 
 final class OccurrenceCalculator
 {
@@ -15,7 +16,7 @@ final class OccurrenceCalculator
      *
      * @return list<Occurrence>
      */
-    public function forDay(array $slots, \DateTimeImmutable $date): array
+    public function forDay(array $slots, DateTimeImmutable $date): array
     {
         $day = $date->setTime(0, 0);
 
@@ -32,7 +33,7 @@ final class OccurrenceCalculator
     /**
      * @param list<ScheduledSlot> $slots
      */
-    public function resolve(array $slots, SlotId $slotId, \DateTimeImmutable $date): ?Occurrence
+    public function resolve(array $slots, SlotId $slotId, DateTimeImmutable $date): ?Occurrence
     {
         $day = $date->setTime(0, 0);
 
@@ -51,7 +52,7 @@ final class OccurrenceCalculator
     public function nextAfter(
         array $slots,
         ClassroomId $classroomId,
-        \DateTimeImmutable $after,
+        DateTimeImmutable $after,
         int $horizonDays = 30,
     ): ?Occurrence {
         $classroomSlots = array_values(array_filter(

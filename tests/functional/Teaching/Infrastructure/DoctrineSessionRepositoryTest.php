@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Teaching\Infrastructure;
+namespace App\Tests\Functional\Teaching\Infrastructure;
 
 use App\Shared\Domain\Identifier\ClassroomId;
 use App\Shared\Domain\Identifier\SlotId;
@@ -13,6 +13,7 @@ use App\Teaching\Domain\Model\Session\DocumentId;
 use App\Teaching\Domain\Model\Session\Session;
 use App\Teaching\Domain\Model\Session\SessionId;
 use App\Teaching\Domain\Repository\SessionRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -26,12 +27,13 @@ use Symfony\Component\Uid\Uuid;
 final class DoctrineSessionRepositoryTest extends KernelTestCase
 {
     private EntityManagerInterface $em;
+
     private SessionRepository $repository;
 
     protected function setUp(): void
     {
         self::bootKernel();
-        $container = static::getContainer();
+        $container = self::getContainer();
 
         $this->em = $container->get(EntityManagerInterface::class);
         $this->repository = $container->get(SessionRepository::class);
@@ -42,14 +44,21 @@ final class DoctrineSessionRepositoryTest extends KernelTestCase
         $schemaTool->createSchema($metadata);
     }
 
+    protected function tearDown(): void
+    {
+        $this->em->close();
+        parent::tearDown();
+    }
+
     public function testItRoundTripsAnAggregateWithItsActivities(): void
     {
+        $slotId = SlotId::fromString((string) Uuid::v7());
         $session = Session::materialize(
             SessionId::fromString((string) Uuid::v7()),
             new Occurrence(
-                SlotId::fromString((string) Uuid::v7()),
+                $slotId,
                 ClassroomId::fromString((string) Uuid::v7()),
-                new \DateTimeImmutable('2026-06-08'),
+                new DateTimeImmutable('2026-06-08'),
                 TimeRange::fromLabels('09:00', '10:00'),
                 '5e B',
                 'Français',
@@ -65,7 +74,7 @@ final class DoctrineSessionRepositoryTest extends KernelTestCase
         $this->em->flush();
         $this->em->clear();
 
-        $reloaded = $this->repository->ofOccurrence($session->slotId, $session->date);
+        $reloaded = $this->repository->ofOccurrence($slotId, $session->date);
 
         self::assertNotNull($reloaded);
         self::assertTrue($reloaded->id->equals($session->id));
@@ -86,7 +95,7 @@ final class DoctrineSessionRepositoryTest extends KernelTestCase
             new Occurrence(
                 SlotId::fromString((string) Uuid::v7()),
                 ClassroomId::fromString((string) Uuid::v7()),
-                new \DateTimeImmutable('2026-06-09'),
+                new DateTimeImmutable('2026-06-09'),
                 TimeRange::fromLabels('10:00', '11:00'),
                 '4e A',
                 'Soutien',
@@ -99,6 +108,7 @@ final class DoctrineSessionRepositoryTest extends KernelTestCase
 
         // Reload, mutate (mark done + add a second activity), persist again.
         $reloaded = $this->repository->ofId($session->id);
+        self::assertNotNull($reloaded);
         $reloaded->activities[0]->markDone();
         $reloaded->addActivity(ActivityId::fromString((string) Uuid::v7()), 'Tâche B');
         $this->repository->save($reloaded);
@@ -106,13 +116,8 @@ final class DoctrineSessionRepositoryTest extends KernelTestCase
         $this->em->clear();
 
         $again = $this->repository->ofId($session->id);
+        self::assertNotNull($again);
         self::assertSame(2, $again->activityCount(), 'The new activity was inserted.');
         self::assertSame(1, $again->doneCount(), 'The status change was persisted.');
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-        $this->em->close();
     }
 }

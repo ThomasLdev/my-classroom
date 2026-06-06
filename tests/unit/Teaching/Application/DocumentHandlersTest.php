@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Teaching\Application;
+namespace App\Tests\Unit\Teaching\Application;
 
 use App\Teaching\Application\Command\AttachDocumentToSession\AttachDocumentToSession;
 use App\Teaching\Application\Command\AttachDocumentToSession\AttachDocumentToSessionHandler;
@@ -18,7 +18,9 @@ use PHPUnit\Framework\TestCase;
 final class DocumentHandlersTest extends TestCase
 {
     private InMemorySessionRepository $sessions;
+
     private InMemoryDocumentStorage $storage;
+
     private InMemoryOccurrenceProvider $occurrences;
 
     protected function setUp(): void

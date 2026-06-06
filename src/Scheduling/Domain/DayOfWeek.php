@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Scheduling\Domain;
 
+use DateTimeImmutable;
+
 enum DayOfWeek: int
 {
     case Monday = 1;
@@ -14,12 +16,12 @@ enum DayOfWeek: int
     case Saturday = 6;
     case Sunday = 7;
 
-    public static function fromDate(\DateTimeImmutable $date): self
+    public static function fromDate(DateTimeImmutable $date): self
     {
         return self::from((int) $date->format('N'));
     }
 
-    public function matches(\DateTimeImmutable $date): bool
+    public function matches(DateTimeImmutable $date): bool
     {
         return (int) $date->format('N') === $this->value;
     }

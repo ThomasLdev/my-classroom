@@ -4,15 +4,19 @@ declare(strict_types=1);
 
 namespace App\Teaching\Infrastructure\Doctrine\Mapper;
 
+use App\Teaching\Domain\Model\Session\Activity;
 use App\Teaching\Domain\Model\Session\ActivityStatus;
+use App\Teaching\Domain\Model\Session\AttachedDocument;
 use App\Teaching\Domain\Model\Session\Session;
 use App\Teaching\Infrastructure\Doctrine\Entity\ActivityEntity;
 use App\Teaching\Infrastructure\Doctrine\Entity\DocumentEntity;
 use App\Teaching\Infrastructure\Doctrine\Entity\SessionEntity;
+use DateTimeImmutable;
+use DateTimeInterface;
 
 /**
- * @phpstan-import-type ActivityStateArray from \App\Teaching\Domain\Model\Session\Activity
- * @phpstan-import-type DocumentStateArray from \App\Teaching\Domain\Model\Session\AttachedDocument
+ * @phpstan-import-type ActivityStateArray from Activity
+ * @phpstan-import-type DocumentStateArray from AttachedDocument
  */
 final class SessionMapper
 {
@@ -25,7 +29,7 @@ final class SessionMapper
             'date' => $entity->date->format('Y-m-d'),
             'startMinute' => $entity->startMinute,
             'endMinute' => $entity->endMinute,
-            'closedAt' => $entity->closedAt?->format(\DateTimeInterface::ATOM),
+            'closedAt' => $entity->closedAt?->format(DateTimeInterface::ATOM),
             'cancelled' => $entity->cancelled,
             'note' => $entity->note,
             'homework' => $entity->homework,
@@ -59,10 +63,10 @@ final class SessionMapper
         $entity->id = $state['id'];
         $entity->classroomId = $state['classroomId'];
         $entity->slotId = $state['slotId'];
-        $entity->date = new \DateTimeImmutable($state['date']);
+        $entity->date = new DateTimeImmutable($state['date']);
         $entity->startMinute = $state['startMinute'];
         $entity->endMinute = $state['endMinute'];
-        $entity->closedAt = $state['closedAt'] !== null ? new \DateTimeImmutable($state['closedAt']) : null;
+        $entity->closedAt = $state['closedAt'] !== null ? new DateTimeImmutable($state['closedAt']) : null;
         $entity->cancelled = $state['cancelled'];
         $entity->note = $state['note'];
         $entity->homework = $state['homework'];
@@ -100,13 +104,13 @@ final class SessionMapper
             $activityEntity->position = $activity['position'];
             $activityEntity->carriedOverFrom = $activity['carriedOverFrom'];
 
-            if (!isset($existing[$id])) {
+            if (! isset($existing[$id])) {
                 $entity->activities->add($activityEntity);
             }
         }
 
         foreach ($existing as $id => $activityEntity) {
-            if (!isset($kept[$id])) {
+            if (! isset($kept[$id])) {
                 $entity->activities->removeElement($activityEntity);
             }
         }
@@ -135,13 +139,13 @@ final class SessionMapper
             $documentEntity->size = $document['size'];
             $documentEntity->contentType = $document['contentType'];
 
-            if (!isset($existing[$id])) {
+            if (! isset($existing[$id])) {
                 $entity->documents->add($documentEntity);
             }
         }
 
         foreach ($existing as $id => $documentEntity) {
-            if (!isset($kept[$id])) {
+            if (! isset($kept[$id])) {
                 $entity->documents->removeElement($documentEntity);
             }
         }

@@ -12,19 +12,22 @@ use App\Teaching\Domain\Model\Session\SessionId;
 use App\Teaching\Domain\Repository\SessionRepository;
 use App\Teaching\Infrastructure\Doctrine\Entity\SessionEntity;
 use App\Teaching\Infrastructure\Doctrine\Mapper\SessionMapper;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\DependencyInjection\Attribute\AsAlias;
 
 #[AsAlias(SessionRepository::class)]
-final class DoctrineSessionRepository implements SessionRepository
+final readonly class DoctrineSessionRepository implements SessionRepository
 {
-    /** @var EntityRepository<SessionEntity> */
-    private readonly EntityRepository $entities;
+    /**
+     * @var EntityRepository<SessionEntity>
+     */
+    private EntityRepository $entities;
 
     public function __construct(
-        private readonly EntityManagerInterface $em,
-        private readonly SessionMapper $mapper,
+        private EntityManagerInterface $em,
+        private SessionMapper $mapper,
     ) {
         $this->entities = $em->getRepository(SessionEntity::class);
     }
@@ -36,7 +39,7 @@ final class DoctrineSessionRepository implements SessionRepository
         return $entity !== null ? $this->mapper->toDomain($entity) : null;
     }
 
-    public function ofOccurrence(SlotId $slotId, \DateTimeImmutable $date): ?Session
+    public function ofOccurrence(SlotId $slotId, DateTimeImmutable $date): ?Session
     {
         $entity = $this->entities->findOneBy([
             'slotId' => (string) $slotId,
@@ -46,8 +49,9 @@ final class DoctrineSessionRepository implements SessionRepository
         return $entity !== null ? $this->mapper->toDomain($entity) : null;
     }
 
-    public function mostRecentUncheckedHomework(ClassroomId $classroomId, \DateTimeImmutable $before): ?Session
+    public function mostRecentUncheckedHomework(ClassroomId $classroomId, DateTimeImmutable $before): ?Session
     {
+        /** @var SessionEntity|null $entity */
         $entity = $this->entities->createQueryBuilder('s')
             ->andWhere('s.classroomId = :classroom')
             ->andWhere('s.date < :before')
@@ -72,9 +76,10 @@ final class DoctrineSessionRepository implements SessionRepository
         // No flush: the doctrine_transaction middleware commits at the boundary.
     }
 
-    public function elapsedOpenWithPlannedActivities(\DateTimeImmutable $now): array
+    public function elapsedOpenWithPlannedActivities(DateTimeImmutable $now): array
     {
         // Elapsed (date + end minute <= now) is computed, so it is filtered in PHP after a narrow DB pre-filter.
+        /** @var list<SessionEntity> $candidates */
         $candidates = $this->entities->createQueryBuilder('s')
             ->innerJoin('s.activities', 'a')
             ->andWhere('s.closedAt IS NULL')

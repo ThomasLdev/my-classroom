@@ -16,7 +16,7 @@ final class CarryOverSchedule implements ScheduleProviderInterface
 {
     public function getSchedule(): Schedule
     {
-        return (new Schedule())->add(
+        return new Schedule()->add(
             RecurringMessage::every('5 minutes', new CloseElapsedSessions()),
         );
     }

@@ -6,13 +6,17 @@ namespace App\Tests\Support;
 
 use App\Shared\Domain\Identifier\ClassroomId;
 use App\Shared\Domain\Identifier\SlotId;
+use App\Teaching\Domain\Model\Session\Activity;
 use App\Teaching\Domain\Model\Session\Session;
 use App\Teaching\Domain\Model\Session\SessionId;
 use App\Teaching\Domain\Repository\SessionRepository;
+use DateTimeImmutable;
 
 final class InMemorySessionRepository implements SessionRepository
 {
-    /** @var array<string, Session> */
+    /**
+     * @var array<string, Session>
+     */
     private array $byId = [];
 
     public function ofId(SessionId $id): ?Session
@@ -20,7 +24,7 @@ final class InMemorySessionRepository implements SessionRepository
         return $this->byId[(string) $id] ?? null;
     }
 
-    public function ofOccurrence(SlotId $slotId, \DateTimeImmutable $date): ?Session
+    public function ofOccurrence(SlotId $slotId, DateTimeImmutable $date): ?Session
     {
         foreach ($this->byId as $session) {
             if ($session->slotId !== null
@@ -34,11 +38,11 @@ final class InMemorySessionRepository implements SessionRepository
         return null;
     }
 
-    public function mostRecentUncheckedHomework(ClassroomId $classroomId, \DateTimeImmutable $before): ?Session
+    public function mostRecentUncheckedHomework(ClassroomId $classroomId, DateTimeImmutable $before): ?Session
     {
         $matches = array_filter($this->byId, static fn (Session $s): bool => $s->classroomId->equals($classroomId)
             && $s->homework !== null
-            && !$s->homeworkChecked
+            && ! $s->homeworkChecked
             && $s->date < $before->setTime(0, 0));
 
         usort($matches, static fn (Session $a, Session $b): int => $b->date <=> $a->date);
@@ -51,28 +55,23 @@ final class InMemorySessionRepository implements SessionRepository
         $this->byId[(string) $session->id] = $session;
     }
 
-    public function elapsedOpenWithPlannedActivities(\DateTimeImmutable $now): array
+    public function elapsedOpenWithPlannedActivities(DateTimeImmutable $now): array
     {
         $list = array_filter($this->byId, static function (Session $session) use ($now): bool {
             if ($session->isClosed() || $session->endsAt() > $now) {
                 return false;
             }
-
-            foreach ($session->activities as $activity) {
-                if ($activity->isPlanned()) {
-                    return true;
-                }
-            }
-
-            return false;
+            return array_any($session->activities, static fn (Activity $activity): bool => $activity->isPlanned());
         });
 
         usort($list, static fn (Session $a, Session $b): int => $a->endsAt() <=> $b->endsAt());
 
-        return array_values($list);
+        return $list;
     }
 
-    /** @return list<Session> */
+    /**
+     * @return list<Session>
+     */
     public function all(): array
     {
         return array_values($this->byId);

@@ -7,11 +7,14 @@ namespace App\Tests\Support;
 use App\Shared\Domain\Identifier\ClassroomId;
 use App\Shared\Domain\Identifier\SlotId;
 use App\Shared\Domain\Occurrence;
-use App\Teaching\Domain\Port\OccurrenceProvider;
+use App\Shared\Domain\Port\OccurrenceProvider;
+use DateTimeImmutable;
 
 final class InMemoryOccurrenceProvider implements OccurrenceProvider
 {
-    /** @var list<Occurrence> */
+    /**
+     * @var list<Occurrence>
+     */
     private array $occurrences = [];
 
     public function add(Occurrence $occurrence): void
@@ -19,7 +22,7 @@ final class InMemoryOccurrenceProvider implements OccurrenceProvider
         $this->occurrences[] = $occurrence;
     }
 
-    public function forDay(\DateTimeImmutable $date): array
+    public function forDay(DateTimeImmutable $date): array
     {
         $matches = array_filter(
             $this->occurrences,
@@ -31,10 +34,10 @@ final class InMemoryOccurrenceProvider implements OccurrenceProvider
             static fn (Occurrence $a, Occurrence $b): int => $a->timeRange->startMinute <=> $b->timeRange->startMinute,
         );
 
-        return array_values($matches);
+        return $matches;
     }
 
-    public function resolve(SlotId $slotId, \DateTimeImmutable $date): ?Occurrence
+    public function resolve(SlotId $slotId, DateTimeImmutable $date): ?Occurrence
     {
         foreach ($this->occurrences as $occurrence) {
             if ($occurrence->slotId->equals($slotId)
@@ -47,7 +50,7 @@ final class InMemoryOccurrenceProvider implements OccurrenceProvider
         return null;
     }
 
-    public function nextAfter(ClassroomId $classroomId, \DateTimeImmutable $after): ?Occurrence
+    public function nextAfter(ClassroomId $classroomId, DateTimeImmutable $after): ?Occurrence
     {
         $candidates = array_filter(
             $this->occurrences,

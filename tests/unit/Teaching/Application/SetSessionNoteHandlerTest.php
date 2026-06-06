@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Teaching\Application;
+namespace App\Tests\Unit\Teaching\Application;
 
 use App\Teaching\Application\Command\SetSessionNote\SetSessionNote;
 use App\Teaching\Application\Command\SetSessionNote\SetSessionNoteHandler;
@@ -15,6 +15,7 @@ use PHPUnit\Framework\TestCase;
 final class SetSessionNoteHandlerTest extends TestCase
 {
     private InMemorySessionRepository $sessions;
+
     private SetSessionNoteHandler $handler;
 
     protected function setUp(): void
