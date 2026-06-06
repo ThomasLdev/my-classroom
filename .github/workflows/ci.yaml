@@ -78,14 +78,19 @@ jobs:
         env:
           GITHUB_ACTIONS_CONFIG_FILE: actionlint.yaml
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VALIDATE_CHECKOV: false
-          VALIDATE_TRIVY: false
-          VALIDATE_BIOME_FORMAT: false
-          VALIDATE_BIOME_LINT: false
-          # PHP is linted and tested in the Docker `tests` job (PHP 8.5).
-          # Disable PHP linters here so super-linter's PHP 8.4 sandbox stops
-          # running `composer install`, which fails against our 8.5 lock file.
-          VALIDATE_PHP_BUILTIN: false
-          VALIDATE_PHP_PHPCS: false
-          VALIDATE_PHP_PHPSTAN: false
-          VALIDATE_PHP_PSALM: false
+          # Whitelist mode: only the validators set to true run; every other
+          # linter (Prettier formatters, JSCPD, codespell, natural-language,
+          # PHP, ...) stays off. PHP is linted/tested in the Docker `tests`
+          # job; front-end formatting is owned by project-native tooling.
+          # NB: super-linter forbids mixing true and false — keep all-true here.
+          VALIDATE_YAML: true
+          VALIDATE_JSON: true
+          VALIDATE_BASH: true
+          VALIDATE_DOCKERFILE_HADOLINT: true
+          VALIDATE_GITHUB_ACTIONS: true
+          VALIDATE_GITHUB_ACTIONS_ZIZMOR: true
+          VALIDATE_GITLEAKS: true
+          VALIDATE_GIT_MERGE_CONFLICT_MARKERS: true
+          VALIDATE_EDITORCONFIG: true
+          # Skip vendored / generated files so linters ignore third-party code.
+          FILTER_REGEX_EXCLUDE: (assets/vendor/|var/|public/bundles/)

@@ -1,7 +1,7 @@
 {% props days %}
 {# Lift the selected hint out of the cells: one floating pill that slides between columns. #}
 {% set selectedIndex = days|filter(d => d.isSelected)|keys|first|default(0) %}
-<nav class="weekstrip" aria-label="Navigation par jour" style="--sel: {{ selectedIndex }}" data-controller="weekstrip">
+<nav class="weekstrip" aria-label="{{ 'calendar.nav.week_aria'|trans }}" style="--sel: {{ selectedIndex }}" data-controller="weekstrip">
     <span class="weekstrip__pill" aria-hidden="true" data-weekstrip-target="pill"></span>
     {% for d in days %}
         <a class="weekstrip__cell{{ d.isSelected ? ' weekstrip__cell--selected' }}{{ d.isToday ? ' weekstrip__cell--today' }}{{ d.isWeekend ? ' weekstrip__cell--weekend' }}"

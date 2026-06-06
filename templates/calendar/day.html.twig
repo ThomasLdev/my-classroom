@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ header.dow }} {{ header.num }} {{ header.month }} — Ma classe{% endblock %}
+{% block title %}{{ header.dow }} {{ header.num }} {{ header.month }} — {{ 'app.brand'|trans }}{% endblock %}
 
 {% block body %}
     <div class="dayview"
@@ -16,7 +16,7 @@
                 {% if day.sessions is empty and day.events is empty %}
                     <div class="empty">
                         <twig:ux:icon name="lucide:calendar" class="empty__icon" />
-                        <p>Pas de cours ni d'évènement ce jour-là.</p>
+                        <p>{{ 'calendar.day.empty'|trans }}</p>
                     </div>
                 {% else %}
                     <div class="dayview__list">
