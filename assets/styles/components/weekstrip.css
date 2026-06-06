@@ -1,11 +1,47 @@
 .weekstrip {
+  --gap: .375rem;
+  position: relative;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: .375rem;
+  gap: var(--gap);
   margin-block: .875rem .375rem;
   view-transition-name: weekstrip;
 
+  /* The selected hint, lifted out of the cells: one pill sized to a column and
+     translated onto the selected one. Each step is its own width + one gap.
+     It carries a view-transition-name so it glides across day navigations. */
+  & .weekstrip__pill {
+    position: absolute;
+    inset-block: 0;
+    inline-size: calc((100% - 6 * var(--gap)) / 7);
+    transform: translateX(calc(var(--sel) * (100% + var(--gap))));
+    background: var(--surface);
+    border: 1px solid var(--hairline-2);
+    border-radius: var(--r-md);
+    pointer-events: none;
+    transition: transform .25s var(--ease); /* snap-back when dropped on the current day */
+    view-transition-name: weekstrip-pill;
+  }
+
+  /* The pill is a grab handle: it sits on the selected day, so that day drags it. */
+  & .weekstrip__cell--selected { cursor: grab; touch-action: none; }
+  &.weekstrip--dragging,
+  &.weekstrip--dragging .weekstrip__cell--selected { cursor: grabbing; }
+  &.weekstrip--dragging .weekstrip__pill { transition: none; } /* track the pointer 1:1 */
+  /* While scrubbing, the dark circle is driven entirely by the targeted day. Drop it
+     from the origin only once the pill has left it (origin no longer the target), so the
+     current day's number never flickers off at the start of a drag. */
+  &.weekstrip--dragging .weekstrip__cell--selected:not(.weekstrip__cell--target) .weekstrip__num {
+    background: none;
+    color: var(--ink);
+  }
+  & .weekstrip__cell--target .weekstrip__num {
+    background: var(--ink);
+    color: var(--on-accent);
+  }
+
   & .weekstrip__cell {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -16,7 +52,7 @@
     color: var(--ink-2);
     transition: background .15s, border-color .15s;
   }
-  & .weekstrip__cell:hover { background: var(--surface); }
+  & .weekstrip__cell:not(.weekstrip__cell--selected):hover { background: var(--surface); }
 
   & .weekstrip__dow {
     font-size: .6875rem;
@@ -36,10 +72,6 @@
     color: var(--ink);
   }
 
-  & .weekstrip__cell--selected {
-    background: var(--surface);
-    border-color: var(--hairline-2);
-  }
   & .weekstrip__cell--selected .weekstrip__num {
     background: var(--ink);
     color: var(--on-accent);
@@ -47,4 +79,17 @@
 
   & .weekstrip__cell--today .weekstrip__dow { color: var(--clay); }
   & .weekstrip__cell--weekend { opacity: .55; }
+
+  & .weekstrip__dots {
+    display: flex;
+    gap: 3px;
+    block-size: 6px;
+  }
+  & .weekstrip__dot {
+    inline-size: 5px;
+    block-size: 5px;
+    border-radius: 50%;
+    background: var(--ink-3);
+  }
+  & .weekstrip__dot--event { background: var(--clay); }
 }

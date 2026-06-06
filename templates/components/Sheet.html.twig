@@ -1,0 +1,12 @@
+<dialog class="sheet" data-sheet-target="dialog" data-action="turbo:frame-load->sheet#openIfSheet click->sheet#backdrop session:changed@window->sheet#reloadSessions" {{ attributes }}>
+    <div class="sheet__handle"
+         data-action="pointerdown->sheet#startDrag pointermove->sheet#drag pointerup->sheet#endDrag pointercancel->sheet#endDrag">
+        <span class="sheet__grip" aria-hidden="true"></span>
+    </div>
+    <button type="button" class="sheet__close" data-action="sheet#close" aria-label="{{ 'sheet.close'|trans }}">
+        <twig:ux:icon name="lucide:x" class="sheet__close-icon" />
+    </button>
+    <div class="sheet__body">
+        {% block content %}{% endblock %}
+    </div>
+</dialog>

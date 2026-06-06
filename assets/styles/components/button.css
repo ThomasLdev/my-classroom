@@ -24,6 +24,15 @@
 
   &.btn--soft { background: var(--surface-2); color: var(--ink); }
   &.btn--soft:hover { background: color-mix(in oklab, var(--surface-2), var(--ink) 6%); }
+
+  &.btn--sm {
+    min-height: 0;
+    padding: .5rem .8125rem;
+    font-size: .875rem;
+    border-radius: var(--r-md);
+  }
+
+  & .btn__icon { inline-size: 17px; block-size: 17px; }
 }
 
 .iconbtn {

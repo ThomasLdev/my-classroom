@@ -10,13 +10,7 @@ use Symfony\Component\Scheduler\RecurringMessage;
 use Symfony\Component\Scheduler\Schedule;
 use Symfony\Component\Scheduler\ScheduleProviderInterface;
 
-/**
- * Time decides: every 5 minutes we close elapsed sessions and carry their
- * unfinished activities forward. 5 minutes keeps the carry-over tight enough
- * for back-to-back lessons; raise it later if telemetry shows idle runs.
- *
- * Consume with: bin/console messenger:consume scheduler_teaching
- */
+// 5 minutes keeps carry-over tight enough for back-to-back lessons.
 #[AsSchedule('teaching')]
 final class CarryOverSchedule implements ScheduleProviderInterface
 {

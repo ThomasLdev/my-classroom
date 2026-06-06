@@ -1,11 +1,20 @@
 {% props days %}
-<nav class="weekstrip" aria-label="Navigation par jour">
+{# Lift the selected hint out of the cells: one floating pill that slides between columns. #}
+{% set selectedIndex = days|filter(d => d.isSelected)|keys|first|default(0) %}
+<nav class="weekstrip" aria-label="{{ 'calendar.nav.week_aria'|trans }}" style="--sel: {{ selectedIndex }}" data-controller="weekstrip">
+    <span class="weekstrip__pill" aria-hidden="true" data-weekstrip-target="pill"></span>
     {% for d in days %}
         <a class="weekstrip__cell{{ d.isSelected ? ' weekstrip__cell--selected' }}{{ d.isToday ? ' weekstrip__cell--today' }}{{ d.isWeekend ? ' weekstrip__cell--weekend' }}"
            href="{{ path('app_calendar_day', { date: d.date }) }}"
            {{ d.isSelected ? 'aria-current="date"' }}>
             <span class="weekstrip__dow">{{ d.dow }}</span>
             <span class="weekstrip__num tnum">{{ d.num }}</span>
+            <span class="weekstrip__dots" aria-hidden="true">
+                {% if d.dots > 0 %}
+                    {% for i in 1..min(d.dots, 4) %}<i class="weekstrip__dot"></i>{% endfor %}
+                {% endif %}
+                {% if d.hasEvent %}<i class="weekstrip__dot weekstrip__dot--event"></i>{% endif %}
+            </span>
         </a>
     {% endfor %}
 </nav>

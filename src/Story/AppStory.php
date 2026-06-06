@@ -10,6 +10,5 @@ final class AppStory extends Story
 {
     public function build(): void
     {
-        // SomeFactory::createOne();
     }
 }

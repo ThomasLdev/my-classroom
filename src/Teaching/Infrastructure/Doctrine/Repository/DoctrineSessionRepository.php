@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Teaching\Infrastructure\Doctrine\Repository;
 
+use App\Shared\Domain\Identifier\ClassroomId;
 use App\Shared\Domain\Identifier\SlotId;
 use App\Teaching\Domain\Model\Session\ActivityStatus;
 use App\Teaching\Domain\Model\Session\Session;
@@ -45,6 +46,23 @@ final class DoctrineSessionRepository implements SessionRepository
         return $entity !== null ? $this->mapper->toDomain($entity) : null;
     }
 
+    public function mostRecentUncheckedHomework(ClassroomId $classroomId, \DateTimeImmutable $before): ?Session
+    {
+        $entity = $this->entities->createQueryBuilder('s')
+            ->andWhere('s.classroomId = :classroom')
+            ->andWhere('s.date < :before')
+            ->andWhere('s.homework IS NOT NULL')
+            ->andWhere('s.homeworkChecked = false')
+            ->setParameter('classroom', (string) $classroomId)
+            ->setParameter('before', $before->setTime(0, 0))
+            ->orderBy('s.date', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return $entity !== null ? $this->mapper->toDomain($entity) : null;
+    }
+
     public function save(Session $session): void
     {
         $entity = $this->entities->find((string) $session->id) ?? new SessionEntity();
@@ -56,9 +74,7 @@ final class DoctrineSessionRepository implements SessionRepository
 
     public function elapsedOpenWithPlannedActivities(\DateTimeImmutable $now): array
     {
-        // Pre-filter on the DB: open, not yet closed, with at least one planned
-        // activity. The "elapsed" check (date + end minute <= now) is a computed
-        // value, evaluated in PHP afterwards — the candidate set is tiny.
+        // Elapsed (date + end minute <= now) is computed, so it is filtered in PHP after a narrow DB pre-filter.
         $candidates = $this->entities->createQueryBuilder('s')
             ->innerJoin('s.activities', 'a')
             ->andWhere('s.closedAt IS NULL')

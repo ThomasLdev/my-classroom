@@ -4,29 +4,43 @@ declare(strict_types=1);
 
 namespace App\Teaching\Infrastructure\Http;
 
+use App\Teaching\Application\Command\AttachDocumentToSession\AttachDocumentToSession;
+use App\Teaching\Application\Command\RemoveDocumentFromSession\RemoveDocumentFromSession;
+use App\Teaching\Application\Port\DocumentStorage;
 use App\Teaching\Application\Query\GetDayView\DayView;
 use App\Teaching\Application\Query\GetDayView\GetDayView;
+use App\Teaching\Application\Query\GetSessionDetail\DocumentView;
+use App\Teaching\Application\Query\GetSessionDetail\GetSessionDetail;
+use App\Teaching\Application\Query\GetSessionDetail\SessionDetailView;
+use App\Teaching\Application\Query\GetWeek\GetWeek;
+use App\Teaching\Application\Query\GetWeek\WeekView;
+use App\Teaching\Domain\Exception\SlotNotScheduled;
+use App\Teaching\Infrastructure\Http\Form\AttachDocumentType;
+use App\Teaching\Infrastructure\Http\Form\DeleteDocumentType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\HeaderUtils;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\HandleTrait;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
-/**
- * Driving adapter for the calendar. Thin: it dispatches the GetDayView query
- * and shapes a small view-model (week strip, localized labels, prev/next).
- */
+// 15 MB per file: enough for a worksheet or a photo, bounded to keep local storage sane.
+
 final class CalendarController extends AbstractController
 {
     use HandleTrait;
 
-    private const array DOW = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
-    private const array DOW_SHORT = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
-    private const array MONTHS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+    private const int MAX_UPLOAD_BYTES = 15 * 1024 * 1024;
 
     public function __construct(
         #[Autowire(service: 'query.bus')] MessageBusInterface $queryBus,
+        #[Autowire(service: 'command.bus')] private readonly MessageBusInterface $commandBus,
+        private readonly DocumentStorage $storage,
+        private readonly CalendarPresenter $presenter,
     ) {
         $this->messageBus = $queryBus;
     }
@@ -48,42 +62,129 @@ final class CalendarController extends AbstractController
         /** @var DayView $day */
         $day = $this->handle(new GetDayView($selected->format('Y-m-d')));
 
-        // Stable pastel key per classroom (no color in the domain yet).
-        $colorByClass = [];
-        foreach ($day->sessions as $session) {
-            $colorByClass[$session->classroomName] ??= 'k'.(crc32($session->classroomName) % 4 + 1);
-        }
-
-        $monday = $selected->modify('monday this week');
-        $week = [];
-        for ($i = 0; $i < 7; ++$i) {
-            $cursor = $monday->modify(sprintf('+%d days', $i));
-            $weekday = (int) $cursor->format('N');
-            $week[] = [
-                'date' => $cursor->format('Y-m-d'),
-                'dow' => self::DOW_SHORT[$weekday - 1],
-                'num' => (int) $cursor->format('j'),
-                'isSelected' => $cursor->format('Y-m-d') === $selected->format('Y-m-d'),
-                'isToday' => $cursor->format('Y-m-d') === $today->format('Y-m-d'),
-                'isWeekend' => $weekday >= 6,
+        /** @var WeekView $weekView */
+        $weekView = $this->handle(new GetWeek($selected->format('Y-m-d')));
+        $dotsByDate = [];
+        foreach ($weekView->days as $weekDay) {
+            $dotsByDate[$weekDay->date] = [
+                'count' => count($weekDay->classroomNames),
+                'hasEvent' => $weekDay->hasEvent,
             ];
         }
 
-        $weekday = (int) $selected->format('N');
-
         return $this->render('calendar/day.html.twig', [
             'day' => $day,
-            'header' => [
-                'dow' => self::DOW[$weekday - 1],
-                'num' => (int) $selected->format('j'),
-                'month' => self::MONTHS[(int) $selected->format('n') - 1],
-                'year' => (int) $selected->format('Y'),
-                'isToday' => $selected->format('Y-m-d') === $today->format('Y-m-d'),
-            ],
-            'week' => $week,
-            'colorByClass' => $colorByClass,
+            'header' => $this->presenter->header($selected, $today),
+            'week' => $this->presenter->week($selected, $today, $dotsByDate),
             'prevDate' => $selected->modify('-1 day')->format('Y-m-d'),
             'nextDate' => $selected->modify('+1 day')->format('Y-m-d'),
         ]);
+    }
+
+    #[Route('/calendar/{date}/session/{slotId}', name: 'app_session_detail', requirements: ['date' => '\d{4}-\d{2}-\d{2}'], methods: ['GET'])]
+    public function session(string $date, string $slotId, Request $request): Response
+    {
+        try {
+            /** @var SessionDetailView $detail */
+            $detail = $this->handle(new GetSessionDetail($slotId, $date));
+        } catch (SlotNotScheduled) {
+            throw $this->createNotFoundException();
+        }
+
+        $selected = \DateTimeImmutable::createFromFormat('!Y-m-d', $date) ?: new \DateTimeImmutable('today');
+
+        $uploadForm = $this->createForm(AttachDocumentType::class, null, [
+            'action' => $this->generateUrl('app_session_document_add', ['date' => $date, 'slotId' => $slotId]),
+            'attr' => ['data-turbo-frame' => 'sheet'],
+        ]);
+
+        $deleteForms = [];
+        foreach ($detail->documents as $document) {
+            $deleteForms[$document->id] = $this->createForm(DeleteDocumentType::class, null, [
+                'action' => $this->generateUrl('app_session_document_remove', ['date' => $date, 'slotId' => $slotId, 'documentId' => $document->id]),
+                'attr' => ['data-turbo-frame' => 'sheet'],
+            ])->createView();
+        }
+
+        return $this->render('calendar/session.html.twig', [
+            'detail' => $detail,
+            'header' => $this->presenter->header($selected, new \DateTimeImmutable('today')),
+            'backDate' => $date,
+            'uploadForm' => $uploadForm->createView(),
+            'deleteForms' => $deleteForms,
+            // Set after a document mutation so the day cards (their doc indicator) refresh.
+            'refreshDay' => $request->query->getBoolean('refreshDay'),
+        ]);
+    }
+
+    #[Route('/calendar/{date}/session/{slotId}/document', name: 'app_session_document_add', requirements: ['date' => '\d{4}-\d{2}-\d{2}'], methods: ['POST'])]
+    public function addDocument(string $date, string $slotId, Request $request): Response
+    {
+        $form = $this->createForm(AttachDocumentType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var list<UploadedFile> $files */
+            $files = $form->get('document')->getData() ?? [];
+            foreach ($files as $file) {
+                if (!$file->isValid() || $file->getSize() > self::MAX_UPLOAD_BYTES) {
+                    continue;
+                }
+
+                $this->commandBus->dispatch(new AttachDocumentToSession(
+                    $slotId,
+                    $date,
+                    $file->getClientOriginalName(),
+                    (int) $file->getSize(),
+                    $file->getClientMimeType(),
+                    $file->getPathname(),
+                ));
+            }
+        }
+
+        return $this->redirectToRoute('app_session_detail', ['date' => $date, 'slotId' => $slotId, 'refreshDay' => 1]);
+    }
+
+    #[Route('/calendar/{date}/session/{slotId}/document/{documentId}', name: 'app_session_document_remove', requirements: ['date' => '\d{4}-\d{2}-\d{2}'], methods: ['POST'])]
+    public function removeDocument(string $date, string $slotId, string $documentId, Request $request): Response
+    {
+        $form = $this->createForm(DeleteDocumentType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->commandBus->dispatch(new RemoveDocumentFromSession($slotId, $date, $documentId));
+        }
+
+        return $this->redirectToRoute('app_session_detail', ['date' => $date, 'slotId' => $slotId, 'refreshDay' => 1]);
+    }
+
+    #[Route('/calendar/{date}/session/{slotId}/document/{documentId}/download', name: 'app_session_document_download', requirements: ['date' => '\d{4}-\d{2}-\d{2}'], methods: ['GET'])]
+    public function downloadDocument(string $date, string $slotId, string $documentId): Response
+    {
+        try {
+            /** @var SessionDetailView $detail */
+            $detail = $this->handle(new GetSessionDetail($slotId, $date));
+        } catch (SlotNotScheduled) {
+            throw $this->createNotFoundException();
+        }
+
+        $document = null;
+        foreach ($detail->documents as $candidate) {
+            if ($candidate->id === $documentId) {
+                $document = $candidate;
+                break;
+            }
+        }
+
+        $path = $this->storage->locate($documentId);
+        if (!$document instanceof DocumentView || !is_file($path)) {
+            throw $this->createNotFoundException();
+        }
+
+        $response = new BinaryFileResponse($path);
+        $response->headers->set('Content-Type', $document->contentType);
+        $response->setContentDisposition(HeaderUtils::DISPOSITION_ATTACHMENT, $document->name);
+
+        return $response;
     }
 }

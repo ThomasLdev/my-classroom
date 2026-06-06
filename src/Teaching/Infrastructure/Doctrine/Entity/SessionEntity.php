@@ -9,11 +9,6 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Persistence model for the Session aggregate. Pure data holder: it carries
- * ORM mapping only, never behaviour. The domain <-> entity translation lives
- * in {@see \App\Teaching\Infrastructure\Doctrine\Mapper\SessionMapper}.
- */
 #[ORM\Entity]
 #[ORM\Table(name: 'teaching_session')]
 #[ORM\UniqueConstraint(name: 'uniq_session_slot_date', columns: ['slot_id', 'date'])]
@@ -44,6 +39,15 @@ class SessionEntity
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
     public bool $cancelled = false;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    public ?string $note = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    public ?string $homework = null;
+
+    #[ORM\Column(name: 'homework_checked', type: Types::BOOLEAN, options: ['default' => false])]
+    public bool $homeworkChecked = false;
+
     /** @var Collection<int, ActivityEntity> */
     #[ORM\OneToMany(
         targetEntity: ActivityEntity::class,
@@ -54,8 +58,19 @@ class SessionEntity
     #[ORM\OrderBy(['position' => 'ASC'])]
     public Collection $activities;
 
+    /** @var Collection<int, DocumentEntity> */
+    #[ORM\OneToMany(
+        targetEntity: DocumentEntity::class,
+        mappedBy: 'session',
+        cascade: ['persist', 'remove'],
+        orphanRemoval: true,
+    )]
+    #[ORM\OrderBy(['id' => 'ASC'])]
+    public Collection $documents;
+
     public function __construct()
     {
         $this->activities = new ArrayCollection();
+        $this->documents = new ArrayCollection();
     }
 }

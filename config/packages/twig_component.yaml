@@ -3,3 +3,5 @@ twig_component:
     defaults:
         # Namespace & directory for components
         App\Twig\Components\: 'components/'
+        # Composants PHP-backed dans leur contexte hexagonal (UI = adaptateur pilotant)
+        App\Teaching\Infrastructure\Http\Component\: 'components/'

@@ -13,15 +13,7 @@ use App\Teaching\Domain\Model\Session\SessionId;
 use App\Teaching\Domain\Port\OccurrenceProvider;
 use App\Teaching\Domain\Repository\SessionRepository;
 
-/**
- * Closes every elapsed-but-open session that still holds planned activities and
- * carries those activities to the next occurrence of the same classroom.
- *
- * Cascade handling: a local identity map keyed by occurrence guarantees that a
- * carry target reached later in the chronological loop is the *same* aggregate
- * instance, so activities flow A -> B -> C within a single run. All writes are
- * flushed once, at the transaction boundary.
- */
+// Identity map keyed by occurrence so a later carry target is the same aggregate instance (cascade A -> B -> C in one run).
 final readonly class CloseElapsedSessionsHandler
 {
     public function __construct(

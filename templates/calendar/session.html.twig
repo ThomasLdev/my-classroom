@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ detail.classroomName }} — {{ header.num }} {{ header.month }}{% endblock %}
+
+{% block body %}
+    <turbo-frame id="sheet">
+    {% if refreshDay|default(false) %}
+        <div data-controller="signal" data-signal-event-value="session:changed" hidden></div>
+    {% endif %}
+    <div class="detail">
+        <header class="detail__hero"
+                data-action="pointerdown->sheet#startDrag pointermove->sheet#drag pointerup->sheet#endDrag pointercancel->sheet#endDrag">
+            <a class="detail__back" href="{{ path('app_calendar_day', { date: backDate }) }}">
+                <twig:ux:icon name="lucide:arrow-left" class="detail__back-icon" /> {{ 'session.back'|trans }}
+            </a>
+            <div class="detail__title">
+                <span class="detail__cls">{{ detail.classroomName }}</span>
+                <span class="detail__subject">{{ detail.subject }}</span>
+            </div>
+            <div class="detail__when">
+                <span class="detail__when-item">
+                    <twig:ux:icon name="lucide:calendar" class="detail__when-icon" /> {{ header.dow }} {{ header.num }} {{ header.month }} {{ header.year }}
+                </span>
+                <span class="detail__when-item">
+                    <twig:ux:icon name="lucide:clock" class="detail__when-icon" /> {{ detail.start }}–{{ detail.end }}
+                </span>
+                {% if detail.room %}
+                    <span class="detail__when-item">
+                        <twig:ux:icon name="lucide:map-pin" class="detail__when-icon" /> {{ 'session.room'|trans({'%room%': detail.room}) }}
+                    </span>
+                {% endif %}
+            </div>
+        </header>
+
+        <twig:SessionBoard slotId="{{ detail.slotId }}" date="{{ detail.date }}" />
+
+        <section class="section" data-controller="dropzone"
+                 data-action="dragover->dropzone#over dragleave->dropzone#leave drop->dropzone#drop">
+            {{ form_start(uploadForm) }}
+                {{ form_widget(uploadForm.document) }}
+            {{ form_end(uploadForm) }}
+
+            <div class="section__head">
+                <twig:ux:icon name="lucide:paperclip" class="section__icon" />
+                <h2 class="section__title">{{ 'session.documents.title'|trans }}</h2>
+                {% if detail.documents|length > 0 %}<span class="section__count tnum">{{ detail.documents|length }}</span>{% endif %}
+                <span class="section__grow"></span>
+                <button type="button" class="btn btn--soft btn--sm" data-action="dropzone#browse">
+                    <twig:ux:icon name="lucide:upload" class="btn__icon" /> {{ 'session.documents.attach'|trans }}
+                </button>
+            </div>
+
+            {% if detail.documents|length > 0 %}
+                <div class="doc-grid">
+                    {% for doc in detail.documents %}
+                        {% set ext = doc.name|split('.')|last|lower %}
+                        {% set icon = ext in ['png','jpg','jpeg','gif','webp','heic','svg'] ? 'lucide:image'
+                            : (ext in ['pdf','doc','docx','odt','txt','md'] ? 'lucide:file-text' : 'lucide:paperclip') %}
+                        <div class="doc">
+                            <span class="doc__ic"><twig:ux:icon name="{{ icon }}" /></span>
+                            <a class="doc__body" href="{{ path('app_session_document_download', { date: detail.date, slotId: detail.slotId, documentId: doc.id }) }}" data-turbo="false">
+                                <span class="doc__name" title="{{ doc.name }}">{{ doc.displayName }}</span>
+                                <span class="doc__meta">{{ doc.sizeLabel }}</span>
+                            </a>
+                            {{ form_start(deleteForms[doc.id]) }}
+                                <button type="submit" class="doc__del" aria-label="{{ 'session.documents.remove_aria'|trans }}">
+                                    <twig:ux:icon name="lucide:x" />
+                                </button>
+                            {{ form_end(deleteForms[doc.id]) }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="dropzone" data-dropzone-target="zone" data-action="click->dropzone#browse">
+                {{ 'session.documents.dropzone'|trans }}
+            </div>
+        </section>
+    </div>
+    </turbo-frame>
+{% endblock %}

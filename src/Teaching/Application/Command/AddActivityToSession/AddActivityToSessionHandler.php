@@ -13,10 +13,7 @@ use App\Teaching\Domain\Model\Session\SessionId;
 use App\Teaching\Domain\Port\OccurrenceProvider;
 use App\Teaching\Domain\Repository\SessionRepository;
 
-/**
- * Lazily materialises the session (find-or-create on the occurrence identity)
- * then appends an activity. No flush here: the transaction boundary commits.
- */
+// No flush here: the transaction commits at the boundary.
 final readonly class AddActivityToSessionHandler
 {
     public function __construct(

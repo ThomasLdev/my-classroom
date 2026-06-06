@@ -1,4 +1,8 @@
 .classchip {
+  /* Neutral default; per-class colours come from the user later (classchip--kN). */
+  --chip-tint: var(--surface-2);
+  --chip-accent: var(--ink-2);
+  --chip-deep: var(--ink);
   display: inline-flex;
   align-items: center;
   gap: .4375rem;

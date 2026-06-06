@@ -1,10 +1,6 @@
 import { Controller } from '@hotwired/stimulus';
 
-/*
- * Swipe horizontal → navigation jour précédent / suivant.
- * Progressive enhancement : les flèches et la weekstrip restent des liens
- * accessibles ; ce contrôleur ne fait qu'ajouter le geste tactile.
- */
+// Progressive enhancement: the gesture is additive; arrows and weekstrip stay accessible links.
 export default class extends Controller {
     static values = {
         prevUrl: String,
@@ -43,7 +39,6 @@ export default class extends Controller {
         const dx = touch.clientX - this.startX;
         const dy = touch.clientY - this.startY;
 
-        // Geste horizontal franc uniquement : distance mini + dominante horizontale.
         if (Math.abs(dx) < this.thresholdValue || Math.abs(dx) <= Math.abs(dy)) return;
 
         const url = dx < 0 ? this.nextUrlValue : this.prevUrlValue;

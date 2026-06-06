@@ -8,16 +8,13 @@ use App\Teaching\Application\Port\CalendarEventProvider;
 use App\Teaching\Domain\Port\OccurrenceProvider;
 use App\Teaching\Domain\Repository\SessionRepository;
 
-/**
- * Merges the read side: virtual occurrences (timetable) + materialised sessions
- * + calendar events. Pure read — never mutates, never materialises.
- */
 final readonly class GetDayViewHandler
 {
     public function __construct(
         private SessionRepository $sessions,
         private OccurrenceProvider $occurrences,
         private CalendarEventProvider $events,
+        private SessionViewFactory $viewFactory,
     ) {
     }
 
@@ -28,18 +25,7 @@ final readonly class GetDayViewHandler
         $sessionViews = [];
         foreach ($this->occurrences->forDay($date) as $occurrence) {
             $session = $this->sessions->ofOccurrence($occurrence->slotId, $occurrence->date);
-
-            $sessionViews[] = new SessionView(
-                slotId: (string) $occurrence->slotId,
-                sessionId: $session !== null ? (string) $session->id : null,
-                classroomName: $occurrence->classroomName,
-                start: $occurrence->timeRange->startLabel(),
-                end: $occurrence->timeRange->endLabel(),
-                activityCount: $session?->activityCount() ?? 0,
-                doneCount: $session?->doneCount() ?? 0,
-                cancelled: $session?->cancelled ?? false,
-                materialized: $session !== null,
-            );
+            $sessionViews[] = $this->viewFactory->create($occurrence, $session);
         }
 
         return new DayView(

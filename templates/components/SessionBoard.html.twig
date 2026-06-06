@@ -1,0 +1,99 @@
+<div{{ attributes.defaults({ class: 'session-board' }) }}>
+    {% set detail = this.detail %}
+    {% set total = detail.activities|length %}
+    {% set done = detail.activities|filter(a => a.done)|length %}
+
+    <section class="section">
+        <div class="section__head">
+            <twig:ux:icon name="lucide:list-checks" class="section__icon" />
+            <h2 class="section__title">{{ 'session.activities.title'|trans }}</h2>
+            {% if total > 0 %}<span class="section__count tnum">{{ 'session.activities.done_count'|trans({'%done%': done, '%total%': total}) }}</span>{% endif %}
+        </div>
+
+        {% if total > 0 %}
+            <ul class="act-list">
+                {% for a in detail.activities %}
+                    <li class="act-swipe" id="act-{{ a.id }}" data-controller="swipe-delete"
+                        data-action="pointerdown->swipe-delete#start pointermove->swipe-delete#move pointerup->swipe-delete#end pointercancel->swipe-delete#end">
+                        <span class="act-swipe__action" aria-hidden="true">
+                            <twig:ux:icon name="lucide:trash-2" class="act-swipe__action-icon" />
+                        </span>
+                        <button type="button" class="act{{ a.done ? ' act--done' }}"
+                                data-swipe-delete-target="surface"
+                                aria-pressed="{{ a.done ? 'true' : 'false' }}"
+                                data-action="click->swipe-delete#tap live#action"
+                                data-live-action-param="{{ a.done ? 'markNotDone' : 'markDone' }}"
+                                data-live-activity-id-param="{{ a.id }}">
+                            <span class="act__box"><twig:ux:icon name="lucide:check" class="act__check-icon" /></span>
+                            <span class="act__title">{{ a.title }}</span>
+                            {% if a.carriedOver %}<span class="act__flag">{{ 'session.activities.carried_over'|trans }}</span>{% endif %}
+                        </button>
+                        <button type="button" hidden
+                                data-swipe-delete-target="trigger"
+                                data-action="live#action"
+                                data-live-action-param="deleteActivity"
+                                data-live-activity-id-param="{{ a.id }}"></button>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="session-activities__empty">{{ 'session.activities.empty'|trans }}</p>
+        {% endif %}
+
+        <form class="add-row" data-action="live#action:prevent" data-live-action-param="addActivity">
+            <input class="add-row__input" type="text"
+                   data-model="norender|newTitle"
+                   value="{{ newTitle }}"
+                   placeholder="{{ 'session.activities.add_placeholder'|trans }}" autocomplete="off" aria-label="{{ 'session.activities.add_aria'|trans }}">
+            <button type="submit" class="btn btn--sm">{{ 'session.activities.add_submit'|trans }}</button>
+        </form>
+    </section>
+
+    <section class="section">
+        <div class="section__head">
+            <twig:ux:icon name="lucide:sticky-note" class="section__icon" />
+            <h2 class="section__title">{{ 'session.notes.title'|trans }}</h2>
+        </div>
+        <textarea class="notearea" data-model="debounce(600)|note"
+                  placeholder="{{ 'session.notes.placeholder'|trans }}">{{ note }}</textarea>
+        {% if note|trim is not empty %}
+            <p class="note-saved">
+                <twig:ux:icon name="lucide:circle-check" class="note-saved__icon" /> {{ 'session.autosaved'|trans }}
+            </p>
+        {% endif %}
+    </section>
+
+    <section class="section">
+        <div class="section__head">
+            <twig:ux:icon name="lucide:book-open" class="section__icon" />
+            <h2 class="section__title">{{ 'session.homework.title'|trans }}</h2>
+        </div>
+
+        {% set previousHomework = detail.previousHomework %}
+        {% if previousHomework %}
+            <div class="homework-recall">
+                <button type="button" class="homework-recall__check"
+                        data-action="live#action"
+                        data-live-action-param="verifyHomework"
+                        aria-label="{{ 'session.homework.verify_aria'|trans }}">
+                    <twig:ux:icon name="lucide:check" class="homework-recall__check-icon" />
+                </button>
+                <div class="homework-recall__body">
+                    <p class="homework-recall__head">
+                        <twig:ux:icon name="lucide:rotate-ccw" class="homework-recall__head-icon" />
+                        {{ 'session.homework.recall'|trans({'%date%': previousHomework.dateLabel}) }}
+                    </p>
+                    <p class="homework-recall__text">{{ previousHomework.text }}</p>
+                </div>
+            </div>
+        {% endif %}
+
+        <textarea class="notearea" data-model="debounce(600)|homework"
+                  placeholder="{{ 'session.homework.placeholder'|trans }}">{{ homework }}</textarea>
+        {% if homework|trim is not empty %}
+            <p class="note-saved">
+                <twig:ux:icon name="lucide:circle-check" class="note-saved__icon" /> {{ 'session.autosaved'|trans }}
+            </p>
+        {% endif %}
+    </section>
+</div>

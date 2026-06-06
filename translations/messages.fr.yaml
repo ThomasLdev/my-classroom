@@ -1,0 +1,45 @@
+app:
+    brand: Ma classe
+    nav: Calendrier
+
+calendar:
+    day:
+        empty: Pas de cours ni d'évènement ce jour-là.
+    nav:
+        week_aria: Navigation par jour
+        prev_day: Jour précédent
+        next_day: Jour suivant
+    today: Aujourd'hui
+
+session:
+    back: Retour au calendrier
+    room: "Salle %room%"
+    cancelled: Séance annulée
+    note_indicator: Note de séance
+    progress: "%done%/%total% activités"
+    no_activity: Aucune activité prévue
+    activities:
+        title: Activités
+        done_count: "%done%/%total% terminées"
+        empty: Aucune activité prévue — ajoutez-en une ci-dessous.
+        add_placeholder: Ajouter une activité…
+        add_aria: Nouvelle activité
+        add_submit: Ajouter
+        carried_over: reporté
+    notes:
+        title: Notes de séance
+        placeholder: Ce qui a marché, les élèves à revoir, les points à reprendre la prochaine fois…
+    homework:
+        title: Devoirs
+        verify_aria: Marquer les devoirs comme vérifiés
+        recall: "Devoirs de la séance du %date% — à vérifier"
+        placeholder: Devoirs donnés pour la prochaine séance…
+    autosaved: Enregistré automatiquement
+    documents:
+        title: Documents
+        attach: Joindre
+        remove_aria: Retirer le document
+        dropzone: Glissez un fichier ici, ou touchez pour parcourir
+
+sheet:
+    close: Fermer

@@ -1,25 +1,47 @@
-{% props session, colorKey = 'k1' %}
+{% props session, date %}
 {% set total = session.activityCount %}
 {% set done = session.doneCount %}
 {% set pct = total > 0 ? (done / total * 100)|round : 0 %}
-<article class="session-card session-card--{{ colorKey }}{{ session.cancelled ? ' session-card--cancelled' }}" {{ attributes }}>
+<a class="session-card{{ session.cancelled ? ' session-card--cancelled' }}"
+   href="{{ path('app_session_detail', { date: date, slotId: session.slotId }) }}"
+   data-turbo-frame="sheet" {{ attributes }}>
     <span class="session-card__bar" aria-hidden="true"></span>
 
     <div class="session-card__top">
-        <twig:ClassChip name="{{ session.classroomName }}" colorKey="{{ colorKey }}" />
+        <twig:ClassChip name="{{ session.classroomName }}" />
+        {% if session.documentCount > 0 or session.hasNote %}
+            <span class="session-card__indicators">
+                {% if session.documentCount > 0 %}
+                    <span class="session-card__indicator">
+                        <twig:ux:icon name="lucide:paperclip" class="session-card__indicator-icon" />
+                        <span class="tnum">{{ session.documentCount }}</span>
+                    </span>
+                {% endif %}
+                {% if session.hasNote %}
+                    <span class="session-card__indicator" title="{{ 'session.note_indicator'|trans }}">
+                        <twig:ux:icon name="lucide:sticky-note" class="session-card__indicator-icon" />
+                    </span>
+                {% endif %}
+            </span>
+        {% endif %}
         <span class="session-card__time tnum">{{ session.start }}–{{ session.end }}</span>
     </div>
 
+    <p class="session-card__meta">
+        <span class="session-card__subject">{{ session.subject }}</span>
+        {% if session.room %}<span class="session-card__room">{{ 'session.room'|trans({'%room%': session.room}) }}</span>{% endif %}
+    </p>
+
     {% if session.cancelled %}
-        <p class="session-card__flag">Séance annulée</p>
+        <p class="session-card__flag">{{ 'session.cancelled'|trans }}</p>
     {% elseif total > 0 %}
         <div class="session-card__progress">
             <span class="session-card__progressbar">
-                <span class="session-card__progressbar-fill" style="inline-size: {{ pct }}%"></span>
+                <span class="session-card__progressbar-fill" style="--fill: {{ pct }}%"></span>
             </span>
-            <span class="tnum">{{ done }}/{{ total }} activités</span>
+            <span class="tnum">{{ 'session.progress'|trans({'%done%': done, '%total%': total}) }}</span>
         </div>
     {% else %}
-        <p class="session-card__empty">Aucune activité prévue</p>
+        <p class="session-card__empty">{{ 'session.no_activity'|trans }}</p>
     {% endif %}
-</article>
+</a>

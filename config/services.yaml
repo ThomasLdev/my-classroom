@@ -41,3 +41,9 @@ services:
         resource: '../src/Teaching/Application/Query/*/*Handler.php'
         tags:
             - { name: messenger.message_handler, bus: query.bus }
+
+    # Read-model assemblers: pure, framework-free, no tag — just autowired so the
+    # query handlers can depend on them (the Application dir is otherwise excluded).
+    teaching.query.view_factories:
+        namespace: App\Teaching\Application\Query\
+        resource: '../src/Teaching/Application/Query/*/*ViewFactory.php'

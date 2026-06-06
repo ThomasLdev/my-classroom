@@ -4,12 +4,12 @@
         <div class="dayhead__dow">{{ header.dow }}</div>
         <div class="dayhead__sub tnum">{{ header.num }} {{ header.month }} {{ header.year }}</div>
     </div>
-    {% if header.isToday %}<span class="dayhead__today">Aujourd'hui</span>{% endif %}
+    {% if header.isToday %}<span class="dayhead__today">{{ 'calendar.today'|trans }}</span>{% endif %}
     <div class="dayhead__nav">
-        <a class="iconbtn" href="{{ path('app_calendar_day', { date: prevDate }) }}" rel="prev" aria-label="Jour précédent">
+        <a class="iconbtn" href="{{ path('app_calendar_day', { date: prevDate }) }}" rel="prev" aria-label="{{ 'calendar.nav.prev_day'|trans }}">
             <twig:ux:icon name="lucide:chevron-left" />
         </a>
-        <a class="iconbtn" href="{{ path('app_calendar_day', { date: nextDate }) }}" rel="next" aria-label="Jour suivant">
+        <a class="iconbtn" href="{{ path('app_calendar_day', { date: nextDate }) }}" rel="next" aria-label="{{ 'calendar.nav.next_day'|trans }}">
             <twig:ux:icon name="lucide:chevron-right" />
         </a>
     </div>

@@ -1,4 +1,6 @@
 .session-card {
+  /* Neutral default; per-class colours come from the user later (session-card--kN). */
+  --c-accent: var(--ink-2);
   position: relative;
   display: block;
   padding: var(--card-padding);
@@ -6,6 +8,9 @@
   border: 1px solid var(--hairline-2);
   border-radius: var(--r-lg);
   overflow: hidden;
+  transition: box-shadow .18s var(--ease);
+
+  &:hover { box-shadow: var(--shadow-card); }
 
   & .session-card__bar {
     position: absolute;
@@ -30,6 +35,33 @@
     white-space: nowrap;
   }
 
+  & .session-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem;
+    font-size: .8125rem;
+    font-weight: 500;
+    color: var(--ink-2);
+  }
+  & .session-card__subject { font-weight: 600; }
+  & .session-card__room {
+    position: relative;
+    padding-inline-start: .625rem;
+    color: var(--ink-3);
+  }
+  & .session-card__room::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block: 0;
+    margin-block: auto;
+    inline-size: 3px;
+    block-size: 3px;
+    border-radius: 50%;
+    background: var(--ink-3);
+  }
+
   & .session-card__progress {
     display: flex;
     align-items: center;
@@ -50,9 +82,10 @@
   & .session-card__progressbar-fill {
     display: block;
     block-size: 100%;
+    inline-size: var(--fill, 0);
     border-radius: 999px;
     background: var(--c-accent, var(--ink));
-    transition: inline-size .3s var(--ease);
+    transition: inline-size .45s var(--ease);
   }
 
   & .session-card__empty {
@@ -68,7 +101,17 @@
     color: var(--status-error);
   }
 
-  /* Accent par classe */
+  & .session-card__indicators {
+    display: inline-flex;
+    align-items: center;
+    gap: .625rem;
+    font-size: .75rem;
+    font-weight: 600;
+    color: var(--ink-3);
+  }
+  & .session-card__indicator { display: inline-flex; align-items: center; gap: .25rem; }
+  & .session-card__indicator-icon { inline-size: 14px; block-size: 14px; }
+
   &.session-card--k1 { --c-accent: var(--k1-accent); }
   &.session-card--k2 { --c-accent: var(--k2-accent); }
   &.session-card--k3 { --c-accent: var(--k3-accent); }

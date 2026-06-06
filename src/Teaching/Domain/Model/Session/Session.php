@@ -9,14 +9,12 @@ use App\Shared\Domain\Identifier\ClassroomId;
 use App\Shared\Domain\Identifier\SlotId;
 use App\Shared\Domain\Occurrence;
 use App\Shared\Domain\TimeRange;
+use App\Teaching\Domain\Exception\ActivityNotFound;
+use App\Teaching\Domain\Exception\DocumentNotFound;
 
 /**
- * Aggregate root for the daily teaching life. A session only exists in the
- * database once it carries something (an activity, a note, a document) or
- * deviates from the timetable (cancelled). Until then it is a virtual
- * occurrence computed from the timetable — never persisted.
- *
  * @phpstan-import-type ActivityStateArray from Activity
+ * @phpstan-import-type DocumentStateArray from AttachedDocument
  *
  * @phpstan-type SessionStateArray array{
  *     id: string,
@@ -27,13 +25,27 @@ use App\Shared\Domain\TimeRange;
  *     endMinute: int,
  *     closedAt: string|null,
  *     cancelled: bool,
+ *     note: string|null,
+ *     homework: string|null,
+ *     homeworkChecked: bool,
  *     activities: list<ActivityStateArray>,
+ *     documents: list<DocumentStateArray>,
  * }
  */
 final class Session
 {
     /** @var list<Activity> */
     public private(set) array $activities = [];
+
+    /** @var list<AttachedDocument> */
+    public private(set) array $documents = [];
+
+    public private(set) ?string $note = null;
+
+    public private(set) ?string $homework = null;
+
+    /** Whether the teacher has verified this session's homework (ticked in the next session). */
+    public private(set) bool $homeworkChecked = false;
 
     public private(set) ?\DateTimeImmutable $closedAt = null;
 
@@ -48,9 +60,6 @@ final class Session
     ) {
     }
 
-    /**
-     * Materialise a session from a (previously virtual) timetable occurrence.
-     */
     public static function materialize(SessionId $id, Occurrence $occurrence): self
     {
         return new self(
@@ -63,7 +72,6 @@ final class Session
     }
 
     /**
-     * Rehydrate the aggregate from its persisted state (Memento pattern).
      * Deliberately bypasses creation invariants: the stored state was valid.
      *
      * @param SessionStateArray $state
@@ -82,6 +90,13 @@ final class Session
             static fn (array $activity): Activity => Activity::fromState($activity),
             $state['activities'],
         ));
+        $session->documents = array_values(array_map(
+            static fn (array $document): AttachedDocument => AttachedDocument::fromState($document),
+            $state['documents'],
+        ));
+        $session->note = $state['note'];
+        $session->homework = $state['homework'];
+        $session->homeworkChecked = $state['homeworkChecked'];
         $session->closedAt = $state['closedAt'] !== null ? new \DateTimeImmutable($state['closedAt']) : null;
         $session->cancelled = $state['cancelled'];
 
@@ -89,9 +104,6 @@ final class Session
     }
 
     /**
-     * Flat, serializable snapshot of the whole aggregate, tailored for
-     * persistence (DB-ready primitives, no value objects leaking out).
-     *
      * @return SessionStateArray
      */
     public function toState(): array
@@ -105,9 +117,16 @@ final class Session
             'endMinute' => $this->timeRange->endMinute,
             'closedAt' => $this->closedAt?->format(\DateTimeInterface::ATOM),
             'cancelled' => $this->cancelled,
+            'note' => $this->note,
+            'homework' => $this->homework,
+            'homeworkChecked' => $this->homeworkChecked,
             'activities' => array_map(
                 static fn (Activity $activity): array => $activity->toState(),
                 $this->activities,
+            ),
+            'documents' => array_map(
+                static fn (AttachedDocument $document): array => $document->toState(),
+                $this->documents,
             ),
         ];
     }
@@ -118,6 +137,51 @@ final class Session
         $this->activities[] = $activity;
 
         return $activity;
+    }
+
+    public function setNote(?string $note): void
+    {
+        $note = $note !== null ? trim($note) : null;
+        $this->note = ($note === null || $note === '') ? null : $note;
+    }
+
+    public function setHomework(?string $homework): void
+    {
+        $homework = $homework !== null ? trim($homework) : null;
+        $this->homework = ($homework === null || $homework === '') ? null : $homework;
+
+        if ($this->homework === null) {
+            $this->homeworkChecked = false;
+        }
+    }
+
+    public function setHomeworkChecked(bool $checked): void
+    {
+        // Only meaningful once homework exists.
+        $this->homeworkChecked = $this->homework !== null && $checked;
+    }
+
+    public function attachDocument(DocumentId $id, string $name, int $size, string $contentType): AttachedDocument
+    {
+        $document = AttachedDocument::attach($id, $name, $size, $contentType);
+        $this->documents[] = $document;
+
+        return $document;
+    }
+
+    public function removeDocument(DocumentId $id): void
+    {
+        $this->documentWith($id);
+
+        $this->documents = array_values(array_filter(
+            $this->documents,
+            static fn (AttachedDocument $d): bool => !$d->id->equals($id),
+        ));
+    }
+
+    public function documentCount(): int
+    {
+        return \count($this->documents);
     }
 
     public function receiveCarriedOver(ActivityId $newId, Activity $source): Activity
@@ -139,10 +203,6 @@ final class Session
     }
 
     /**
-     * The session's time is over: close it and return the activities that were
-     * still planned, so the caller can carry them to the next occurrence.
-     * Idempotent — a session already closed yields nothing.
-     *
      * @return list<Activity>
      */
     public function close(Clock $clock): array
@@ -163,6 +223,26 @@ final class Session
         $this->cancelled = true;
     }
 
+    public function markActivityDone(ActivityId $id): void
+    {
+        $this->activityWith($id)->markDone();
+    }
+
+    public function markActivityNotDone(ActivityId $id): void
+    {
+        $this->activityWith($id)->markNotDone();
+    }
+
+    public function removeActivity(ActivityId $id): void
+    {
+        $this->activityWith($id);
+
+        $this->activities = array_values(array_filter(
+            $this->activities,
+            static fn (Activity $a): bool => !$a->id->equals($id),
+        ));
+    }
+
     public function endsAt(): \DateTimeImmutable
     {
         return $this->timeRange->endsOn($this->date);
@@ -176,6 +256,28 @@ final class Session
     public function doneCount(): int
     {
         return \count(array_filter($this->activities, static fn (Activity $a): bool => !$a->isPlanned()));
+    }
+
+    private function activityWith(ActivityId $id): Activity
+    {
+        foreach ($this->activities as $activity) {
+            if ($activity->id->equals($id)) {
+                return $activity;
+            }
+        }
+
+        throw ActivityNotFound::inSession($this->id, $id);
+    }
+
+    private function documentWith(DocumentId $id): AttachedDocument
+    {
+        foreach ($this->documents as $document) {
+            if ($document->id->equals($id)) {
+                return $document;
+            }
+        }
+
+        throw DocumentNotFound::inSession($this->id, $id);
     }
 
     private function nextPosition(): int

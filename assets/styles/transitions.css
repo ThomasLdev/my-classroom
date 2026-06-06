@@ -1,10 +1,4 @@
-/* Transitions de page (View Transitions API, déclenchées par Turbo via la meta
-   view-transition). La direction est posée par transition_controller sur <html>.
-
-   Découpage par zone :
-   - root (chrome global, topbar) : figé, pas d'animation.
-   - dayhead + weekstrip : restent en place, simple fondu de mise à jour.
-   - day-content : glisse directionnellement (effet "carte qui swipe"). */
+/* Slide direction comes from data-transition, set on <html> by transition_controller. */
 @media (prefers-reduced-motion: no-preference) {
   ::view-transition-old(root),
   ::view-transition-new(root) {
@@ -25,8 +19,17 @@
     animation-timing-function: var(--ease);
   }
 
-  /* Le slide est clippé à la largeur du conteneur : la carte ne traverse pas
-     l'écran, elle disparaît au bord de sa colonne. */
+  /* Only the pill glides between columns (the morph is the default group animation,
+     just retimed). The dark day number isn't named, so it stays in the weekstrip group
+     and simply activates in place on the destination day via its cross-fade. */
+  ::view-transition-group(weekstrip-pill) {
+    animation-duration: .28s;
+    animation-timing-function: var(--ease);
+    z-index: 1; /* under the strip content so it never masks labels while sliding */
+  }
+  ::view-transition-group(weekstrip) { z-index: 2; }
+
+  /* Clip the slide to the column so the card disappears at its edge, not across the screen. */
   ::view-transition-group(day-content) { overflow: clip; }
 
   html[data-transition="next"]::view-transition-old(day-content) { animation-name: vt-out-left; }

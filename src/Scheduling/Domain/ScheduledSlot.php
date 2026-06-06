@@ -9,11 +9,6 @@ use App\Shared\Domain\Identifier\SlotId;
 use App\Shared\Domain\Occurrence;
 use App\Shared\Domain\TimeRange;
 
-/**
- * A recurring weekly slot of the yearly timetable. Pure read representation
- * used by the {@see OccurrenceCalculator} to expand the timetable into concrete
- * (virtual) occurrences.
- */
 final readonly class ScheduledSlot
 {
     public function __construct(
@@ -22,6 +17,8 @@ final readonly class ScheduledSlot
         public string $classroomName,
         public DayOfWeek $dayOfWeek,
         public TimeRange $timeRange,
+        public string $subject,
+        public ?string $room = null,
         public ?\DateTimeImmutable $validFrom = null,
         public ?\DateTimeImmutable $validTo = null,
     ) {
@@ -50,6 +47,8 @@ final readonly class ScheduledSlot
             $date->setTime(0, 0),
             $this->timeRange,
             $this->classroomName,
+            $this->subject,
+            $this->room,
         );
     }
 }

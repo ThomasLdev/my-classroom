@@ -4,8 +4,7 @@
   grid-template-rows: auto 1fr;
 }
 
-/* Single grid cell → .page stretches to fill the remaining height.
-   min-block-size:0 lets the inner content region own the scroll. */
+/* min-block-size:0 lets the inner content region own the scroll. */
 .app__main {
   display: grid;
   min-block-size: 0;

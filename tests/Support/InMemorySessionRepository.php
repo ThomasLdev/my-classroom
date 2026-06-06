@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Support;
 
+use App\Shared\Domain\Identifier\ClassroomId;
 use App\Shared\Domain\Identifier\SlotId;
 use App\Teaching\Domain\Model\Session\Session;
 use App\Teaching\Domain\Model\Session\SessionId;
@@ -31,6 +32,18 @@ final class InMemorySessionRepository implements SessionRepository
         }
 
         return null;
+    }
+
+    public function mostRecentUncheckedHomework(ClassroomId $classroomId, \DateTimeImmutable $before): ?Session
+    {
+        $matches = array_filter($this->byId, static fn (Session $s): bool => $s->classroomId->equals($classroomId)
+            && $s->homework !== null
+            && !$s->homeworkChecked
+            && $s->date < $before->setTime(0, 0));
+
+        usort($matches, static fn (Session $a, Session $b): int => $b->date <=> $a->date);
+
+        return $matches[0] ?? null;
     }
 
     public function save(Session $session): void

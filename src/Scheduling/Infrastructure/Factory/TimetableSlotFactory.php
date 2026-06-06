@@ -26,6 +26,8 @@ final class TimetableSlotFactory extends PersistentObjectFactory
             'dayOfWeek' => self::faker()->numberBetween(1, 5),
             'startMinute' => 8 * 60,
             'endMinute' => 9 * 60,
+            'subject' => self::faker()->randomElement(['Français', 'Soutien', 'Vie de classe']),
+            'room' => (string) self::faker()->numberBetween(101, 320),
             'validFrom' => null,
             'validTo' => null,
         ];

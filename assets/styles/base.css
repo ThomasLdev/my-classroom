@@ -18,3 +18,6 @@ h1, h2, h3, h4 {
 }
 
 ::selection { background: var(--k3-tint); }
+
+/* Custom elements are inline by default; frames wrap block content. */
+turbo-frame { display: block; }

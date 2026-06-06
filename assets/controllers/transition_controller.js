@@ -1,10 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
 
-/*
- * Tags the next Turbo navigation with a direction (next / prev) based on the
- * calendar date in the URL, so the View Transition can slide accordingly.
- * Direction-less navigations fall back to the default cross-fade.
- */
 export default class extends Controller {
     connect() {
         this.onBeforeVisit = this.onBeforeVisit.bind(this);
