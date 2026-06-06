@@ -442,84 +442,6 @@ parameters:
 			path: tests/Support/InMemorySessionRepository.php
 
 		-
-			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertNotNull\(\) with null will always evaluate to false\.$#'
-			identifier: staticMethod.impossibleType
-			count: 1
-			path: tests/Teaching/Application/AddActivityToSessionHandlerTest.php
-
-		-
-			message: '#^Cannot access offset 0 on mixed\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: tests/Teaching/Application/AddActivityToSessionHandlerTest.php
-
-		-
-			message: '#^Cannot access property \$title on mixed\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: tests/Teaching/Application/AddActivityToSessionHandlerTest.php
-
-		-
-			message: '#^Cannot access property \$activities on App\\Teaching\\Domain\\Model\\Session\\Session\|null\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: tests/Teaching/Application/CloseElapsedSessionsHandlerTest.php
-
-		-
-			message: '#^Cannot call method activityCount\(\) on App\\Teaching\\Domain\\Model\\Session\\Session\|null\.$#'
-			identifier: method.nonObject
-			count: 2
-			path: tests/Teaching/Application/CloseElapsedSessionsHandlerTest.php
-
-		-
-			message: '#^Cannot call method isClosed\(\) on App\\Teaching\\Domain\\Model\\Session\\Session\|null\.$#'
-			identifier: method.nonObject
-			count: 2
-			path: tests/Teaching/Application/CloseElapsedSessionsHandlerTest.php
-
-		-
-			message: '#^Cannot access property \$activities on App\\Teaching\\Domain\\Model\\Session\\Session\|null\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: tests/Teaching/Infrastructure/DoctrineSessionRepositoryTest.php
-
-		-
-			message: '#^Cannot call method activityCount\(\) on App\\Teaching\\Domain\\Model\\Session\\Session\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: tests/Teaching/Infrastructure/DoctrineSessionRepositoryTest.php
-
-		-
-			message: '#^Cannot call method addActivity\(\) on App\\Teaching\\Domain\\Model\\Session\\Session\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: tests/Teaching/Infrastructure/DoctrineSessionRepositoryTest.php
-
-		-
-			message: '#^Cannot call method doneCount\(\) on App\\Teaching\\Domain\\Model\\Session\\Session\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: tests/Teaching/Infrastructure/DoctrineSessionRepositoryTest.php
-
-		-
-			message: '#^Method App\\Tests\\Teaching\\Infrastructure\\DoctrineSessionRepositoryTest\:\:tearDown\(\) does not invoke parent\:\:tearDown\(\) after all other statements\.$#'
-			identifier: ergebnis.invokeParentHookMethod
-			count: 1
-			path: tests/Teaching/Infrastructure/DoctrineSessionRepositoryTest.php
-
-		-
-			message: '#^Parameter \#1 \$session of method App\\Teaching\\Domain\\Repository\\SessionRepository\:\:save\(\) expects App\\Teaching\\Domain\\Model\\Session\\Session, App\\Teaching\\Domain\\Model\\Session\\Session\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: tests/Teaching/Infrastructure/DoctrineSessionRepositoryTest.php
-
-		-
-			message: '#^Parameter \#1 \$slotId of method App\\Teaching\\Domain\\Repository\\SessionRepository\:\:ofOccurrence\(\) expects App\\Shared\\Domain\\Identifier\\SlotId, App\\Shared\\Domain\\Identifier\\SlotId\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: tests/Teaching/Infrastructure/DoctrineSessionRepositoryTest.php
-
-		-
 			message: '#^Call to function method_exists\(\) with ''Symfony\\\\Component\\\\Dotenv\\\\Dotenv'' and ''bootEnv'' will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 1
@@ -530,3 +452,81 @@ parameters:
 			identifier: if.condNotBoolean
 			count: 1
 			path: tests/bootstrap.php
+
+		-
+			message: '#^Cannot access property \$activities on App\\Teaching\\Domain\\Model\\Session\\Session\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: tests/functional/Teaching/Infrastructure/DoctrineSessionRepositoryTest.php
+
+		-
+			message: '#^Cannot call method activityCount\(\) on App\\Teaching\\Domain\\Model\\Session\\Session\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: tests/functional/Teaching/Infrastructure/DoctrineSessionRepositoryTest.php
+
+		-
+			message: '#^Cannot call method addActivity\(\) on App\\Teaching\\Domain\\Model\\Session\\Session\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: tests/functional/Teaching/Infrastructure/DoctrineSessionRepositoryTest.php
+
+		-
+			message: '#^Cannot call method doneCount\(\) on App\\Teaching\\Domain\\Model\\Session\\Session\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: tests/functional/Teaching/Infrastructure/DoctrineSessionRepositoryTest.php
+
+		-
+			message: '#^Method App\\Tests\\Functional\\Teaching\\Infrastructure\\DoctrineSessionRepositoryTest\:\:tearDown\(\) does not invoke parent\:\:tearDown\(\) after all other statements\.$#'
+			identifier: ergebnis.invokeParentHookMethod
+			count: 1
+			path: tests/functional/Teaching/Infrastructure/DoctrineSessionRepositoryTest.php
+
+		-
+			message: '#^Parameter \#1 \$session of method App\\Teaching\\Domain\\Repository\\SessionRepository\:\:save\(\) expects App\\Teaching\\Domain\\Model\\Session\\Session, App\\Teaching\\Domain\\Model\\Session\\Session\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/functional/Teaching/Infrastructure/DoctrineSessionRepositoryTest.php
+
+		-
+			message: '#^Parameter \#1 \$slotId of method App\\Teaching\\Domain\\Repository\\SessionRepository\:\:ofOccurrence\(\) expects App\\Shared\\Domain\\Identifier\\SlotId, App\\Shared\\Domain\\Identifier\\SlotId\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/functional/Teaching/Infrastructure/DoctrineSessionRepositoryTest.php
+
+		-
+			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertNotNull\(\) with null will always evaluate to false\.$#'
+			identifier: staticMethod.impossibleType
+			count: 1
+			path: tests/unit/Teaching/Application/AddActivityToSessionHandlerTest.php
+
+		-
+			message: '#^Cannot access offset 0 on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: tests/unit/Teaching/Application/AddActivityToSessionHandlerTest.php
+
+		-
+			message: '#^Cannot access property \$title on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: tests/unit/Teaching/Application/AddActivityToSessionHandlerTest.php
+
+		-
+			message: '#^Cannot access property \$activities on App\\Teaching\\Domain\\Model\\Session\\Session\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: tests/unit/Teaching/Application/CloseElapsedSessionsHandlerTest.php
+
+		-
+			message: '#^Cannot call method activityCount\(\) on App\\Teaching\\Domain\\Model\\Session\\Session\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: tests/unit/Teaching/Application/CloseElapsedSessionsHandlerTest.php
+
+		-
+			message: '#^Cannot call method isClosed\(\) on App\\Teaching\\Domain\\Model\\Session\\Session\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: tests/unit/Teaching/Application/CloseElapsedSessionsHandlerTest.php

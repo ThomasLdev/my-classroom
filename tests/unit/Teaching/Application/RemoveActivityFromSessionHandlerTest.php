@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Teaching\Application;
+namespace App\Tests\Unit\Teaching\Application;
 
 use App\Teaching\Application\Command\AddActivityToSession\AddActivityToSession;
 use App\Teaching\Application\Command\AddActivityToSession\AddActivityToSessionHandler;

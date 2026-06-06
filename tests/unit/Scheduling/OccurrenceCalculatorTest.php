@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Scheduling;
+namespace App\Tests\Unit\Scheduling;
 
 use App\Scheduling\Domain\DayOfWeek;
 use App\Scheduling\Domain\OccurrenceCalculator;

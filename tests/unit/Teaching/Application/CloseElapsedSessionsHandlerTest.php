@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Teaching\Application;
+namespace App\Tests\Unit\Teaching\Application;
 
 use App\Shared\Domain\Identifier\SlotId;
 use App\Teaching\Application\Command\AddActivityToSession\AddActivityToSession;

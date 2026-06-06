@@ -18,10 +18,11 @@
     </php>
 
     <testsuites>
-        <testsuite name="Project Test Suite">
-            <directory>tests</directory>
-            <!-- PHPat architecture rules run under PHPStan, not PHPUnit. -->
-            <exclude>tests/Architecture</exclude>
+        <testsuite name="unit">
+            <directory>tests/unit</directory>
+        </testsuite>
+        <testsuite name="functional">
+            <directory>tests/functional</directory>
         </testsuite>
     </testsuites>
 

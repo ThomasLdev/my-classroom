@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Teaching\Infrastructure;
+namespace App\Tests\Functional\Teaching\Infrastructure;
 
 use App\Shared\Domain\Identifier\ClassroomId;
 use App\Shared\Domain\Identifier\SlotId;

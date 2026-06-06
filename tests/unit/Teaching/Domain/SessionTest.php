@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Teaching\Domain;
+namespace App\Tests\Unit\Teaching\Domain;
 
 use App\Teaching\Domain\Exception\ActivityNotFound;
 use App\Teaching\Domain\Exception\DocumentNotFound;

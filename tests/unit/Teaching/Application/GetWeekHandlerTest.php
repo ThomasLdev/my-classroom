@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Teaching\Application;
+namespace App\Tests\Unit\Teaching\Application;
 
 use App\Teaching\Application\Query\GetDayView\EventView;
 use App\Teaching\Application\Query\GetWeek\GetWeek;

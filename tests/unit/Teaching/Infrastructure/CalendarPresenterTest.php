@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Teaching\Infrastructure;
+namespace App\Tests\Unit\Teaching\Infrastructure;
 
 use App\Teaching\Infrastructure\Http\CalendarPresenter;
 use DateTimeImmutable;

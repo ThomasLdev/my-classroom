@@ -12,7 +12,7 @@ SYMFONY  = $(PHP) bin/console
 # Misc
 .DEFAULT_GOAL = help
 .PHONY        : help build up start down logs sh composer vendor sf cc test
-.PHONY        : ecs ecs-fix rector rector-fix phpstan test-unit test-db qa
+.PHONY        : ecs ecs-fix rector rector-fix phpstan test-unit test-functional test-db qa
 
 ## —— 🎵 🐳 The Symfony Docker Makefile 🐳 🎵 ——————————————————————————————————
 help: ## Outputs this help screen
@@ -43,8 +43,11 @@ test: ## Start tests with phpunit, pass the parameter "c=" to add options to php
 	@$(eval c ?=)
 	@$(DOCKER_COMP) exec -e APP_ENV=test php bin/phpunit $(c)
 
-test-unit: ## Run the tests that don't need a database (domain + application)
-	@$(DOCKER_COMP) exec -e APP_ENV=test php bin/phpunit tests/Teaching/Domain tests/Teaching/Application tests/Scheduling
+test-unit: ## Run the unit test suite (no database needed)
+	@$(DOCKER_COMP) exec -e APP_ENV=test php bin/phpunit --testsuite unit
+
+test-functional: ## Run the functional test suite (needs the test database — run "make test-db" first)
+	@$(DOCKER_COMP) exec -e APP_ENV=test php bin/phpunit --testsuite functional
 
 test-db: ## (Re)create the test database from scratch and migrate it — safe to re-run
 	@$(DOCKER_COMP) exec -e APP_ENV=test php bin/console doctrine:database:drop --force --if-exists
