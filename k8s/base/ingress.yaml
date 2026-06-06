@@ -3,15 +3,13 @@ kind: Ingress
 metadata:
   name: my-classroom
   namespace: my-classroom
-  annotations:
-    # cert-manager ingress-shim auto-creates a Certificate from the selfsigned
-    # ClusterIssuer and stores it in the secret named in spec.tls.secretName.
-    # Self-signed → mobile browsers still warn once, but HTTPS is now served on
-    # 443 (fixes "can't establish secure connection" from HTTPS-first mobiles).
-    cert-manager.io/cluster-issuer: selfsigned
 spec:
   ingressClassName: traefik
   tls:
+    # The `my-classroom-tls` secret is created imperatively from a local CA
+    # (see ~/pwa-ca), NOT by cert-manager — the CA is installed on the device
+    # so the cert is trusted, which is what makes the Android PWA installable.
+    # Don't add a cert-manager.io annotation here or it would overwrite it.
     - hosts:
         # sslip.io resolves <anything>.192.168.1.200.sslip.io -> 192.168.1.200,
         # so no local DNS entry is needed. Mobile must be on the same LAN.
