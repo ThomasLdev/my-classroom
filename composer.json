@@ -125,7 +125,7 @@
         "symfony/maker-bundle": "^1.67",
         "symfony/stopwatch": "8.1.*",
         "symfony/web-profiler-bundle": "8.1.*",
-        "symplify/easy-coding-standard": "^12.5",
+        "symplify/easy-coding-standard": "^13.2",
         "tomasvotruba/cognitive-complexity": "^1.2",
         "zenstruck/foundry": "^2.12"
     }
