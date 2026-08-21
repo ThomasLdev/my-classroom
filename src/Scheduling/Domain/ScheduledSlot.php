@@ -33,7 +33,7 @@ final readonly class ScheduledSlot
         if ($this->validFrom instanceof DateTimeImmutable && $date < $this->validFrom->setTime(0, 0)) {
             return false;
         }
-        return ! ($this->validTo instanceof DateTimeImmutable && $date > $this->validTo->setTime(0, 0));
+        return ! $this->validTo instanceof DateTimeImmutable || $date <= $this->validTo->setTime(0, 0);
     }
 
     public function toOccurrence(DateTimeImmutable $date): Occurrence
